@@ -23,7 +23,7 @@ public class Role {
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
-//    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
-//    @JsonIgnore
-//    private List<User> users;
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<User> users;
 }
