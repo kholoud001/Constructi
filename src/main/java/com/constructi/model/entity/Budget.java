@@ -27,6 +27,6 @@ public class Budget {
     private String description;
 
 //    @ManyToOne
-//    private Projet projet;
+//    private Project project;
 
 }
