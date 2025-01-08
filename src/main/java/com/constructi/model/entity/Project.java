@@ -40,10 +40,10 @@ public class Project {
     @DecimalMin("0.0")
     private Double actuelBudget;
 
-//    @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL)
-//    private List<Tache> taches;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<Task> tasks;
 
-    @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Budget> budgets;
 
 //    @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL)
