@@ -6,13 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "materials")
-public class Material {
-
+@Table(name = "providers")
+public class Provider {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,15 +21,6 @@ public class Material {
     @NotBlank
     private String name;
 
-    @Min(1)
-    private Integer quantity;
-
-    @DecimalMin("0.0")
-    private Double priceUnit;
-
-    @ManyToOne
-    private Project project;
-
-    @ManyToOne
-    private Provider provider;
+    @OneToMany(mappedBy = "provider", cascade = CascadeType.ALL)
+    private List<Material> materialsList;
 }
