@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -43,16 +45,26 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "Role is required.")
-    @Column(name = "role", nullable = false)
-    private RoleType role;
+    @DecimalMin(value = "0.0", inclusive = false, message = "Hourly rate must be greater than 0.")
+    @Column(name = "rate_hourly")
+    private Double RateHourly;
+
+//    @Enumerated(EnumType.STRING)
+//    @NotNull(message = "Role is required.")
+//    @Column(name = "role", nullable = false)
+//    private RoleType role;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "contrat_type")
     private ContratType contratType;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "Hourly rate must be greater than 0.")
-    @Column(name = "rate_hourly")
-    private Double RateHourly;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "role_id")
+    private Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Task> tasks;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Invoice> invoices;
 }
