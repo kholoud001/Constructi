@@ -16,29 +16,42 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "projects")
 public class Project {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Project name is required.")
+    @Size(max = 100, message = "Project name must not exceed 100 characters.")
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    @Size(max = 255, message = "Description must not exceed 255 characters.")
+    @Column(name = "description", length = 255)
     private String description;
 
-    @Temporal(TemporalType.DATE)
-    private LocalDate startdate;
+    @NotNull(message = "Start date is required.")
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
 
-    @Temporal(TemporalType.DATE)
+    @FutureOrPresent(message = "End date must be today or a future date.")
+    @Column(name = "end_date")
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Project state is required.")
+    @Column(name = "state", nullable = false)
     private ProjectState state;
 
-    @DecimalMin("0.0")
-    private Double initialbudget;
+    @DecimalMin(value = "0.0", inclusive = false, message = "Initial budget must be greater than 0.")
+    @NotNull(message = "Initial budget is required.")
+    @Column(name = "initial_budget", nullable = false)
+    private Double initialBudget;
 
-    @DecimalMin("0.0")
-    private Double actuelBudget;
+    @DecimalMin(value = "0.0", inclusive = false, message = "Actual budget must be greater than 0.")
+    @NotNull(message = "Actual budget is required.")
+    @Column(name = "actual_budget", nullable = false)
+    private Double actualBudget;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Task> tasks;
@@ -46,9 +59,8 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Budget> budgets;
 
-//    @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL)
-//    private List<Materiel> materiels;
-
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @NotNull(message = "Project must be associated with a user.")
     private User user;
 }
