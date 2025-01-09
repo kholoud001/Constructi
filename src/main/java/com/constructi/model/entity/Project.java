@@ -1,11 +1,13 @@
 package com.constructi.model.entity;
 
+import com.constructi.DTO.UserDTO;
 import com.constructi.model.enums.ProjectState;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,9 +32,11 @@ public class Project {
     @Column(name = "description", length = 255)
     private String description;
 
+    @Setter
     @NotNull(message = "Start date is required.")
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
+
 
     @FutureOrPresent(message = "End date must be today or a future date.")
     @Column(name = "end_date")
@@ -66,4 +70,6 @@ public class Project {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Material> materials;
+
+
 }
