@@ -1,11 +1,15 @@
 package com.constructi.model.entity;
 
 import com.constructi.model.enums.ProjectState;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,6 +34,7 @@ public class Project {
     @Column(name = "description", length = 255)
     private String description;
 
+    @Setter
     @NotNull(message = "Start date is required.")
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
@@ -54,16 +59,22 @@ public class Project {
     private Double actualBudget;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @JsonIgnore
     private List<Task> tasks;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Budget> budgets;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "Project must be associated with a user.")
+    @JsonIgnore
     private User user;
 
+
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Material> materials;
 }
