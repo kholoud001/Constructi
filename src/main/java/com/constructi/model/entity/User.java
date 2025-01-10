@@ -1,7 +1,7 @@
 package com.constructi.model.entity;
 
 import com.constructi.model.enums.ContratType;
-import com.constructi.model.enums.RoleType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -49,11 +49,6 @@ public class User {
     @Column(name = "rate_hourly")
     private Double RateHourly;
 
-//    @Enumerated(EnumType.STRING)
-//    @NotNull(message = "Role is required.")
-//    @Column(name = "role", nullable = false)
-//    private RoleType role;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "contrat_type")
     private ContratType contratType;
@@ -69,5 +64,7 @@ public class User {
     private List<Invoice> invoices;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Project> projects;
+
 }

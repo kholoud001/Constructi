@@ -15,5 +15,5 @@ public interface ProjectService {
 
     List<ProjectDTO> getAllProjects();
 
-    void deleteProject(Long projectId);
+    boolean deleteProject(Long projectId);
 }

@@ -46,10 +46,17 @@ public class ProjectController {
     }
 
     @DeleteMapping("/delete/{projectId}")
-    public ResponseEntity<Void> deleteProject(@PathVariable Long projectId) {
-        projectService.deleteProject(projectId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteProject(@PathVariable Long projectId) {
+        boolean isDeleted = projectService.deleteProject(projectId);
+
+        if (isDeleted) {
+            return ResponseEntity.ok("Project with ID " + projectId + " was successfully deleted.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Project with ID " + projectId + " was not found and could not be deleted.");
+        }
     }
+
 
 //    @GetMapping("/{projectId}/progress")
 //    public ResponseEntity<Void> trackProjectProgress(@PathVariable Long projectId) {

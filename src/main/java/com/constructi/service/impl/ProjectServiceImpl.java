@@ -59,8 +59,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void deleteProject(Long projectId) {
-        projectRepository.deleteById(projectId);
+    public boolean deleteProject(Long projectId) {
+        if (projectRepository.existsById(projectId)) {
+            projectRepository.deleteById(projectId);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 //    @Override

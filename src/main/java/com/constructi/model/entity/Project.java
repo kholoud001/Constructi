@@ -1,7 +1,9 @@
 package com.constructi.model.entity;
 
-import com.constructi.DTO.UserDTO;
 import com.constructi.model.enums.ProjectState;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -37,7 +39,6 @@ public class Project {
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-
     @FutureOrPresent(message = "End date must be today or a future date.")
     @Column(name = "end_date")
     private LocalDate endDate;
@@ -58,18 +59,22 @@ public class Project {
     private Double actualBudget;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @JsonIgnore
     private List<Task> tasks;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Budget> budgets;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "Project must be associated with a user.")
+    @JsonIgnore
     private User user;
 
+
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Material> materials;
-
-
 }
