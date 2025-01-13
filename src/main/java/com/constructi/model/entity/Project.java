@@ -58,9 +58,8 @@ public class Project {
     @Column(name = "actual_budget", nullable = false)
     private Double actualBudget;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonManagedReference
-    @JsonIgnore
     private List<Task> tasks;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
@@ -70,9 +69,8 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "Project must be associated with a user.")
-    @JsonIgnore
+    @JsonBackReference
     private User user;
-
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonManagedReference

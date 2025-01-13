@@ -24,7 +24,7 @@ public class BudgetDTO {
     @NotBlank(message = "Description is required.")
     private String description;
 
-    @NotNull(message = "Project association is required.")
+//    @NotNull(message = "Project association is required.")
     //private Long projectId;
-    private ProjectDTO project;
+//    private ProjectDTO project;
 }

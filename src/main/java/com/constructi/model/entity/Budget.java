@@ -1,5 +1,6 @@
 package com.constructi.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -37,5 +38,6 @@ public class Budget {
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     @NotNull(message = "Project association is required.")
+    @JsonBackReference
     private Project project;
 }

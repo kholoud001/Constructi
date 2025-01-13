@@ -1,6 +1,8 @@
 package com.constructi.model.entity;
 
 import com.constructi.model.enums.StatusTask;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -44,7 +46,8 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
-    @NotNull(message = "Task must be associated with a project.")
+    @NotNull(message = "Task must be associated with at least one project.")
+    @JsonBackReference
     private Project project;
 
     @ManyToOne
