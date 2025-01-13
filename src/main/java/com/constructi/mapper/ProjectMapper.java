@@ -11,10 +11,10 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ProjectMapper {
 
-    @Mapping(target = "budgets", ignore = true) // Break cyclic mapping
-    @Mapping(target = "tasks", ignore = true)   // Ignore tasks to avoid recursion
-    @Mapping(target = "materials", ignore = true) // Ignore materials
-    @Mapping(target = "user.projects", ignore = true) // Prevent mapping user.projects
+    @Mapping(target = "budgets", ignore = true)
+    @Mapping(target = "tasks", ignore = true)
+    @Mapping(target = "materials", ignore = true)
+    @Mapping(target = "user", ignore = true)
     ProjectDTO entityToDto(Project entity);
 
     @Mapping(target = "budgets", ignore = true)

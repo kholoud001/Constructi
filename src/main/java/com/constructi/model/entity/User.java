@@ -1,7 +1,8 @@
 package com.constructi.model.entity;
 
 import com.constructi.model.enums.ContratType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -64,7 +65,7 @@ public class User {
     private List<Invoice> invoices;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<Project> projects;
 
 }

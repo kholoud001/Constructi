@@ -32,11 +32,11 @@ public class TaskDTO {
     private Double effectiveTime;
 
     @NotNull(message = "Task must be associated with a project.")
-    //private Long projectId;
     private ProjectDTO project;
 
     private UserDTO user;
 
-    //private Long userId;
+//    private Long projectId;
+//    private Long userId;
 
 }

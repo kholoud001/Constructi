@@ -44,6 +44,6 @@ public class UserDTO {
 
     private List<TaskDTO> tasks;
     private List<InvoiceDTO> invoices;
-//    private List<ProjectDTO> projects;
+    private List<ProjectDTO> projects;
 
 }
