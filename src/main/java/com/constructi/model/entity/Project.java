@@ -70,7 +70,7 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "Project must be associated with a user.")
-    @JsonIgnore
+    @JsonManagedReference
     private User user;
 
 

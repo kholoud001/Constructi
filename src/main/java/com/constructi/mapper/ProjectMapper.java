@@ -11,19 +11,18 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ProjectMapper {
 
-
-    //@Mapping(target = "tasks", source = "entity.tasks")
-    @Mapping(target = "budgets", source = "entity.budgets")
-    //@Mapping(target = "materials", source = "entity.materials")
-    @Mapping(target = "user", source = "entity.user")
+    @Mapping(target = "budgets", ignore = true) // Break cyclic mapping
+    @Mapping(target = "tasks", ignore = true)   // Ignore tasks to avoid recursion
+    @Mapping(target = "materials", ignore = true) // Ignore materials
+    @Mapping(target = "user.projects", ignore = true) // Prevent mapping user.projects
     ProjectDTO entityToDto(Project entity);
 
-//    @Mapping(target = "tasks", source = "dto.tasks")
-    @Mapping(target = "budgets", source = "dto.budgets")
-//    @Mapping(target = "materials", source = "dto.materials")
-    @Mapping(target = "user", source = "dto.user")
+    @Mapping(target = "budgets", ignore = true)
+    @Mapping(target = "tasks", ignore = true)
+    @Mapping(target = "materials", ignore = true)
+    @Mapping(target = "user.projects", ignore = true)
     Project dtoToEntity(ProjectDTO dto);
-
 
     List<ProjectDTO> entityListToDtoList(List<Project> projects);
 }
+

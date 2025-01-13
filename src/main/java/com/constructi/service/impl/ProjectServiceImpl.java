@@ -6,7 +6,9 @@ import com.constructi.mapper.UserMapper;
 import com.constructi.model.entity.Project;
 import com.constructi.repository.ProjectRepository;
 import com.constructi.service.ProjectService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,11 +48,14 @@ public class ProjectServiceImpl implements ProjectService {
         return null;
     }
 
+    @Transactional
     @Override
     public Optional<ProjectDTO> getProjectById(Long projectId) {
         Optional<Project> project = projectRepository.findById(projectId);
+        project.ifPresent(p -> Hibernate.initialize(p.getBudgets()));
         return project.map(projectMapper::entityToDto);
     }
+
 
     @Override
     public List<ProjectDTO> getAllProjects() {
