@@ -21,7 +21,7 @@ public class SecurityConfig {
 //                .cors(customizer -> customizer.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(authz -> authz
                                 .requestMatchers("/register", "/login", "/projects/**",
-                                        "/tasks/**").permitAll()
+                                        "/tasks/**","/users/**").permitAll()
 //                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
 //                        .requestMatchers("/user/**").hasAuthority("ROLE_USER")
 //                        .requestMatchers("/organizer/**").hasAuthority("ROLE_ORGANIZER")
