@@ -25,8 +25,8 @@ public class MaterialDTO {
     private Double priceUnit;
 
     @NotNull(message = "Material must be associated with a project.")
-    //private Long projectId;
-    private ProjectDTO project;
+    private Long projectId;
+//    private ProjectDTO project;
 
     @NotNull(message = "Material must be associated with a provider.")
     //private Long providerId;

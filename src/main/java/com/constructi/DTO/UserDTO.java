@@ -42,8 +42,8 @@ public class UserDTO {
     @NotNull(message = "Role is required.")
     private RoleDTO role;
 
-    private List<TaskDTO> tasks;
+//    private List<TaskDTO> tasks;
     private List<InvoiceDTO> invoices;
-    private List<ProjectDTO> projects;
+//    private List<ProjectDTO> projects;
 
 }

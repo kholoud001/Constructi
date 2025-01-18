@@ -1,18 +1,20 @@
 package com.constructi.service.impl;
 
-import com.constructi.DTO.ProjectDTO;
+import com.constructi.DTO.ProjectRequestDTO;
+import com.constructi.DTO.ProjectResponseDTO;
+import com.constructi.exception.InvalidProjectDateException;
 import com.constructi.mapper.ProjectMapper;
 import com.constructi.mapper.UserMapper;
 import com.constructi.model.entity.Project;
+import com.constructi.model.enums.ProjectState;
 import com.constructi.repository.ProjectRepository;
 import com.constructi.service.ProjectService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,55 +25,79 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserMapper userMapper;
 
     @Override
-    public ProjectDTO createProject(ProjectDTO projectDTO) {
-        Project project = projectMapper.dtoToEntity(projectDTO);
-        Project savedProject = projectRepository.save(project);
-        return projectMapper.entityToDto(savedProject);
+    public ProjectResponseDTO createProject(ProjectRequestDTO dto) {
+        validateProjectDates(dto.getStartDate(), dto.getEndDate());
+
+        Project project = projectMapper.toEntity(dto);
+        project = projectRepository.save(project);
+
+        return projectMapper.toDto(project);
+    }
+
+
+    @Override
+    public ProjectResponseDTO updateProject(Long id, ProjectRequestDTO dto) {
+        Project existingProject = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+
+        validateProjectDates(dto.getStartDate(), dto.getEndDate());
+
+        existingProject.setName(dto.getName());
+        existingProject.setDescription(dto.getDescription());
+        existingProject.setStartDate(dto.getStartDate());
+        existingProject.setEndDate(dto.getEndDate());
+        existingProject.setState(ProjectState.valueOf(dto.getState()));
+        existingProject.setInitialBudget(dto.getInitialBudget());
+        existingProject.setActualBudget(dto.getActualBudget());
+
+        Project updatedProject = projectRepository.save(existingProject);
+        return projectMapper.toDto(updatedProject);
     }
 
     @Override
-    public ProjectDTO updateProject(Long projectId, ProjectDTO projectDTO) {
-        Optional<Project> existingProject = projectRepository.findById(projectId);
-        if (existingProject.isPresent()) {
-            Project project = existingProject.get();
-            project.setName(projectDTO.getName());
-            project.setDescription(projectDTO.getDescription());
-            project.setStartDate(projectDTO.getStartDate());
-            project.setEndDate(projectDTO.getEndDate());
-            project.setState(projectDTO.getState());
-            project.setInitialBudget(projectDTO.getInitialBudget());
-            project.setActualBudget(projectDTO.getActualBudget());
-            project.setUser(userMapper.dtoToEntity(projectDTO.getUser()));
-            Project updatedProject = projectRepository.save(project);
-            return projectMapper.entityToDto(updatedProject);
+    public void deleteProject(Long id) {
+        if (!projectRepository.existsById(id)) {
+            throw new RuntimeException("Project not found with id: " + id);
         }
-        return null;
+        projectRepository.deleteById(id);
     }
 
-    @Transactional
     @Override
-    public Optional<ProjectDTO> getProjectById(Long projectId) {
-        Optional<Project> project = projectRepository.findById(projectId);
-        project.ifPresent(p -> Hibernate.initialize(p.getBudgets()));
-        return project.map(projectMapper::entityToDto);
+    public ProjectResponseDTO getProjectById(Long id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+        return projectMapper.toDto(project);
     }
 
-
     @Override
-    public List<ProjectDTO> getAllProjects() {
+    public List<ProjectResponseDTO> getAllProjects() {
         List<Project> projects = projectRepository.findAll();
-        return projectMapper.entityListToDtoList(projects);
+        return projects.stream()
+                .map(projectMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public boolean deleteProject(Long projectId) {
-        if (projectRepository.existsById(projectId)) {
-            projectRepository.deleteById(projectId);
-            return true;
-        } else {
-            return false;
+    public List<ProjectResponseDTO> getMyProjects(Long userId) {
+        List<Project> myProjects = projectRepository.findAll().stream()
+                .filter(project -> project.getUser().getId().equals(userId))
+                .toList();
+        return myProjects.stream()
+                .map(projectMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+
+
+    private void validateProjectDates(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(LocalDate.now())) {
+            throw new InvalidProjectDateException("Start date cannot be in the future.");
+        }
+        if (endDate.isBefore(startDate)) {
+            throw new InvalidProjectDateException("End date cannot be before the start date.");
         }
     }
+
 
 //    @Override
 //    public void trackProgress(Long id) {

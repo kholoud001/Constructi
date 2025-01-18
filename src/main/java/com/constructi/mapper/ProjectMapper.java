@@ -1,28 +1,24 @@
 package com.constructi.mapper;
 
-import com.constructi.DTO.*;
-import com.constructi.model.entity.*;
+
+import com.constructi.DTO.ProjectRequestDTO;
+import com.constructi.DTO.ProjectResponseDTO;
+import com.constructi.model.entity.Project;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ProjectMapper {
 
-    @Mapping(target = "budgets", ignore = true)
-    @Mapping(target = "tasks", ignore = true)
-    @Mapping(target = "materials", ignore = true)
-    @Mapping(target = "user", ignore = true)
-    ProjectDTO entityToDto(Project entity);
+    @Mapping(target = "user.id", source = "userId")
+    Project toEntity(ProjectRequestDTO dto);
 
-    @Mapping(target = "budgets", ignore = true)
-    @Mapping(target = "tasks", ignore = true)
-    @Mapping(target = "materials", ignore = true)
-    @Mapping(target = "user.projects", ignore = true)
-    Project dtoToEntity(ProjectDTO dto);
+    @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "tasks", expression = "java(project.getTasks().stream().map(task -> task.getDescription()).toList())")
+    @Mapping(target = "budgets", expression = "java(project.getBudgets().stream().map(budget -> budget.getAmount()).toList())")
+    @Mapping(target = "materials", expression = "java(project.getMaterials().stream().map(material -> material.getName()).toList())")
+    ProjectResponseDTO toDto(Project project);
 
-    List<ProjectDTO> entityListToDtoList(List<Project> projects);
 }
 
