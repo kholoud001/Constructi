@@ -30,6 +30,7 @@ public class UserRequestDTO {
     @DecimalMin(value = "0.0", inclusive = false, message = "Hourly rate must be greater than 0.")
     private Double rateHourly;
 
+    @NotNull(message = "Contrat type is required.")
     private ContratType contratType;
 
     private Long roleId;

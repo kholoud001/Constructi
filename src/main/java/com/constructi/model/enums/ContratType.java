@@ -2,5 +2,7 @@ package com.constructi.model.enums;
 
 public enum ContratType {
     FREELANCE,
-    INTERN
+    FULL_TIME,
+    PART_TIME,
+    CONTRACTOR
 }
