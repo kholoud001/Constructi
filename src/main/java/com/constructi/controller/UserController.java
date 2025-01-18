@@ -45,7 +45,7 @@ public class UserController {
         List<UserResponseDTO> userResponseDTOs = userService.getUsers();
         return new ResponseEntity<>(userResponseDTOs, HttpStatus.OK);
     }
-    
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
