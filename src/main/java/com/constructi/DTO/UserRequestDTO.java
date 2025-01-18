@@ -1,17 +1,12 @@
 package com.constructi.DTO;
 
 import com.constructi.model.enums.ContratType;
-import com.constructi.model.enums.RoleType;
 import jakarta.validation.constraints.*;
-
 import lombok.Data;
-import java.util.List;
-
 
 @Data
-public class UserDTO {
+public class UserRequestDTO {
 
-    private Long id;
 
     @NotBlank(message = "Last name is required.")
     @Size(max = 50, message = "Last name must not exceed 50 characters.")
@@ -32,18 +27,10 @@ public class UserDTO {
     @Size(min = 6, message = "Password must be at least 6 characters long.")
     private String password;
 
-//    private RoleType role;
+    @DecimalMin(value = "0.0", inclusive = false, message = "Hourly rate must be greater than 0.")
+    private Double rateHourly;
 
     private ContratType contratType;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "Hourly rate must be greater than 0.")
-    private Double tauxHoraire;
-
-    @NotNull(message = "Role is required.")
-    private RoleDTO role;
-
-//    private List<TaskDTO> tasks;
-    private List<InvoiceDTO> invoices;
-//    private List<ProjectDTO> projects;
-
+    private Long roleId;
 }

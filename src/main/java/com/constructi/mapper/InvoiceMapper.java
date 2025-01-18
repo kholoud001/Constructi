@@ -11,9 +11,9 @@ public interface InvoiceMapper {
 
     InvoiceMapper INSTANCE = Mappers.getMapper(InvoiceMapper.class);
 
-    @Mapping(target = "user", source = "entity.user")
-    InvoiceDTO entityToDto(Invoice entity);
+    @Mapping(source = "user.id", target = "userId")
+    InvoiceResponseDTO toResponseDTO(Invoice invoice);
 
-    @Mapping(target = "user", source = "dto.user")
-    Invoice dtoToEntity(InvoiceDTO dto);
+    @Mapping(source = "userId", target = "user.id")
+    Invoice toEntity(InvoiceRequestDTO invoiceRequestDTO);
 }

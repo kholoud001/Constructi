@@ -1,17 +1,10 @@
 package com.constructi.DTO;
 
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class MaterialDTO {
-
-    private Long id;
-
+public class MaterialRequestDTO {
     @NotBlank(message = "Material name is required.")
     @Size(max = 100, message = "Material name must not exceed 100 characters.")
     private String name;
@@ -24,12 +17,9 @@ public class MaterialDTO {
     @DecimalMin(value = "0.0", inclusive = false, message = "Price per unit must be greater than 0.")
     private Double priceUnit;
 
-    @NotNull(message = "Material must be associated with a project.")
+    @NotNull(message = "Project ID is required.")
     private Long projectId;
-//    private ProjectDTO project;
 
-    @NotNull(message = "Material must be associated with a provider.")
-    //private Long providerId;
-    private ProviderDTO provider;
-
+    @NotNull(message = "Provider ID is required.")
+    private Long providerId;
 }
