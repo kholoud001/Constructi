@@ -1,19 +1,14 @@
 package com.constructi.DTO;
 
-import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class BudgetDTO {
-
-    private Long id;
-
+public class BudgetRequestDTO {
     @NotNull(message = "Modification date is required.")
     private LocalDateTime modificationDate;
 
@@ -24,7 +19,6 @@ public class BudgetDTO {
     @NotBlank(message = "Description is required.")
     private String description;
 
-//    @NotNull(message = "Project association is required.")
-    //private Long projectId;
-//    private ProjectDTO project;
+    @NotNull(message = "Project ID is required.")
+    private Long projectId;
 }

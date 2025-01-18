@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Data
@@ -34,7 +34,6 @@ public class Project {
     @Column(name = "description", length = 255)
     private String description;
 
-    @Setter
     @NotNull(message = "Start date is required.")
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
@@ -60,11 +59,12 @@ public class Project {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonManagedReference
-    private List<Task> tasks;
+    private List<Task> tasks = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Budget> budgets;
+    private List<Budget> budgets= new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -74,5 +74,5 @@ public class Project {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Material> materials;
+    private List<Material> materials= new ArrayList<>();
 }

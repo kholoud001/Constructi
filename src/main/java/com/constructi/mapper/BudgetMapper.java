@@ -1,21 +1,21 @@
 package com.constructi.mapper;
 
 
-import org.mapstruct.Mapper;
+import com.constructi.DTO.BudgetRequestDTO;
+import com.constructi.DTO.BudgetResponseDTO;
 import com.constructi.model.entity.Budget;
-import com.constructi.DTO.BudgetDTO;
-
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface BudgetMapper {
-
     BudgetMapper INSTANCE = Mappers.getMapper(BudgetMapper.class);
 
-    //@Mapping(target = "project", source = "entity.project")
-    BudgetDTO entityToDto(Budget entity);
+    @Mapping(source = "project.id", target = "projectId")
+    BudgetResponseDTO toResponseDTO(Budget budget);
 
-    //@Mapping(target = "project", source = "dto.project")
-    Budget dtoToEntity(BudgetDTO dto);
+    @Mapping(source = "projectId", target = "project.id")
+    Budget toEntity(BudgetRequestDTO budgetRequestDTO);
 }
 

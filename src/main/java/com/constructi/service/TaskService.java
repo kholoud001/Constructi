@@ -1,17 +1,22 @@
 package com.constructi.service;
 
-import com.constructi.DTO.TaskDTO;
+
+import com.constructi.DTO.TaskRequestDTO;
+import com.constructi.DTO.TaskResponseDTO;
 
 import java.util.List;
 
 public interface TaskService {
-    TaskDTO createTask(TaskDTO taskDTO);
 
-    List<TaskDTO> getAllTasks();
+    TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO);
 
-    TaskDTO getTaskById(Long id);
+    TaskResponseDTO updateTask(Long taskId, TaskRequestDTO taskRequestDTO);
 
-    TaskDTO updateTask(Long id, TaskDTO taskDTO);
+    void deleteTask(Long taskId);
 
-    void deleteTask(Long id);
+    List<TaskResponseDTO> getAllTasks();
+
+    TaskResponseDTO getTaskById(Long taskId);
+
+//    List<TaskResponseDTO> getMyTasks();
 }

@@ -1,19 +1,23 @@
 package com.constructi.service;
 
-import com.constructi.DTO.ProjectDTO;
+
+import com.constructi.DTO.ProjectRequestDTO;
+import com.constructi.DTO.ProjectResponseDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ProjectService {
 
-    ProjectDTO createProject(ProjectDTO projectDTO);
 
-    ProjectDTO updateProject(Long projectId, ProjectDTO projectDTO);
+    ProjectResponseDTO createProject(ProjectRequestDTO dto);
 
-    Optional<ProjectDTO> getProjectById(Long projectId);
+    ProjectResponseDTO updateProject(Long id, ProjectRequestDTO dto);
 
-    List<ProjectDTO> getAllProjects();
+    void deleteProject(Long id);
 
-    boolean deleteProject(Long projectId);
+    ProjectResponseDTO getProjectById(Long id);
+
+    List<ProjectResponseDTO> getAllProjects();
+
+    List<ProjectResponseDTO> getMyProjects(Long userId);
 }

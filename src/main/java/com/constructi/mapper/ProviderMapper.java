@@ -3,14 +3,15 @@ package com.constructi.mapper;
 import com.constructi.DTO.*;
 import com.constructi.model.entity.*;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = MaterialMapper.class)
 public interface ProviderMapper {
 
     ProviderMapper INSTANCE = Mappers.getMapper(ProviderMapper.class);
 
-    ProviderDTO entityToDto(Provider entity);
+    @Mapping(source = "materialsList", target = "materials")
+    ProviderResponseDTO toResponseDTO(Provider provider);
 
-    Provider dtoToEntity(ProviderDTO dto);
+    Provider toEntity(ProviderRequestDTO providerRequestDTO);
 }
