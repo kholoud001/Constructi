@@ -13,6 +13,7 @@ import com.constructi.service.UserService;
 import com.constructi.service.impl.CustomUserDetailsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -77,10 +78,16 @@ public class AuthController {
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(authRequest.getEmail());
         System.out.println("Authenticated user: " + userDetails.getUsername());
 
-        String token = jwtUtils.generateToken(userDetails.getUsername());
+        User user = userService.findByEmail(authRequest.getEmail());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        String token = jwtUtils.generateToken(user.getEmail(), user.getRole().getRoleType().name());
         System.out.println("Generated token: " + token);
 
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }
+
 
 }
