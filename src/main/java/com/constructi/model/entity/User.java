@@ -68,4 +68,9 @@ public class User {
     @JsonManagedReference
     private List<Project> projects;
 
+    @Override
+    public String toString() {
+        return "User{id=" + id + ", email=" + email + "}";
+    }
+
 }

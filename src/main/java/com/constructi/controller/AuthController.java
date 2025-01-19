@@ -57,7 +57,7 @@ public class AuthController {
         user.setRateHourly(registrationRequest.getRateHourly());
         user.setContratType(ContratType.valueOf(registrationRequest.getContratType()));
 
-        Role defaultRole = roleRepository.findByRoleType(RoleType.ROLE_WORKER)
+        Role defaultRole = roleRepository.findByRoleType(RoleType.WORKER)
                 .orElseThrow(() -> new RuntimeException("Default role not found"));
         user.setRole(defaultRole);
 
