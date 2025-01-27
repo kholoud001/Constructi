@@ -19,10 +19,12 @@ public class JwtUtils {
     private long EXPIRATION_TIME;
 
     private Key getSigningKey() {
+
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
     public String extractEmail(String token) {
+
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -33,7 +35,7 @@ public class JwtUtils {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(token)
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getBody();
