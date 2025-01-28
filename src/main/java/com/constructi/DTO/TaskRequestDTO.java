@@ -27,5 +27,4 @@ public class TaskRequestDTO {
     @NotNull(message = "Project ID is required.")
     private Long projectId;
 
-    private Long userId;
 }

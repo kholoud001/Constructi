@@ -18,5 +18,11 @@ public interface TaskService {
 
     TaskResponseDTO getTaskById(Long taskId);
 
+    List<TaskResponseDTO> getMyTasks();
+
+    TaskResponseDTO assignTaskToWorker(Long taskId, Long workerId);
+
+    List<TaskResponseDTO> getTasksAssignedToWorker();
+
 //    List<TaskResponseDTO> getMyTasks();
 }

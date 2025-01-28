@@ -14,7 +14,7 @@ public interface TaskMapper {
     TaskResponseDTO toTaskResponseDTO(Task task);
 
     @Mapping(source = "projectId", target = "project.id")
-    @Mapping(source = "userId", target = "user.id")
+    @Mapping(target = "user.id" , ignore = true)
     Task toTaskEntity(TaskRequestDTO taskRequestDTO);
 
 

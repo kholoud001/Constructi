@@ -7,6 +7,7 @@ import com.constructi.mapper.TaskMapper;
 import com.constructi.model.entity.Project;
 import com.constructi.model.entity.Task;
 import com.constructi.model.entity.User;
+import com.constructi.model.enums.RoleType;
 import com.constructi.repository.ProjectRepository;
 import com.constructi.repository.TaskRepository;
 import com.constructi.repository.UserRepository;
@@ -30,18 +31,18 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO) {
+
+        String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User authenticatedUser = userRepository.findByEmail(authenticatedUserEmail)
+                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
+
         Project project = projectRepository.findById(taskRequestDTO.getProjectId())
                 .orElseThrow(() -> new RuntimeException("Project not found"));
 
-        User user = null;
-        if (taskRequestDTO.getUserId() != null) {
-            user = userRepository.findById(taskRequestDTO.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-        }
-
         Task task = taskMapper.toTaskEntity(taskRequestDTO);
         task.setProject(project);
-        task.setUser(user);
+        task.setUser(authenticatedUser);
 
         Task savedTask = taskRepository.save(task);
         return taskMapper.toTaskResponseDTO(savedTask);
@@ -50,17 +51,16 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskResponseDTO updateTask(Long taskId, TaskRequestDTO taskRequestDTO) {
+        String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User authenticatedUser = userRepository.findByEmail(authenticatedUserEmail)
+                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
+
         Task existingTask = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
 
         Project project = projectRepository.findById(taskRequestDTO.getProjectId())
                 .orElseThrow(() -> new RuntimeException("Project not found"));
-
-        User user = null;
-        if (taskRequestDTO.getUserId() != null) {
-            user = userRepository.findById(taskRequestDTO.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-        }
 
         existingTask.setDescription(taskRequestDTO.getDescription());
         existingTask.setStatus(taskRequestDTO.getStatus());
@@ -68,7 +68,7 @@ public class TaskServiceImpl implements TaskService {
         existingTask.setDateEndEstimated(taskRequestDTO.getDateEndEstimated());
         existingTask.setEffectiveTime(taskRequestDTO.getEffectiveTime());
         existingTask.setProject(project);
-        existingTask.setUser(user);
+        existingTask.setUser(authenticatedUser);
 
         Task updatedTask = taskRepository.save(existingTask);
         return taskMapper.toTaskResponseDTO(updatedTask);
@@ -95,19 +95,58 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.toTaskResponseDTO(task);
     }
 
-//    @Override
-//    public List<TaskResponseDTO> getMyTasks() {
-//        String email = SecurityContextHolder.getContext().getAuthentication().ge();
-//
-//        Long userId = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new RuntimeException("User not found"))
-//                .getId();
-//
-//        List<Task> tasks = taskRepository.findByUserId(userId);
-//        return tasks.stream()
-//                .map(taskMapper::toTaskResponseDTO)
-//                .collect(Collectors.toList());
-//    }
+    @Override
+    public List<TaskResponseDTO> getMyTasks() {
+        String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Long userId = userRepository.findByEmail(authenticatedUserEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"))
+                .getId();
+
+        List<Task> tasks = taskRepository.findByUserId(userId);
+        return tasks.stream()
+                .map(taskMapper::toTaskResponseDTO)
+                .toList();
+    }
+
+
+    @Override
+    public TaskResponseDTO assignTaskToWorker(Long taskId, Long workerId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User architect = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Architect not found"));
+
+        if (architect.getRole() == null || architect.getRole().getRoleType() != RoleType.ARCHITECT) {
+            throw new RuntimeException("Only architects can assign tasks");
+        }
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+        User worker = userRepository.findById(workerId)
+                .orElseThrow(() -> new RuntimeException("Worker not found"));
+
+        task.setUser(worker);
+        Task updatedTask = taskRepository.save(task);
+
+        return taskMapper.toTaskResponseDTO(updatedTask);
+    }
+
+    @Override
+    public List<TaskResponseDTO> getTasksAssignedToWorker() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User worker = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Worker not found"));
+
+        List<Task> tasks = taskRepository.findByUser(worker);
+
+        return tasks.stream()
+                .map(taskMapper::toTaskResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+
 
 
 
