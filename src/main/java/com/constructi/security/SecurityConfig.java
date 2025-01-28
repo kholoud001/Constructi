@@ -44,6 +44,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/providers/**").hasAuthority("ROLE_ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/providers/**").hasAnyAuthority("ROLE_ADMIN","ROLE_ARCHITECT")
                                 .requestMatchers(HttpMethod.DELETE, "/providers/**").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/materials/**").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/materials/**").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/materials/**").hasAnyAuthority("ROLE_ADMIN","ROLE_ARCHITECT")
+                                .requestMatchers(HttpMethod.DELETE, "/materials/**").hasAuthority("ROLE_ADMIN")
 
                                 .requestMatchers("/resources/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/reports/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT")
