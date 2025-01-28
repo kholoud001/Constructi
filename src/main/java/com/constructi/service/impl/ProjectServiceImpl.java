@@ -6,10 +6,14 @@ import com.constructi.exception.InvalidProjectDateException;
 import com.constructi.mapper.ProjectMapper;
 import com.constructi.mapper.UserMapper;
 import com.constructi.model.entity.Project;
+import com.constructi.model.entity.User;
 import com.constructi.model.enums.ProjectState;
 import com.constructi.repository.ProjectRepository;
+import com.constructi.repository.UserRepository;
 import com.constructi.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,22 +27,43 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
     private final UserMapper userMapper;
+    private final UserRepository userRepository;
 
     @Override
     public ProjectResponseDTO createProject(ProjectRequestDTO dto) {
+
+        String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         validateProjectDates(dto.getStartDate(), dto.getEndDate());
 
+        User user = userRepository.findByEmail(authenticatedUserEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found with email: " + authenticatedUserEmail));
+
         Project project = projectMapper.toEntity(dto);
+        project.setUser(user);
+
         project = projectRepository.save(project);
 
         return projectMapper.toDto(project);
     }
 
 
+
+
+
     @Override
     public ProjectResponseDTO updateProject(Long id, ProjectRequestDTO dto) {
+
+        String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User authenticatedUser = userRepository.findByEmail(authenticatedUserEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found with email: " + authenticatedUserEmail));
+
         Project existingProject = projectRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+
+        if (!existingProject.getUser().getEmail().equals(authenticatedUserEmail)) {
+            throw new SecurityException("You do not have permission to update this project.");
+        }
 
         validateProjectDates(dto.getStartDate(), dto.getEndDate());
 
@@ -51,6 +76,7 @@ public class ProjectServiceImpl implements ProjectService {
         existingProject.setActualBudget(dto.getActualBudget());
 
         Project updatedProject = projectRepository.save(existingProject);
+
         return projectMapper.toDto(updatedProject);
     }
 

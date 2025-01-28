@@ -3,6 +3,7 @@ package com.constructi.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -31,6 +32,16 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/architect/**").hasAuthority("ROLE_ARCHITECT")
                         .requestMatchers("/worker/**").hasAuthority("ROLE_WORKER")
+                                .requestMatchers(HttpMethod.GET, "/projects/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT", "ROLE_WORKER")
+                                .requestMatchers(HttpMethod.POST, "/projects/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT")
+                                .requestMatchers(HttpMethod.PUT, "/projects/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT")
+                                .requestMatchers(HttpMethod.DELETE, "/projects/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/tasks/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT", "ROLE_WORKER")
+                        .requestMatchers("/resources/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/reports/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT")
+                         .requestMatchers("/discussion/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT", "ROLE_WORKER")
+//                        .requestMatchers("/architect/**").hasAuthority("ROLE_ARCHITECT")
+//                        .requestMatchers("/worker/**").hasAuthority("ROLE_WORKER")
                         .anyRequest().authenticated()
                 )
                 .csrf(customizer -> customizer.disable())

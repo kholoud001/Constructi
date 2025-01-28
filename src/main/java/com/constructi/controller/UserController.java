@@ -40,7 +40,6 @@ public class UserController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllTasks() {
         List<UserResponseDTO> userResponseDTOs = userService.getUsers();

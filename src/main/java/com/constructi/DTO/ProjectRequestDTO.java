@@ -33,6 +33,6 @@ public class ProjectRequestDTO {
     @NotNull(message = "Actual budget is required.")
     private Double actualBudget;
 
-    @NotNull(message = "Project must be associated with a user ID.")
-    private Long userId;
+//    @NotNull(message = "Project must be associated with a user ID.")
+//    private Long userId;
 }
