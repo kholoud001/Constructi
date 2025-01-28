@@ -58,10 +58,10 @@ public class ProjectController {
         return ResponseEntity.ok("Project with ID " + projectId + " has been successfully deleted.");
     }
 
-    @GetMapping("/my-projects/{userId}")
+    @GetMapping("/my-projects")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT')")
-    public ResponseEntity<List<ProjectResponseDTO>> getMyProjects(@PathVariable Long userId) {
-        List<ProjectResponseDTO> response = projectService.getMyProjects(userId);
+    public ResponseEntity<List<ProjectResponseDTO>> getMyProjects() {
+        List<ProjectResponseDTO> response = projectService.getMyProjects();
         return ResponseEntity.ok(response);
     }
 

@@ -13,7 +13,6 @@ import com.constructi.repository.UserRepository;
 import com.constructi.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -104,14 +103,21 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectResponseDTO> getMyProjects(Long userId) {
+    public List<ProjectResponseDTO> getMyProjects() {
+        String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User authenticatedUser = userRepository.findByEmail(authenticatedUserEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found with email: " + authenticatedUserEmail));
+
         List<Project> myProjects = projectRepository.findAll().stream()
-                .filter(project -> project.getUser().getId().equals(userId))
+                .filter(project -> project.getUser().getId().equals(authenticatedUser.getId()))
                 .toList();
+
         return myProjects.stream()
                 .map(projectMapper::toDto)
                 .collect(Collectors.toList());
     }
+
 
 
 
