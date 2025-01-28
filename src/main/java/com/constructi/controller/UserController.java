@@ -1,6 +1,5 @@
 package com.constructi.controller;
 
-import com.constructi.DTO.TaskResponseDTO;
 import com.constructi.DTO.UserRequestDTO;
 import com.constructi.DTO.UserResponseDTO;
 import com.constructi.service.UserService;
@@ -9,12 +8,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/admin/users")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -39,7 +40,6 @@ public class UserController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
-
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllTasks() {
         List<UserResponseDTO> userResponseDTOs = userService.getUsers();

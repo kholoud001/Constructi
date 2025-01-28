@@ -11,7 +11,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ProjectMapper {
 
-    @Mapping(target = "user.id", source = "userId")
+    @Mapping(target = "user", ignore = true)
     Project toEntity(ProjectRequestDTO dto);
 
     @Mapping(target = "userId", source = "user.id")

@@ -19,5 +19,6 @@ public interface ProjectService {
 
     List<ProjectResponseDTO> getAllProjects();
 
-    List<ProjectResponseDTO> getMyProjects(Long userId);
+
+    List<ProjectResponseDTO> getMyProjects();
 }
