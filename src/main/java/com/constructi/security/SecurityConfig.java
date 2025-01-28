@@ -40,7 +40,12 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/tasks/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT")
                                 .requestMatchers(HttpMethod.PUT, "/tasks/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT")
                                 .requestMatchers(HttpMethod.DELETE, "/tasks/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers("/resources/**").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/providers/**").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/providers/**").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/providers/**").hasAnyAuthority("ROLE_ADMIN","ROLE_ARCHITECT")
+                                .requestMatchers(HttpMethod.DELETE, "/providers/**").hasAuthority("ROLE_ADMIN")
+
+                                .requestMatchers("/resources/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/reports/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT")
                         .requestMatchers("/discussion/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT", "ROLE_WORKER")
 //
