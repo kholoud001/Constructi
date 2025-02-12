@@ -30,6 +30,7 @@ public class Role {
     @JsonIgnore
     private List<User> users;
 
+
     @Override
     public String toString() {
         return "Role{id=" + id + ", roleType=" + roleType + "}";
