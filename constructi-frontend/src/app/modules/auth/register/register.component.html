@@ -1,1 +1,108 @@
-<p>register works!</p>
+<div class=" relative min-h-screen flex items-center justify-center bg-cover bg-center"
+     style="background-image: url('https://media.licdn.com/dms/image/v2/C4D12AQHKuVpUKVtEtg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1561653933026?e=2147483647&v=beta&t=KcoKH3zla9X_Qn7LXfPQzGIwDIoxY5bv3Z5D-mMVv_Y');">
+
+  <div class="absolute  inset-0 bg-black opacity-50 "></div>
+
+  <div class="bg-white bg-opacity-90 p-8 rounded-lg shadow-2xl w-96 transform transition-all hover:scale-105 m-10">
+    <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Inscription</h2>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div class="relative">
+        <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+        <div class="flex items-center">
+          <fa-icon [icon]="faUser" class="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></fa-icon>
+          <input type="text" id="firstName" formControlName="firstName"
+                 class="pl-10 pr-3 py-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+        </div>
+        <div *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched" class="text-red-500 text-xs mt-1">
+          Prénom requis (2-30 caractères).
+        </div>
+      </div>
+
+      <div class="relative">
+        <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+        <div class="flex items-center">
+          <fa-icon [icon]="faUser" class="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></fa-icon>
+          <input type="text" id="lastName" formControlName="lastName"
+                 class="pl-10 pr-3 py-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+        </div>
+        <div *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched" class="text-red-500 text-xs mt-1">
+          Nom requis (2-30 caractères).
+        </div>
+      </div>
+
+      <div class="relative">
+        <label for="cell" class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+        <div class="flex items-center">
+          <fa-icon [icon]="faPhone" class="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></fa-icon>
+          <input type="tel" id="cell" formControlName="cell"
+                 class="pl-10 pr-3 py-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+        </div>
+        <div *ngIf="registerForm.get('cell')?.invalid && registerForm.get('cell')?.touched" class="text-red-500 text-xs mt-1">
+          Numéro invalide (10-15 chiffres).
+        </div>
+      </div>
+
+      <div class="relative">
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <div class="flex items-center">
+          <fa-icon [icon]="faEnvelope" class="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></fa-icon>
+          <input type="email" id="email" formControlName="email"
+                 class="pl-10 pr-3 py-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+        </div>
+        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-red-500 text-xs mt-1">
+          Email invalide.
+        </div>
+      </div>
+
+      <div class="relative">
+        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+        <div class="flex items-center">
+          <fa-icon [icon]="faLock" class="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></fa-icon>
+          <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
+                 class="pl-10 pr-10 py-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <button type="button" (click)="togglePasswordVisibility()" class="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <fa-icon [icon]="showPassword ? faEyeSlash : faEye" class="text-gray-400"></fa-icon>
+          </button>
+        </div>
+        <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-red-500 text-xs mt-1">
+          Mot de passe requis (min. 6 caractères).
+        </div>
+      </div>
+
+      <div class="relative">
+        <label for="rateHourly" class="block text-sm font-medium text-gray-700 mb-1">Taux horaire</label>
+        <div class="flex items-center">
+          <fa-icon [icon]="faDollarSign" class="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></fa-icon>
+          <input type="number" id="rateHourly" formControlName="rateHourly"
+                 class="pl-10 pr-3 py-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+        </div>
+        <div *ngIf="registerForm.get('rateHourly')?.invalid && registerForm.get('rateHourly')?.touched" class="text-red-500 text-xs mt-1">
+          Doit être entre 10 et 200.
+        </div>
+      </div>
+
+      <div class="relative">
+        <label for="contratType" class="block text-sm font-medium text-gray-700 mb-1">Type de contrat</label>
+        <div class="flex items-center">
+          <fa-icon [icon]="faBriefcase" class="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></fa-icon>
+          <select id="contratType" formControlName="contratType"
+                  class="pl-10 pr-3 py-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            <option value="FULL_TIME">Temps plein</option>
+            <option value="PART_TIME">Temps partiel</option>
+            <option value="CONTRACTOR">Contrat</option>
+            <option value="FREELANCE">Freelance</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-2 px-4 rounded-md hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+              [disabled]="registerForm.invalid">
+        S'inscrire
+      </button>
+    </form>
+
+    <div class="mt-6 text-center">
+      <a href="/auth/login" class="text-sm text-indigo-600 hover:text-indigo-800 transition duration-300 ease-in-out">Déjà inscrit ? Se connecter</a>
+    </div>
+  </div>
+</div>
