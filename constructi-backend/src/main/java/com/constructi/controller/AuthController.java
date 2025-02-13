@@ -3,6 +3,9 @@ package com.constructi.controller;
 import com.constructi.DTO.AuthenticationRequest;
 import com.constructi.DTO.AuthenticationResponse;
 import com.constructi.DTO.RegistrationRequest;
+import com.constructi.DTO.ForgotPasswordRequest;
+import com.constructi.DTO.ResetPasswordRequest;
+
 import com.constructi.model.entity.Role;
 import com.constructi.model.entity.User;
 import com.constructi.model.enums.ContratType;
@@ -10,6 +13,7 @@ import com.constructi.model.enums.RoleType;
 import com.constructi.repository.RoleRepository;
 import com.constructi.security.JwtUtils;
 import com.constructi.service.UserService;
+import com.constructi.service.PasswordService;
 import com.constructi.service.impl.CustomUserDetailsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,11 +37,10 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final UserService userService;
+    private final PasswordService passwordService;
     private final CustomUserDetailsService customUserDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-
-
 
 
     @PostMapping("/register")
@@ -89,5 +92,23 @@ public class AuthController {
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }
 
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        passwordService.sendResetPasswordEmail(request.getEmail());
+        return ResponseEntity.ok("Password reset link sent to email");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        passwordService.resetPassword(request);
+        return ResponseEntity.ok("Password has been reset successfully");
+    }
+
+//    @PostMapping("/logout")
+//    public ResponseEntity<?> logout(HttpServletRequest request) {
+//        passwordService.logout(request);
+//        return ResponseEntity.ok("Logged out successfully");
+//    }
 
 }

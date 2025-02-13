@@ -8,11 +8,12 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 
 @NgModule({
   declarations: [
-    ResetPasswordComponent
+
   ],
   imports: [
     CommonModule,
