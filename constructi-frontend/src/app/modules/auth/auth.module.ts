@@ -26,6 +26,6 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 })
 export class AuthModule {
   constructor() {
-    console.log('AuthModule loaded');
+    // console.log('AuthModule loaded');
   }
 }

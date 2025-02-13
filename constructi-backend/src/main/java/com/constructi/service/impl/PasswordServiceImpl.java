@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import com.constructi.service.PasswordService;
 import com.constructi.service.impl.EmailService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 
 
 import org.springframework.beans.factory.annotation.Value;
@@ -42,27 +45,32 @@ public class PasswordServiceImpl implements PasswordService {
         PasswordResetToken token = new PasswordResetToken(user);
         tokenRepository.save(token);
 
-        String resetLink = String.format("%s?token=%s", resetPasswordLink, token.getToken());
+        // Include the email in the reset URL
+        String resetLink = String.format("%s?token=%s&email=%s",
+                resetPasswordLink,
+                token.getToken(),
+                URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8)
+        );
 
         String emailContent = """
-        <html>
-        <body style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-            <div style="text-align: center;">
-                <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" alt="Construction Icon" width="80" style="margin-bottom: 20px;">
-                <h2 style="color: #004aad;">Reset Your Password</h2>
-            </div>
-            <p>Hello %s,</p>
-            <p>Click the button below to reset your password:</p>
-            <div style="text-align: center; margin: 20px 0;">
-                <a href="%s" style="padding: 12px 24px; background-color: #004aad; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                    Reset Password
-                </a>
-            </div>
-            <p>If you did not request this, please ignore this email.</p>
-            <p style="margin-top: 20px;">Thank you,<br><strong>Constructi Team</strong></p>
-        </body>
-        </html>
-        """.formatted(user.getFname(), resetLink);
+    <html>
+    <body style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <div style="text-align: center;">
+            <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" alt="Construction Icon" width="80" style="margin-bottom: 20px;">
+            <h2 style="color: #004aad;">Reset Your Password</h2>
+        </div>
+        <p>Hello %s,</p>
+        <p>Click the button below to reset your password:</p>
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="%s" style="padding: 12px 24px; background-color: #004aad; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                Reset Password
+            </a>
+        </div>
+        <p>If you did not request this, please ignore this email.</p>
+        <p style="margin-top: 20px;">Thank you,<br><strong>Constructi Team</strong></p>
+    </body>
+    </html>
+    """.formatted(user.getFname(), resetLink);
 
         emailService.sendHtmlEmail(user.getEmail(), "Reset your password", emailContent);
     }

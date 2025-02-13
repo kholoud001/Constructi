@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
@@ -14,9 +14,10 @@ import {NgIf} from '@angular/common';
   ],
   templateUrl: './forgot-password.component.html'
 })
-export class ForgotPasswordComponent {
+export class ForgotPasswordComponent  {
   forgotPasswordForm: FormGroup;
   isLoading = false;
+  email: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -28,21 +29,32 @@ export class ForgotPasswordComponent {
     });
   }
 
+
+
   onSubmit() {
     if (this.forgotPasswordForm.invalid) return;
 
     this.isLoading = true;
     this.authService.forgotPassword(this.forgotPasswordForm.value.email).subscribe({
-      next: () => {
-        Swal.fire('Succès!', 'Un lien de réinitialisation a été envoyé à votre adresse e-mail.', 'success');
+      next: (response) => {
+        Swal.fire({
+          title: 'Succès!',
+          text: response?.message || 'Un lien de réinitialisation a été envoyé à votre adresse e-mail.',
+          icon: 'success',
+        });
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        Swal.fire('Erreur', 'Une erreur est survenue. Veuillez réessayer.', 'error');
+        Swal.fire({
+          title: 'Erreur',
+          text: err.error?.message || 'Une erreur est survenue. Veuillez réessayer.',
+          icon: 'error',
+        });
       },
-      complete: () => (this.isLoading = false)
+      complete: () => (this.isLoading = false),
     });
   }
+
 
   get emailControl() {
     return this.forgotPasswordForm.get('email');

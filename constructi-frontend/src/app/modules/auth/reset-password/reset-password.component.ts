@@ -16,7 +16,8 @@ import { NgIf } from '@angular/common';
 })
 export class ResetPasswordComponent implements OnInit {
   resetPasswordForm: FormGroup;
-  token: string = '';
+  token = '';
+  email = '';
 
   constructor(
     private fb: FormBuilder,
@@ -24,28 +25,31 @@ export class ResetPasswordComponent implements OnInit {
     private authService: AuthService,
     private router: Router
   ) {
-    this.resetPasswordForm = this.fb.group({
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]]
-    }, { validator: this.passwordMatchValidator });
+    this.resetPasswordForm = this.fb.group(
+      {
+        email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', [Validators.required]]
+      },
+      { validators: this.passwordMatchValidator }
+    );
   }
 
   ngOnInit(): void {
-    // ✅ Use queryParamMap for reliability
     this.route.queryParamMap.subscribe(params => {
       this.token = params.get('token') ?? '';
-      console.log('Token from URL:', this.token);
+      this.email = params.get('email') ?? localStorage.getItem('userEmail') ?? '';
+      this.resetPasswordForm.patchValue({ email: this.email });
 
       if (!this.token) {
         Swal.fire('Erreur', 'Lien de réinitialisation invalide.', 'error');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/auth/login']);
       }
     });
   }
 
   passwordMatchValidator(form: FormGroup) {
-    return form.get('password')?.value === form.get('confirmPassword')?.value
-      ? null : { mismatch: true };
+    return form.get('password')?.value === form.get('confirmPassword')?.value ? null : { mismatch: true };
   }
 
   onSubmit() {
@@ -54,15 +58,13 @@ export class ResetPasswordComponent implements OnInit {
       return;
     }
 
-    this.authService.resetPassword(this.token, this.resetPasswordForm.value.password).subscribe({
+    const { password } = this.resetPasswordForm.getRawValue();
+    this.authService.resetPassword(this.token, this.email, password).subscribe({
       next: () => {
         Swal.fire('Succès', 'Votre mot de passe a été réinitialisé.', 'success');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/auth/login']);
       },
-      error: (error) => {
-        console.error('Erreur de réinitialisation:', error);
-        Swal.fire('Erreur', 'Impossible de réinitialiser le mot de passe.', 'error');
-      }
+      error: () => Swal.fire('Erreur', 'Impossible de réinitialiser le mot de passe.', 'error')
     });
   }
 

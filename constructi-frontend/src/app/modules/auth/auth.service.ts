@@ -31,11 +31,18 @@ export class AuthService {
   }
 
   forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
+    return this.http.post(`${this.apiUrl}/forgot-password`, { email },
+      { responseType: 'text' });
   }
 
-  resetPassword(token: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reset-password`, { token, password });
+  resetPassword(token: string, newPassword: string, email: string): Observable<any> {
+    const payload = {
+      token: token,
+      email: email,
+      newPassword: newPassword
+    };
+    return this.http.post(`${this.apiUrl}/reset-password`, payload,
+      { responseType: 'text' });
   }
 
 
