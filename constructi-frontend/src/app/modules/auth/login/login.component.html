@@ -1,4 +1,8 @@
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 to-purple-500">
+<div class=" relative min-h-screen flex items-center justify-center bg-cover bg-center"
+     style="background-image: url('https://media.licdn.com/dms/image/v2/C4D12AQHKuVpUKVtEtg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1561653933026?e=2147483647&v=beta&t=KcoKH3zla9X_Qn7LXfPQzGIwDIoxY5bv3Z5D-mMVv_Y');">
+
+  <div class="absolute  inset-0 bg-black opacity-50 "></div>
+
   <div class="bg-white p-8 rounded-lg shadow-2xl w-96 transform transition-all hover:scale-105">
     <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Connexion</h2>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
