@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.constructi.service.PasswordService;
 import com.constructi.service.impl.EmailService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 import org.springframework.beans.factory.annotation.Value;
 
@@ -26,6 +28,8 @@ public class PasswordServiceImpl implements PasswordService {
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
     private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Value("${app.resetPasswordLink}")
     private String resetPasswordLink;
@@ -38,7 +42,7 @@ public class PasswordServiceImpl implements PasswordService {
         PasswordResetToken token = new PasswordResetToken(user);
         tokenRepository.save(token);
 
-        String resetLink = resetPasswordLink + "?token=" + token.getToken();
+        String resetLink = String.format("%s?token=%s", resetPasswordLink, token.getToken());
 
         String emailContent = """
         <html>
@@ -64,15 +68,19 @@ public class PasswordServiceImpl implements PasswordService {
     }
 
 
+
     @Override
     public void resetPassword(ResetPasswordRequest request) {
         PasswordResetToken token = tokenRepository.findByToken(request.getToken())
                 .orElseThrow(() -> new RuntimeException("Invalid or expired token"));
 
         User user = token.getUser();
-        user.setPassword(request.getNewPassword());
-        userRepository.save(user);
 
+        // Hash the new password before saving
+        String hashedPassword = passwordEncoder.encode(request.getNewPassword());
+        user.setPassword(hashedPassword);
+
+        userRepository.save(user);
         tokenRepository.delete(token);
     }
 

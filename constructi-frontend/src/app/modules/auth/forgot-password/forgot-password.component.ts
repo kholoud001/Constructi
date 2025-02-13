@@ -43,4 +43,9 @@ export class ForgotPasswordComponent {
       complete: () => (this.isLoading = false)
     });
   }
+
+  get emailControl() {
+    return this.forgotPasswordForm.get('email');
+  }
+
 }

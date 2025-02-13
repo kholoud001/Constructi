@@ -5,6 +5,10 @@ const routes: Routes = [
 
   { path: 'auth', loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule) },
   { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
+
+  { path: 'dashboard', loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule) },
+
+
 ];
 
 @NgModule({
