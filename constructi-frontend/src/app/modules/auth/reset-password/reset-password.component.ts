@@ -59,7 +59,7 @@ export class ResetPasswordComponent implements OnInit {
     }
 
     const { password } = this.resetPasswordForm.getRawValue();
-    this.authService.resetPassword(this.token, this.email, password).subscribe({
+    this.authService.resetPassword(this.token, password, this.email).subscribe({
       next: () => {
         Swal.fire('Succès', 'Votre mot de passe a été réinitialisé.', 'success');
         this.router.navigate(['/auth/login']);
