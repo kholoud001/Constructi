@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import Swal from 'sweetalert2';
 import { NgIf } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    FontAwesomeModule
   ],
   templateUrl: './reset-password.component.html'
 })
@@ -18,6 +21,12 @@ export class ResetPasswordComponent implements OnInit {
   resetPasswordForm: FormGroup;
   token = '';
   email = '';
+  showPassword = false;
+  showConfirmPassword = false;
+  faEnvelope = faEnvelope;
+  faLock = faLock;
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
 
   constructor(
     private fb: FormBuilder,
@@ -70,5 +79,13 @@ export class ResetPasswordComponent implements OnInit {
 
   get formErrors() {
     return this.resetPasswordForm.errors;
+  }
+
+  togglePasswordVisibility(field: 'password' | 'confirmPassword') {
+    if (field === 'password') {
+      this.showPassword = !this.showPassword;
+    } else {
+      this.showConfirmPassword = !this.showConfirmPassword;
+    }
   }
 }

@@ -1,23 +1,27 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import Swal from 'sweetalert2';
-import {NgIf} from '@angular/common';
+import { NgIf } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    FontAwesomeModule,
+    RouterLink
   ],
   templateUrl: './forgot-password.component.html'
 })
-export class ForgotPasswordComponent  {
+export class ForgotPasswordComponent {
   forgotPasswordForm: FormGroup;
   isLoading = false;
-  email: string = '';
+  faEnvelope = faEnvelope;
 
   constructor(
     private fb: FormBuilder,
@@ -28,8 +32,6 @@ export class ForgotPasswordComponent  {
       email: ['', [Validators.required, Validators.email]]
     });
   }
-
-
 
   onSubmit() {
     if (this.forgotPasswordForm.invalid) return;
@@ -55,9 +57,7 @@ export class ForgotPasswordComponent  {
     });
   }
 
-
   get emailControl() {
     return this.forgotPasswordForm.get('email');
   }
-
 }
