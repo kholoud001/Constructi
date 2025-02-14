@@ -1,9 +1,11 @@
 <div class="min-h-screen bg-gray-100">
-
   <div class="py-10">
     <header>
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold leading-tight text-gray-900">Liste des utilisateurs</h1>
+        <h1 class="text-3xl font-bold leading-tight text-gray-900 flex items-center">
+          <fa-icon [icon]="faUsers" class="mr-3 text-blue-600"></fa-icon>
+          Liste des utilisateurs
+        </h1>
       </div>
     </header>
     <main>
@@ -23,17 +25,33 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let user of users">
+                  <tr *ngFor="let user of users" class="hover:bg-gray-50">
                     <td class="px-6 py-4 text-sm text-gray-900">{{ user.id }}</td>
                     <td class="px-6 py-4 text-sm text-gray-900">
-                      <a [routerLink]="['/admin/user-detail', user.id]" class="text-blue-600 hover:text-blue-900">
-                        {{ user.fname }}
+                      <a [routerLink]="['/admin/user-detail', user.id]" class="text-blue-600 hover:text-blue-900 flex items-center">
+                        <fa-icon [icon]="faUser" class="mr-2"></fa-icon>
+                        {{ user.fname }} {{ user.lname }}
                       </a>
-                    </td>                    <td class="px-6 py-4 text-sm text-gray-900">{{ user.email }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-900">{{ user.role }}</td>
+                    </td>
                     <td class="px-6 py-4 text-sm text-gray-900">
-                      <button class="text-blue-600 hover:text-blue-900">Modifier</button>
-                      <button (click)="deleteUser(user.id)" class="text-red-600 hover:text-red-900 ml-2">Supprimer</button>
+                        <span class="flex items-center">
+                          <fa-icon [icon]="faEnvelope" class="mr-2 text-gray-500"></fa-icon>
+                          {{ user.email }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-900">
+                        <span class="flex items-center">
+                          <fa-icon [icon]="faUserTag" class="mr-2 text-gray-500"></fa-icon>
+                          {{ user.role }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-900">
+                      <button class="text-blue-600 hover:text-blue-900 mr-2" title="Modifier">
+                        <fa-icon [icon]="faEdit"></fa-icon>
+                      </button>
+                      <button (click)="deleteUser(user.id)" class="text-red-600 hover:text-red-900" title="Supprimer">
+                        <fa-icon [icon]="faTrash"></fa-icon>
+                      </button>
                     </td>
                   </tr>
                   </tbody>

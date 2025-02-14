@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../user.service';
-import { ActivatedRoute } from '@angular/router'; // for fetching user by ID
+import { ActivatedRoute } from '@angular/router';
+import { faArrowLeft, faIdCard, faUser, faEnvelope, faPhone, faFileContract, faUserTag } from '@fortawesome/free-solid-svg-icons';
 
 interface User {
   id?: number;
@@ -21,18 +22,23 @@ interface User {
 })
 export class UserDetailComponent implements OnInit {
   user: User | null = null;
+  faArrowLeft = faArrowLeft;
+  faIdCard = faIdCard;
+  faUser = faUser;
+  faEnvelope = faEnvelope;
+  faPhone = faPhone;
+  faFileContract = faFileContract;
+  faUserTag = faUserTag;
 
   constructor(private userService: UserService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    // Get the user ID from the URL
     const userId = Number(this.route.snapshot.paramMap.get('id'));
 
-    // Fetch the user details based on the ID
     this.userService.getUserById(userId).subscribe(user => {
       this.user = {
         ...user,
-        role: this.getRoleName(user.roleId) // Setting role based on roleId
+        role: this.getRoleName(user.roleId)
       };
     });
   }

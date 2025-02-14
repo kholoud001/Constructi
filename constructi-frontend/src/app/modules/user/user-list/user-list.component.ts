@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {UserService} from '../user.service';
-import {NgForOf} from '@angular/common';
+import { UserService } from '../user.service';
+import { NgForOf } from '@angular/common';
 import Swal from 'sweetalert2';
-import {RouterLink} from '@angular/router';
+import { RouterLink } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faUsers, faUser, faEnvelope, faUserTag, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 interface User {
   id?: number;
@@ -20,11 +22,17 @@ interface User {
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
   standalone: true,
-  imports: [NgForOf, RouterLink],
+  imports: [NgForOf, RouterLink, FontAwesomeModule],
   styleUrls: ['./user-list.component.css']
 })
 export class UserListComponent implements OnInit {
   users: User[] = [];
+  faUsers = faUsers;
+  faUser = faUser;
+  faEnvelope = faEnvelope;
+  faUserTag = faUserTag;
+  faEdit = faEdit;
+  faTrash = faTrash;
 
   constructor(private userService: UserService) {}
 
@@ -63,11 +71,9 @@ export class UserListComponent implements OnInit {
               'L\'utilisateur a été supprimé avec succès.',
               'success'
             );
-
             this.users = this.users.filter(user => user.id !== id);
           },
           (error) => {
-            // Handle error (optional)
             Swal.fire(
               'Erreur!',
               'Une erreur s\'est produite lors de la suppression.',
@@ -78,7 +84,4 @@ export class UserListComponent implements OnInit {
       }
     });
   }
-
-
-
 }
