@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {jwtDecode} from 'jwt-decode';
 import {Router} from '@angular/router';
-import { AppStateService } from '../../app-state.service';
+import { AppStateService } from '../../shared/services/app-state.service';
 
 
 

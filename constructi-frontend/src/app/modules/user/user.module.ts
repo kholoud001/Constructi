@@ -9,7 +9,6 @@ import { UserEditComponent } from './user-edit/user-edit.component';
 
 @NgModule({
   declarations: [
-    UserListComponent,
     UserDetailComponent,
     UserEditComponent
   ],

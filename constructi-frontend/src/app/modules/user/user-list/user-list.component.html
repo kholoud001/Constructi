@@ -1,1 +1,45 @@
-<p>user-list works!</p>
+<div class="min-h-screen bg-gray-100">
+
+  <!-- Page Content -->
+  <div class="py-10">
+    <header>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold leading-tight text-gray-900">Liste des utilisateurs</h1>
+      </div>
+    </header>
+    <main>
+      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <!-- User List Table -->
+        <div class="px-4 py-8 sm:px-0">
+          <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+              <table class="min-w-full table-auto">
+                <thead class="bg-gray-100">
+                <tr>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">ID</th>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Nom</th>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Email</th>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Rôle</th>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let user of users">
+                  <td class="px-6 py-4 text-sm text-gray-900">{{ user.id }}</td>
+                  <td class="px-6 py-4 text-sm text-gray-900">{{ user.fname }}</td>
+                  <td class="px-6 py-4 text-sm text-gray-900">{{ user.email }}</td>
+                  <td class="px-6 py-4 text-sm text-gray-900">{{ user.role }}</td>
+                  <td class="px-6 py-4 text-sm text-gray-900">
+                    <button class="text-blue-600 hover:text-blue-900">Modifier</button>
+                    <button (click)="deleteUser(user.id)" class="text-red-600 hover:text-red-900 ml-2">Supprimer</button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
