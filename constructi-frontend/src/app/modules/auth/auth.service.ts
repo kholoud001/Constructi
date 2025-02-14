@@ -19,21 +19,35 @@ export class AuthService {
               private appStateService: AppStateService) {}
 
 
-      getToken(): string | null {
-        return localStorage.getItem('token');
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  getDecodedToken(): any {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const decodedToken: any = jwtDecode(token);
+
+      // Check if the token is expired
+      const currentTime = Date.now() / 1000; // Current time in seconds
+      if (decodedToken.exp < currentTime) {
+        // Token is expired
+        this.removeToken();  // Remove expired token
+        return null;  // Return null as the token is no longer valid
       }
 
-      getDecodedToken(): any {
-        const token = this.getToken();
-        if (!token) return null;
+      return decodedToken;
+    } catch (error) {
+      console.error('Invalid token:', error);
+      return null;
+    }
+  }
 
-        try {
-          return jwtDecode(token);
-        } catch (error) {
-          console.error('Invalid token:', error);
-          return null;
-        }
-      }
+  removeToken(): void {
+    localStorage.removeItem('token');
+  }
 
 
       isAuthenticated(): boolean {

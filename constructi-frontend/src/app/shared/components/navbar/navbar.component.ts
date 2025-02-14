@@ -42,8 +42,14 @@ export class NavbarComponent implements OnInit {
 
   setNavItems() {
     const role = this.authService.getUserRole();
+
+    if (!role) {
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+
     this.navItems = [
-      {name: 'Tableau de bord', href: '/dashboard', current: true},
+      {name: 'Tableau de bord', href: `/dashboard/${role.toLowerCase()}`, current: true},
       {name: 'Projets', href: '/projects', current: false},
       {name: 'Tâches', href: '/tasks', current: false},
     ];
