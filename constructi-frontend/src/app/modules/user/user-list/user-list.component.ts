@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {UserService} from '../user.service';
 import {NgForOf} from '@angular/common';
 import Swal from 'sweetalert2';
+import {RouterLink} from '@angular/router';
 
 interface User {
   id?: number;
@@ -19,7 +20,7 @@ interface User {
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
   standalone: true,
-  imports: [NgForOf],
+  imports: [NgForOf, RouterLink],
   styleUrls: ['./user-list.component.css']
 })
 export class UserListComponent implements OnInit {
