@@ -46,9 +46,9 @@
                         </span>
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-900">
-                      <button class="text-blue-600 hover:text-blue-900 mr-2" title="Modifier">
+                      <a [routerLink]="['/admin/user-edit', user.id]" class="text-blue-600 hover:text-blue-900 mr-2" title="Modifier">
                         <fa-icon [icon]="faEdit"></fa-icon>
-                      </button>
+                      </a>
                       <button (click)="deleteUser(user.id)" class="text-red-600 hover:text-red-900" title="Supprimer">
                         <fa-icon [icon]="faTrash"></fa-icon>
                       </button>

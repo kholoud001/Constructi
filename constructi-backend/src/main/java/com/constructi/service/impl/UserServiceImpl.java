@@ -12,6 +12,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 import java.util.List;
 
@@ -57,9 +59,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
-        User existingUser = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        if (!existingUser.getEmail().equals(userRequestDTO.getEmail()) && userRepository.existsByEmail(userRequestDTO.getEmail())) {
+        if (!existingUser.getEmail().equals(userRequestDTO.getEmail()) &&
+                userRepository.existsByEmail(userRequestDTO.getEmail())) {
             throw new IllegalArgumentException("Email is already in use.");
         }
 
@@ -69,11 +73,16 @@ public class UserServiceImpl implements UserService {
         existingUser.setPassword(userRequestDTO.getPassword());
         existingUser.setRateHourly(userRequestDTO.getRateHourly());
         existingUser.setContratType(userRequestDTO.getContratType());
-        existingUser.setRole(new Role(userRequestDTO.getRoleId(), null, null));
+
+        Role role = roleRepository.findById(userRequestDTO.getRoleId())
+                .orElseThrow(() -> new EntityNotFoundException("Role not found"));
+
+        existingUser.setRole(role);
 
         User updatedUser = userRepository.save(existingUser);
         return userMapper.toResponseDTO(updatedUser);
     }
+
 
     @Override
     @Transactional
