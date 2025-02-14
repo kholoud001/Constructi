@@ -1,2 +1,113 @@
-<p>admin-dashboard works!</p>
-<h1> hello</h1>
+<div class="min-h-screen bg-gray-100">
+
+  <!-- Page Content -->
+  <div class="py-10">
+    <header>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold leading-tight text-gray-900">Tableau de bord administrateur</h1>
+      </div>
+    </header>
+    <main>
+      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <!-- Dashboard content -->
+        <div class="px-4 py-8 sm:px-0">
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Dashboard cards -->
+            <div class="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-2xl transition duration-300">
+              <div class="p-5">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+                    <!-- FontAwesome icon for Active Projects -->
+                    <fa-icon [icon]="faProjectDiagram" class="text-white text-2xl"></fa-icon>
+                  </div>
+                  <div class="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt class="text-sm font-medium text-gray-500 truncate">Projets actifs</dt>
+                      <dd class="text-3xl font-semibold text-gray-900">12</dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-2xl transition duration-300">
+              <div class="p-5">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+                    <!-- FontAwesome icon for Active Tasks -->
+                    <fa-icon [icon]="faTasks" class="text-white text-2xl"></fa-icon>
+                  </div>
+                  <div class="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt class="text-sm font-medium text-gray-500 truncate">Tâches en cours</dt>
+                      <dd class="text-3xl font-semibold text-gray-900">34</dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-2xl transition duration-300">
+              <div class="p-5">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+                    <!-- FontAwesome icon for Active Teams -->
+                    <fa-icon [icon]="faUsers" class="text-white text-2xl"></fa-icon>
+                  </div>
+                  <div class="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt class="text-sm font-medium text-gray-500 truncate">Équipes actives</dt>
+                      <dd class="text-3xl font-semibold text-gray-900">5</dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional admin-specific sections -->
+          <div class="mt-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Gestion des ressources</h2>
+            <!-- Example table for resources -->
+            <table class="min-w-full bg-white border border-gray-300 shadow rounded-lg">
+              <thead>
+              <tr>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Nom</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Type</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Quantité</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">Ressource A</td>
+                <td class="px-6 py-4 text-sm text-gray-500">Matériel</td>
+                <td class="px-6 py-4 text-sm text-gray-500">100</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">Ressource B</td>
+                <td class="px-6 py-4 text-sm text-gray-500">Main-d'œuvre</td>
+                <td class="px-6 py-4 text-sm text-gray-500">5</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Rapports récents</h2>
+            <!-- Example report list -->
+            <ul class="space-y-4">
+              <li class="flex justify-between items-center">
+                <div class="text-sm text-gray-500">Rapport sur les projets de la semaine</div>
+                <div class="text-sm text-blue-600">Voir</div>
+              </li>
+              <li class="flex justify-between items-center">
+                <div class="text-sm text-gray-500">Analyse des performances de l'équipe</div>
+                <div class="text-sm text-blue-600">Voir</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
