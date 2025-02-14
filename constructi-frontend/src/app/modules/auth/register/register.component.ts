@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import Swal from 'sweetalert2';
 import { NgIf } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -14,7 +14,8 @@ import { faUser, faEnvelope, faPhone, faLock, faDollarSign, faBriefcase, faEye, 
   imports: [
     ReactiveFormsModule,
     NgIf,
-    FontAwesomeModule
+    FontAwesomeModule,
+    RouterLink
   ],
   styleUrl: './register.component.css'
 })

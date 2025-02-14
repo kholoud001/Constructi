@@ -102,7 +102,13 @@
     </form>
 
     <div class="mt-6 text-center">
-      <a href="/auth/login" class="text-sm text-indigo-600 hover:text-indigo-800 transition duration-300 ease-in-out">Déjà inscrit ? Se connecter</a>
+      <a
+        [routerLink]="'/auth/login'"
+        class="text-sm text-indigo-600 hover:text-indigo-800 transition duration-300 ease-in-out"
+      >
+        Déjà inscrit ? Se connecter
+      </a>
     </div>
+
   </div>
 </div>
