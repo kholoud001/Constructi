@@ -4,6 +4,7 @@ import { UserService } from '../user.service';
 import { User } from '../user.model';
 import { faUser, faEnvelope, faUserTag, faPhone, faFileContract, faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user-edit',
@@ -20,6 +21,7 @@ export class UserEditComponent implements OnInit {
   faUserEdit = faUserEdit;
 
   user$: Observable<User> | undefined;
+  roles: { id: number, roleType: string }[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -38,15 +40,43 @@ export class UserEditComponent implements OnInit {
         this.router.navigate(['/admin/users']);
       }
     }
+
+    this.userService.getRoles().subscribe((roles) => {
+      this.roles = roles;
+    });
   }
 
   onSubmit(user: User): void {
-    this.userService.updateUser(user.id, user).subscribe(() => {
-      this.router.navigate(['/admin/users']);
+    this.userService.updateUser(user.id, user).subscribe({
+      next: () => {
+        Swal.fire({
+          title: 'Succès !',
+          text: 'L\'utilisateur a été mis à jour avec succès !',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          this.router.navigate(['/admin/users']);
+        });
+      },
+      error: (err) => {
+        Swal.fire({
+          title: 'Erreur !',
+          text: 'Il y a eu une erreur lors de la mise à jour de l\'utilisateur.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      }
     });
   }
+
 
   onCancel(): void {
     this.router.navigate(['/admin/users']);
   }
+
+  getRoleName(roleId: number): string {
+    const role = this.roles.find(r => r.id === roleId);
+    return role ? role.roleType : 'Unknown';
+  }
+
 }

@@ -7,12 +7,15 @@ import com.constructi.service.RoleService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
+
 
     @PostConstruct
     public void seedRoles() {
@@ -25,4 +28,12 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
-}
+    @Override
+        public List<Role> findAllRoles() {
+            return roleRepository.findAll();
+        }
+
+    }
+
+
+
