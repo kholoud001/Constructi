@@ -1,37 +1,48 @@
-<div class="min-h-screen flex flex-col items-center justify-center bg-gray-100 text-gray-900">
-  <!-- Hero Section -->
-  <div class="text-center max-w-4xl">
-    <h1 class="text-4xl font-bold mb-4 text-blue-600">Bienvenue sur Constructi</h1>
-    <p class="text-lg text-gray-700">
-      Une solution innovante pour optimiser la gestion des projets de construction.
-    </p>
-  </div>
+<div class=" relative min-h-screen flex flex-col items-center justify-center bg-cover bg-center text-gray-900 py-8 px-4 sm:px-6 lg:px-8"
+     style="background-image: url('/assets/images/bg1.jpg');">
+  <div class="absolute inset-0 bg-black opacity-50"></div>
 
-  <!-- Services Section -->
-  <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl">
-    <div class="bg-white p-6 rounded-lg shadow-md text-center">
-      <h2 class="text-xl font-semibold text-gray-800">Gestion des Intervenants</h2>
-      <p class="text-gray-600 mt-2">Attribuez des rôles et suivez la participation de chaque acteur du projet.</p>
+  <div class="relative z-10 flex flex-col items-center justify-center w-full">
+    <div class="mb-8">
+      <img src="/assets/images/logo1.png" alt="Constructi Logo" class="h-16 sm:h-20 w-auto"/>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md text-center">
-      <h2 class="text-xl font-semibold text-gray-800">Suivi en Temps Réel</h2>
-      <p class="text-gray-600 mt-2">Visualisez l’état d’avancement des projets avec des indicateurs précis.</p>
+    <div class="text-center max-w-4xl mb-8 sm:mb-12">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-white">Bienvenue sur Constructi</h1>
+      <p class="text-lg sm:text-xl text-gray-200">
+        Une solution innovante pour optimiser la gestion des projets de construction.
+      </p>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md text-center">
-      <h2 class="text-xl font-semibold text-gray-800">Optimisation des Ressources</h2>
-      <p class="text-gray-600 mt-2">Gérez efficacement les matériaux, contrats et budgets.</p>
-    </div>
-  </div>
+    <div class="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl w-full">
+      <div class="bg-white bg-opacity-90 p-6 sm:p-8 rounded-lg shadow-lg text-center transform transition duration-500 hover:scale-105">
+        <fa-icon [icon]="faUsers" class="text-3xl sm:text-4xl text-blue-600 mb-4"></fa-icon>
+        <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">Gestion des Intervenants</h2>
+        <p class="text-sm sm:text-base text-gray-600">Attribuez des rôles et suivez la participation de chaque acteur du projet.</p>
+      </div>
 
-  <!-- Call to Action -->
-  <div class="mt-10 flex space-x-4">
-    <a routerLink="/auth/login" class="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700">
-      Connexion
-    </a>
-    <a routerLink="/auth/register" class="bg-gray-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-700">
-      S'inscrire
-    </a>
+      <div class="bg-white bg-opacity-90 p-6 sm:p-8 rounded-lg shadow-lg text-center transform transition duration-500 hover:scale-105">
+        <fa-icon [icon]="faChartLine" class="text-3xl sm:text-4xl text-blue-600 mb-4"></fa-icon>
+        <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">Suivi en Temps Réel</h2>
+        <p class="text-sm sm:text-base text-gray-600">Visualisez l'état d'avancement des projets avec des indicateurs précis.</p>
+      </div>
+
+      <div class="bg-white bg-opacity-90 p-6 sm:p-8 rounded-lg shadow-lg text-center transform transition duration-500 hover:scale-105">
+        <fa-icon [icon]="faClipboardCheck" class="text-3xl sm:text-4xl text-blue-600 mb-4"></fa-icon>
+        <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">Optimisation des Ressources</h2>
+        <p class="text-sm sm:text-base text-gray-600">Gérez efficacement les matériaux, contrats et budgets.</p>
+      </div>
+    </div>
+
+    <div class="mt-8 sm:mt-16 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+      <a routerLink="/auth/login" class="w-full sm:w-auto bg-blue-600 text-white px-6 sm:px-8 py-3 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 text-base sm:text-lg font-semibold text-center">
+        <fa-icon [icon]="faSignInAlt" class="mr-2"></fa-icon>
+        Connexion
+      </a>
+      <a routerLink="/auth/register" class="w-full sm:w-auto bg-gray-800 text-white px-6 sm:px-8 py-3 rounded-lg shadow-md hover:bg-gray-900 transition duration-300 text-base sm:text-lg font-semibold text-center">
+        <fa-icon [icon]="faUserPlus" class="mr-2"></fa-icon>
+        S'inscrire
+      </a>
+    </div>
   </div>
 </div>

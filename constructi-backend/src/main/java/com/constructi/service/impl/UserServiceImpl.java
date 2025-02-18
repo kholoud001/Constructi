@@ -4,7 +4,6 @@ import com.constructi.DTO.UserRequestDTO;
 import com.constructi.DTO.UserResponseDTO;
 import com.constructi.model.entity.Role;
 import com.constructi.model.entity.User;
-import com.constructi.service.impl.PasswordService;
 import com.constructi.repository.RoleRepository;
 import com.constructi.repository.UserRepository;
 import com.constructi.mapper.UserMapper;
@@ -16,9 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-
-
-
 
 import java.util.List;
 

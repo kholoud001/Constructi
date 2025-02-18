@@ -3,7 +3,13 @@
 
   <div class="absolute  inset-0 bg-black opacity-50 "></div>
 
+
   <div class="bg-white bg-opacity-90 p-8 rounded-lg shadow-2xl w-96 transform transition-all hover:scale-105 m-10">
+    <div class="mb-8 flex flex-col items-center">
+      <a routerLink="/" >
+        <img src="/assets/images/logo-black.png" alt="Constructi Logo" class="h-20 w-auto mb-2"/>
+      </a>
+    </div>
     <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Inscription</h2>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
       <div class="relative">

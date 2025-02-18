@@ -5,9 +5,15 @@ import com.constructi.DTO.ProjectResponseDTO;
 import com.constructi.exception.InvalidProjectDateException;
 import com.constructi.mapper.ProjectMapper;
 import com.constructi.mapper.UserMapper;
+import com.constructi.mapper.TaskMapper;
+import com.constructi.mapper.BudgetMapper;
+
 import com.constructi.model.entity.Project;
 import com.constructi.model.entity.User;
+import com.constructi.model.entity.Task;
 import com.constructi.model.enums.ProjectState;
+import com.constructi.model.enums.StatusTask;
+
 import com.constructi.repository.ProjectRepository;
 import com.constructi.repository.UserRepository;
 import com.constructi.service.ProjectService;
@@ -16,7 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +32,8 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
     private final UserMapper userMapper;
+    private final TaskMapper taskMapper;
+    private final BudgetMapper budgetMapper;
     private final UserRepository userRepository;
 
     @Override
@@ -44,8 +52,6 @@ public class ProjectServiceImpl implements ProjectService {
 
         return projectMapper.toDto(project);
     }
-
-
 
 
 
@@ -79,6 +85,7 @@ public class ProjectServiceImpl implements ProjectService {
         return projectMapper.toDto(updatedProject);
     }
 
+
     @Override
     public void deleteProject(Long id) {
         if (!projectRepository.existsById(id)) {
@@ -86,6 +93,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         projectRepository.deleteById(id);
     }
+
 
     @Override
     public ProjectResponseDTO getProjectById(Long id) {
@@ -117,7 +125,6 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(projectMapper::toDto)
                 .collect(Collectors.toList());
     }
-
 
 
 
@@ -154,6 +161,61 @@ public class ProjectServiceImpl implements ProjectService {
 //            // Example: You can check if any tasks have deadlines that have passed and trigger alerts
 //        }
 //    }
+
+    @Override
+    public double getProjectProgress(Long projectId) {
+        Optional<Project> optionalProject = projectRepository.findById(projectId);
+        if (optionalProject.isEmpty()) {
+            throw new RuntimeException("Project not found");
+        }
+
+        Project project = optionalProject.get();
+        List<Task> tasks = project.getTasks();
+
+        if (tasks.isEmpty()) {
+            return 0.0;
+        }
+
+        long completedTasks = tasks.stream()
+                .filter(task -> task.getStatus() == StatusTask.FINISHED)
+                .count();
+
+        return (double) completedTasks / tasks.size() * 100;
+    }
+
+
+
+    @Override
+    public ProjectResponseDTO getProjectDetails(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Projet non trouvé"));
+
+        // Mapper l'entité Project vers DTO
+        ProjectResponseDTO responseDTO = projectMapper.toDto(project);
+
+        // Ajouter les tâches sous forme de DTOs
+        responseDTO.setTasks(taskMapper.toDtoList(project.getTasks()));
+
+        // Ajouter les budgets sous forme de DTOs
+        responseDTO.setBudgets(budgetMapper.toDtoList(project.getBudgets()));
+
+        // Calcul du progrès du projet
+        responseDTO.setProgress(calculateProjectProgress(project));
+
+        return responseDTO;
+    }
+
+    private double calculateProjectProgress(Project project) {
+        List<Task> tasks = project.getTasks();
+        if (tasks.isEmpty()) return 0.0;
+
+        long completedTasks = tasks.stream()
+                .filter(task -> task.getStatus() == StatusTask.FINISHED)
+                .count();
+
+        return (double) completedTasks / tasks.size() * 100;
+    }
+
 
 
 }

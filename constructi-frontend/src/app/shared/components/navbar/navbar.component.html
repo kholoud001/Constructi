@@ -1,4 +1,4 @@
-<nav class="bg-blue-600 text-white">
+<nav class="bg-blue-600 text-white" *ngIf="isAuthenticated">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
       <div class="flex items-center">
@@ -20,7 +20,7 @@
           </div>
         </div>
       </div>
-      <div class="hidden md:block" *ngIf="isAuthenticated">
+      <div class="hidden md:block" >
         <div class="ml-4 flex items-center md:ml-6">
           <div class="relative" #profileDropdown>
             <button (click)="toggleProfileDropdown()" class="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition duration-150 ease-in-out">

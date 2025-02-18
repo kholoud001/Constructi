@@ -19,6 +19,10 @@ public interface ProjectService {
 
     List<ProjectResponseDTO> getAllProjects();
 
-
     List<ProjectResponseDTO> getMyProjects();
+
+    double getProjectProgress(Long projectId);
+
+    ProjectResponseDTO getProjectDetails(Long projectId);
+
 }

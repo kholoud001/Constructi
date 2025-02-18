@@ -7,6 +7,7 @@ import com.constructi.model.entity.Budget;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import java.util.*;
 
 @Mapper(componentModel = "spring")
 public interface BudgetMapper {
@@ -17,5 +18,9 @@ public interface BudgetMapper {
 
     @Mapping(source = "projectId", target = "project.id")
     Budget toEntity(BudgetRequestDTO budgetRequestDTO);
+
+    List<BudgetResponseDTO> toDtoList(List<Budget> budgets);
+
+
 }
 

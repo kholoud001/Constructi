@@ -44,7 +44,7 @@ export class ForgotPasswordComponent {
           text: response?.message || 'Un lien de réinitialisation a été envoyé à votre adresse e-mail.',
           icon: 'success',
         });
-        this.router.navigate(['/login']);
+        this.router.navigate(['/auth/login']);
       },
       error: (err) => {
         Swal.fire({
