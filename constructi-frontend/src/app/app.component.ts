@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AppStateService} from './app-state.service';
+import {AppStateService} from './shared/services/app-state.service';
 import {NavigationEnd, Router} from '@angular/router';
 
 @Component({
@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.showNavbar = event.url.includes('/dashboard');
+        this.showNavbar = !['/login', '/register'].some(path => event.url.includes(path));
       }
     });
   }

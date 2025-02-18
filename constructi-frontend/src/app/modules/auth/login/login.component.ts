@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import {AppStateService} from '../../../app-state.service';
+import {AppStateService} from '../../../shared/services/app-state.service';
 
 @Component({
   selector: 'app-login',

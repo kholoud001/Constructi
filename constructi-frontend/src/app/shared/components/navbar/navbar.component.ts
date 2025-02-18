@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular
 import { faBars, faUser, faSignOutAlt, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../modules/auth/auth.service';
 import { Router } from '@angular/router';
-import { AppStateService } from '../../../app-state.service';
+import { AppStateService } from '../../services/app-state.service';
 
 @Component({
   selector: 'app-navbar',
@@ -42,8 +42,14 @@ export class NavbarComponent implements OnInit {
 
   setNavItems() {
     const role = this.authService.getUserRole();
+
+    if (!role) {
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+
     this.navItems = [
-      {name: 'Tableau de bord', href: '/dashboard', current: true},
+      {name: 'Tableau de bord', href: `/dashboard/${role.toLowerCase()}`, current: true},
       {name: 'Projets', href: '/projects', current: false},
       {name: 'Tâches', href: '/tasks', current: false},
     ];
@@ -58,7 +64,7 @@ export class NavbarComponent implements OnInit {
     if (role === 'ADMIN') {
       this.navItems.push(
         {name: 'Gestion des acteurs', href: '/actor-management', current: false},
-        {name: 'Gestion des ressources', href: '/resource-management', current: false},
+        {name: 'Gestion des ressources', href: '/admin/users', current: false},
         {name: 'Gestion des stocks', href: '/inventory', current: false}
       );
     }

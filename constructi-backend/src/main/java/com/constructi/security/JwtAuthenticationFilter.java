@@ -12,6 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.beans.factory.annotation.Autowired;
+
+
 
 import java.io.IOException;
 
@@ -20,7 +24,9 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
-    private final CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    @Lazy
+    private  CustomUserDetailsService customUserDetailsService;
 
 
 

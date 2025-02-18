@@ -5,17 +5,20 @@ import { UserRoutingModule } from './user-routing.module';
 import { UserListComponent } from './user-list/user-list.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {FormsModule} from '@angular/forms';
 
 
 @NgModule({
   declarations: [
-    UserListComponent,
     UserDetailComponent,
     UserEditComponent
   ],
   imports: [
     CommonModule,
-    UserRoutingModule
+    UserRoutingModule,
+    FaIconComponent,
+    FormsModule
   ]
 })
 export class UserModule { }

@@ -1,1 +1,91 @@
-<p>user-edit works!</p>
+<div class="min-h-screen bg-gray-100">
+  <div class="py-10">
+    <header>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold leading-tight text-gray-900 flex items-center">
+          <fa-icon [icon]="faUserEdit" class="mr-3 text-blue-600"></fa-icon>
+          Modifier l'utilisateur
+        </h1>
+      </div>
+    </header>
+    <main>
+      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="px-4 py-8 sm:px-0">
+          <div class="bg-white overflow-hidden shadow-lg rounded-lg">
+            <div class="p-6">
+              <form *ngIf="user$ | async as user" (ngSubmit)="onSubmit(user)" class="space-y-6">
+                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                  <div>
+                    <label for="fname" class="block text-sm font-medium text-gray-700">Prénom</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <fa-icon [icon]="faUser" class="text-gray-400"></fa-icon>
+                      </div>
+                      <input type="text" id="fname" name="fname" [(ngModel)]="user.fname" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" required />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label for="lname" class="block text-sm font-medium text-gray-700">Nom</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <fa-icon [icon]="faUser" class="text-gray-400"></fa-icon>
+                      </div>
+                      <input type="text" id="lname" name="lname" [(ngModel)]="user.lname" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" required />
+                    </div>
+                  </div>
+
+                  <div class="sm:col-span-2">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <fa-icon [icon]="faEnvelope" class="text-gray-400"></fa-icon>
+                      </div>
+                      <input type="email" id="email" name="email" [(ngModel)]="user.email" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" required />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label for="role" class="block text-sm font-medium text-gray-700">Rôle</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <fa-icon [icon]="faUserTag" class="text-gray-400"></fa-icon>
+                      </div>
+                      <select id="role" name="role" [(ngModel)]="user.roleId" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" required>
+                        <option *ngFor="let role of roles" [value]="role.id">{{ role.roleType }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label for="contratType" class="block text-sm font-medium text-gray-700">Type de contrat</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <fa-icon [icon]="faFileContract" class="text-gray-400"></fa-icon>
+                      </div>
+                      <select id="contratType" name="contratType" [(ngModel)]="user.contratType" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" required>
+                        <option value="FULL_TIME">Temps plein</option>
+                        <option value="PART_TIME">Temps partiel</option>
+                        <option value="CONTRACTOR">Contractuel</option>
+                        <option value="FREELANCE">Freelance</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                  <button type="button" (click)="onCancel()" class="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Annuler
+                  </button>
+                  <button type="submit" class="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Enregistrer les modifications
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

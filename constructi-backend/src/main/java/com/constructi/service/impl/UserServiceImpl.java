@@ -4,6 +4,7 @@ import com.constructi.DTO.UserRequestDTO;
 import com.constructi.DTO.UserResponseDTO;
 import com.constructi.model.entity.Role;
 import com.constructi.model.entity.User;
+import com.constructi.service.impl.PasswordService;
 import com.constructi.repository.RoleRepository;
 import com.constructi.repository.UserRepository;
 import com.constructi.mapper.UserMapper;
@@ -12,6 +13,12 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+
+
+
 
 import java.util.List;
 
@@ -19,9 +26,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final UserMapper userMapper;
+    @Autowired
+    private  UserRepository userRepository;
+    @Autowired
+    private  RoleRepository roleRepository;
+    @Autowired
+    private  UserMapper userMapper;
+    @Autowired
+    @Lazy
+    private  PasswordEncoder passwordEncoder;
+
 
 
     @Override
@@ -57,23 +71,34 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
-        User existingUser = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        if (!existingUser.getEmail().equals(userRequestDTO.getEmail()) && userRepository.existsByEmail(userRequestDTO.getEmail())) {
+        if (!existingUser.getEmail().equals(userRequestDTO.getEmail()) &&
+                userRepository.existsByEmail(userRequestDTO.getEmail())) {
             throw new IllegalArgumentException("Email is already in use.");
         }
 
         existingUser.setLname(userRequestDTO.getLname());
         existingUser.setFname(userRequestDTO.getFname());
         existingUser.setEmail(userRequestDTO.getEmail());
-        existingUser.setPassword(userRequestDTO.getPassword());
         existingUser.setRateHourly(userRequestDTO.getRateHourly());
         existingUser.setContratType(userRequestDTO.getContratType());
-        existingUser.setRole(new Role(userRequestDTO.getRoleId(), null, null));
+
+        if (userRequestDTO.getPassword() != null &&
+                !userRequestDTO.getPassword().equals(existingUser.getPassword())) {
+            existingUser.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
+        }
+
+        Role role = roleRepository.findById(userRequestDTO.getRoleId())
+                .orElseThrow(() -> new EntityNotFoundException("Role not found"));
+
+        existingUser.setRole(role);
 
         User updatedUser = userRepository.save(existingUser);
         return userMapper.toResponseDTO(updatedUser);
     }
+
 
     @Override
     @Transactional

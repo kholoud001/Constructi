@@ -8,7 +8,11 @@ const routes: Routes = [
   { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
 
   { path: 'dashboard', loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule) },
+
   { path: 'unauthorized', component: UnauthorizedComponent },
+
+  { path: 'admin', loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule) },
+
 
 
 ];
