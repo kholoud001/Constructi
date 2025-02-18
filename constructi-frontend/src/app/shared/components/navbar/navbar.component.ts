@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener, AfterViewInit } from '@angular/core';
 import { faBars, faUser, faSignOutAlt, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../modules/auth/auth.service';
 import { Router } from '@angular/router';
@@ -10,7 +10,7 @@ import { AppStateService } from '../../services/app-state.service';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, AfterViewInit {
   faBars = faBars;
   faUser = faUser;
   faSignOutAlt = faSignOutAlt;
@@ -20,6 +20,7 @@ export class NavbarComponent implements OnInit {
   navItems: { name: string; href: string; current: boolean }[] = [];
   userName: string | null = '';
   userRole: string | null = '';
+  isAuthenticated = false;
 
   @ViewChild('profileDropdown') profileDropdown!: ElementRef;
 
@@ -28,8 +29,6 @@ export class NavbarComponent implements OnInit {
     private router: Router,
     private appStateService: AppStateService
   ) {}
-
-  isAuthenticated = false;
 
   ngOnInit() {
     this.appStateService.isAuthenticated$.subscribe(
@@ -42,6 +41,13 @@ export class NavbarComponent implements OnInit {
         }
       }
     );
+  }
+
+  ngAfterViewInit() {
+    // Ensure the view is fully initialized before adding the click listener
+    setTimeout(() => {
+      this.addClickOutsideListener();
+    });
   }
 
   setNavItems() {
@@ -87,9 +93,12 @@ export class NavbarComponent implements OnInit {
     this.isProfileDropdownOpen = !this.isProfileDropdownOpen;
   }
 
-  @HostListener('document:click', ['$event'])
-  clickOutside(event: Event) {
-    if (!this.profileDropdown.nativeElement.contains(event.target)) {
+  addClickOutsideListener() {
+    document.addEventListener('click', this.handleClickOutside.bind(this));
+  }
+
+  handleClickOutside(event: Event) {
+    if (this.profileDropdown && !this.profileDropdown.nativeElement.contains(event.target)) {
       this.isProfileDropdownOpen = false;
     }
   }
@@ -97,5 +106,10 @@ export class NavbarComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['/auth/login']);
+  }
+
+  ngOnDestroy() {
+    // Remove the click listener when the component is destroyed
+    document.removeEventListener('click', this.handleClickOutside.bind(this));
   }
 }

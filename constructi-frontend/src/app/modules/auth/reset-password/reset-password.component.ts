@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { AuthService } from '../auth.service';
 import Swal from 'sweetalert2';
 import { NgIf } from '@angular/common';
@@ -10,11 +10,12 @@ import { faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-s
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    NgIf,
-    FontAwesomeModule
-  ],
+    imports: [
+        ReactiveFormsModule,
+        NgIf,
+        FontAwesomeModule,
+        RouterLink
+    ],
   templateUrl: './reset-password.component.html'
 })
 export class ResetPasswordComponent implements OnInit {
