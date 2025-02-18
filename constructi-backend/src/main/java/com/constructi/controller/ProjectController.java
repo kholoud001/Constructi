@@ -65,6 +65,18 @@ public class ProjectController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{projectId}/progress")
+    public ResponseEntity<Double> getProjectProgress(@PathVariable Long projectId) {
+        double progress = projectService.getProjectProgress(projectId);
+        return ResponseEntity.ok(progress);
+    }
+
+    @GetMapping("/{projectId}/details")
+    public ResponseEntity<ProjectResponseDTO> getProjectDetails(@PathVariable Long projectId) {
+        ProjectResponseDTO projectDetails = projectService.getProjectDetails(projectId);
+        return ResponseEntity.ok(projectDetails);
+    }
+
     
 
 
