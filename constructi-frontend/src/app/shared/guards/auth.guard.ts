@@ -19,27 +19,34 @@ export class AuthGuard implements CanActivate {
     return this.appStateService.isAuthenticated$.pipe(
       take(1),
       map(isAuthenticated => {
+        console.log('Is Authenticated:', isAuthenticated);
+
         if (!isAuthenticated) {
+          console.log('User is not authenticated, redirecting to login');
           this.router.navigate(['/auth/login']);
           return false;
         }
 
         const token = this.authService.getToken();
         const role = this.authService.getUserRole();
-        console.log(token , role)
+        console.log('Token:', token, 'Role:', role);
 
         if (!token || !role) {
           this.appStateService.setAuthenticated(false);
+          console.log('Token or Role missing, redirecting to login');
           this.router.navigate(['/auth/login']);
           return false;
         }
 
         const expectedRole = route.data['role'];
         if (expectedRole && expectedRole !== role) {
+          console.log('Role mismatch, redirecting to unauthorized');
           this.router.navigate(['/unauthorized']);
           return false;
         }
 
+
+        console.log('User is authenticated and has the correct role');
         return true;
       })
     );
