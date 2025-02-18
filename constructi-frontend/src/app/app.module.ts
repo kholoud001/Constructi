@@ -11,6 +11,7 @@ import {AuthInterceptor} from './shared/interceptors/auth.interceptor';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import { UnauthorizedComponent } from './shared/components/unauthorized/unauthorized.component';
 import {NgOptimizedImage} from '@angular/common';
+import { HomePageComponent } from './shared/components/home-page/home-page.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import {NgOptimizedImage} from '@angular/common';
     NavbarComponent,
     FooterComponent,
     NotFoundComponent,
-    UnauthorizedComponent
+    UnauthorizedComponent,
+    HomePageComponent
   ],
   imports: [
     BrowserModule,

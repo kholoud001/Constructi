@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between h-16">
       <div class="flex items-center">
         <div class="flex-shrink-0">
-          <a routerLink="/" class="flex items-center space-x-2">
+          <a class="flex items-center space-x-2">
             <img src="assets/images/logo1.png" alt="ConstructiPro Logo" class="h-10 w-10" height="257" width="307">
             <span class="text-white font-bold text-xl">ConstructiPro</span>
           </a>
@@ -20,7 +20,7 @@
           </div>
         </div>
       </div>
-      <div class="hidden md:block">
+      <div class="hidden md:block" *ngIf="isAuthenticated">
         <div class="ml-4 flex items-center md:ml-6">
           <div class="relative" #profileDropdown>
             <button (click)="toggleProfileDropdown()" class="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition duration-150 ease-in-out">
@@ -39,6 +39,8 @@
           </div>
         </div>
       </div>
+
+
       <div class="-mr-2 flex md:hidden">
         <button (click)="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-800 focus:ring-white">
           <fa-icon [icon]="faBars"></fa-icon>

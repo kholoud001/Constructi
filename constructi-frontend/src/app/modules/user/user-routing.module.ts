@@ -12,9 +12,15 @@ const routes: Routes = [
     data: { role: 'ADMIN' }
   },
 
-  { path: 'user-detail/:id', component: UserDetailComponent },
+  { path: 'user-detail/:id', component: UserDetailComponent ,
+    canActivate: [AuthGuard],
+    data: { role: 'ADMIN' }
+  },
 
-  { path: 'user-edit/:id', component: UserEditComponent },
+  { path: 'user-edit/:id', component: UserEditComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'ADMIN' }
+  },
 
 ];
 

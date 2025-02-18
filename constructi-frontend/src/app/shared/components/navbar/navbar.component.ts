@@ -29,10 +29,14 @@ export class NavbarComponent implements OnInit {
     private appStateService: AppStateService
   ) {}
 
+  isAuthenticated = false;
+
   ngOnInit() {
     this.appStateService.isAuthenticated$.subscribe(
-      isAuthenticated => {
-        if (isAuthenticated) {
+      isAuth => {
+        this.isAuthenticated = isAuth;
+
+        if (isAuth) {
           this.setNavItems();
           this.setUserInfo();
         }
