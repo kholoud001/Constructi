@@ -44,7 +44,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // Ensure the view is fully initialized before adding the click listener
     setTimeout(() => {
       this.addClickOutsideListener();
     });

@@ -12,6 +12,8 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import { UnauthorizedComponent } from './shared/components/unauthorized/unauthorized.component';
 import {NgOptimizedImage} from '@angular/common';
 import { HomePageComponent } from './shared/components/home-page/home-page.component';
+import { NgChartsModule } from 'ng2-charts';
+
 
 @NgModule({
   declarations: [
@@ -27,7 +29,8 @@ import { HomePageComponent } from './shared/components/home-page/home-page.compo
     AppRoutingModule,
     HttpClientModule,
     FontAwesomeModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    NgChartsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }

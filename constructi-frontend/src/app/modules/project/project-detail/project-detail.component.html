@@ -1,1 +1,36 @@
-<p>project-detail works!</p>
+<div *ngIf="project">
+  <h2>{{ project.name }}</h2>
+  <p><strong>Description:</strong> {{ project.description }}</p>
+  <p><strong>État:</strong> {{ project.state }}</p>
+  <p><strong>Date de début:</strong> {{ project.startDate }}</p>
+  <p><strong>Date de fin:</strong> {{ project.endDate }}</p>
+  <p><strong>Budget initial:</strong> {{ project.initialBudget }} €</p>
+  <p><strong>Budget actuel:</strong> {{ project.actualBudget }} €</p>
+  <p><strong>Matériaux utilisés:</strong> {{ project.materials?.join(', ') }}</p>
+
+  <h3>Tâches</h3>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Description</th>
+      <th>Statut</th>
+      <th>Date de début</th>
+      <th>Date estimée de fin</th>
+      <th>Temps effectif</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let task of project.tasks">
+      <td>{{ task.description }}</td>
+      <td>{{ task.status }}</td>
+      <td>{{ task.beginDate }}</td>
+      <td>{{ task.dateEndEstimated }}</td>
+      <td>{{ task.effectiveTime }}h</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Progression:</strong> {{ project.progress }}%</p>
+</div>
+
+<app-project-progress [tasks]="project.tasks"></app-project-progress>

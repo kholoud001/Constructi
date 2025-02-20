@@ -1,1 +1,21 @@
-<p>project-list works!</p>
+<div class="p-4">
+  <h2 class="text-xl font-bold mb-4">Liste des projets</h2>
+  <table class="w-full border-collapse border border-gray-300">
+    <thead>
+    <tr class="bg-gray-100">
+      <th class="border border-gray-300 px-4 py-2">Nom</th>
+      <th class="border border-gray-300 px-4 py-2">État</th>
+      <th class="border border-gray-300 px-4 py-2">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let project of projects">
+      <td class="border border-gray-300 px-4 py-2">{{ project.name }}</td>
+      <td class="border border-gray-300 px-4 py-2">{{ project.state }}</td>
+      <td class="border border-gray-300 px-4 py-2">
+        <button (click)="viewProjectDetails(project.id)" class="bg-blue-500 text-white px-3 py-1 rounded">Voir</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
