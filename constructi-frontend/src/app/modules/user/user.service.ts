@@ -30,7 +30,7 @@ export class UserService {
   }
 
   getRoles(): Observable<{ id: number, roleType: string }[]> {
-    return this.http.get<{ id: number, roleType: string }[]>(`${this.apiUrl}/roles`);
+    return this.http.get<{ id: number, roleType: string }[]>(`${this.apiUrl}/admin/roles`);
   }
 
   deleteUser(id: number): Observable<string> {
