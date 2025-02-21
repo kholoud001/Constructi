@@ -62,6 +62,8 @@ public class SecurityConfig {
                         .requestMatchers("/resources/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/reports/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT")
                         .requestMatchers("/discussion/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT", "ROLE_WORKER")
+                        .requestMatchers("/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT", "ROLE_WORKER")
+
                         .anyRequest().authenticated()
                 )
                 .csrf(customizer -> customizer.disable())

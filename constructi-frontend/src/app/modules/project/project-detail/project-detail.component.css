@@ -1,0 +1,64 @@
+/* project-detail.component.css */
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 640px) {
+  .overflow-x-auto {
+    margin: 0 -1rem;
+  }
+
+  table {
+    font-size: 0.875rem;
+  }
+}
+
+.task-status {
+  transition: all 0.2s ease-in-out;
+}
+
+.hover-card {
+  transition: transform 0.2s ease-in-out;
+}
+
+.hover-card:hover {
+  transform: translateY(-2px);
+}
+/* project-detail.component.css */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+/* Hover effects */
+.cursor-pointer:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Smooth transitions */
+.transition-transform {
+  transition: transform 0.2s ease-in-out;
+}
+
+.transition-colors {
+  transition: background-color 0.2s ease-in-out;
+}

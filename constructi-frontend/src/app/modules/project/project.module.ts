@@ -6,6 +6,8 @@ import { ProjectListComponent } from './project-list/project-list.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectProgressComponent } from './project-progress/project-progress.component';
 import {NgChartsConfiguration, NgChartsModule} from "ng2-charts";
+import {NgCircleProgressModule} from 'ng-circle-progress';
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
 
 @NgModule({
@@ -17,10 +19,10 @@ import {NgChartsConfiguration, NgChartsModule} from "ng2-charts";
     imports: [
         CommonModule,
         ProjectRoutingModule,
-        // NgChartsModule
+        NgChartsModule,
+        NgCircleProgressModule.forRoot({}),
+        FaIconComponent
     ],
-  // providers: [
-  //   { provide: NgChartsConfiguration, useValue: { generateColors: false } }
-  // ]
+  providers: []
 })
 export class ProjectModule { }

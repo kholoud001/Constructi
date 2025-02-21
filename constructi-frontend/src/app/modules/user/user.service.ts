@@ -9,12 +9,12 @@ import {User} from './user.model';
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:8086/admin';
+  private apiUrl = 'http://localhost:8086';
 
   constructor(private http: HttpClient) {}
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/users`);
+    return this.http.get<User[]>(`${this.apiUrl}/admin/users`);
   }
 
   getUserById(id: number): Observable<User> {
@@ -22,11 +22,11 @@ export class UserService {
   }
 
   addUser(user: User): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/users/add`, user);
+    return this.http.post<User>(`${this.apiUrl}/admin/users/add`, user);
   }
 
   updateUser(id: number | undefined, user: User): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/users/update/${id}`, user);
+    return this.http.put<User>(`${this.apiUrl}/admin/users/update/${id}`, user);
   }
 
   getRoles(): Observable<{ id: number, roleType: string }[]> {

@@ -1,36 +1,199 @@
-<div *ngIf="project">
-  <h2>{{ project.name }}</h2>
-  <p><strong>Description:</strong> {{ project.description }}</p>
-  <p><strong>État:</strong> {{ project.state }}</p>
-  <p><strong>Date de début:</strong> {{ project.startDate }}</p>
-  <p><strong>Date de fin:</strong> {{ project.endDate }}</p>
-  <p><strong>Budget initial:</strong> {{ project.initialBudget }} €</p>
-  <p><strong>Budget actuel:</strong> {{ project.actualBudget }} €</p>
-  <p><strong>Matériaux utilisés:</strong> {{ project.materials?.join(', ') }}</p>
+<div *ngIf="project" class="p-4 md:p-6 bg-white shadow-lg rounded-lg max-w-7xl mx-auto">
+  <!-- Project Header -->
+  <div class="mb-6">
+    <div class="flex items-center gap-2 mb-2">
+      <fa-icon [icon]="faProjectDiagram" class="text-blue-600 text-xl"></fa-icon>
+      <h2 class="text-xl md:text-2xl font-bold">{{ project.name }}</h2>
+    </div>
+    <p class="text-gray-700">{{ project.description }}</p>
+  </div>
 
-  <h3>Tâches</h3>
-  <table class="table">
-    <thead>
-    <tr>
-      <th>Description</th>
-      <th>Statut</th>
-      <th>Date de début</th>
-      <th>Date estimée de fin</th>
-      <th>Temps effectif</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let task of project.tasks">
-      <td>{{ task.description }}</td>
-      <td>{{ task.status }}</td>
-      <td>{{ task.beginDate }}</td>
-      <td>{{ task.dateEndEstimated }}</td>
-      <td>{{ task.effectiveTime }}h</td>
-    </tr>
-    </tbody>
-  </table>
+  <!-- Project Dates -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div class="flex items-center gap-2">
+      <fa-icon [icon]="faCalendar" class="text-gray-500"></fa-icon>
+      <div>
+        <p class="text-sm text-gray-600">Start Date</p>
+        <p class="font-semibold">{{ project.startDate | date }}</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <fa-icon [icon]="faCalendar" class="text-gray-500"></fa-icon>
+      <div>
+        <p class="text-sm text-gray-600">End Date</p>
+        <p class="font-semibold">{{ project.endDate | date }}</p>
+      </div>
+    </div>
+  </div>
 
-  <p><strong>Progression:</strong> {{ project.progress }}%</p>
+  <div class="bg-gray-50 rounded-lg p-4 mb-6">
+    <div (click)="toggleUserDetails()" class="flex items-center justify-between cursor-pointer hover:bg-gray-100 p-2 rounded-md transition-colors">
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="faUser" class="text-gray-500"></fa-icon>
+        <p class="font-semibold">{{ userName }}</p>
+      </div>
+      <fa-icon [icon]="faChevronDown"
+               [class.rotate-180]="showUserDetails"
+               class="text-gray-500 transition-transform duration-200">
+      </fa-icon>
+    </div>
+
+    <div *ngIf="showUserDetails"
+         class="mt-4 space-y-2 pl-8 animate-fade-in">
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="faEnvelope" class="text-gray-500"></fa-icon>
+        <p>{{ userEmail }}</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="faPhone" class="text-gray-500"></fa-icon>
+        <p>{{ userPhone }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Budget Section -->
+  <div class="bg-gray-50 rounded-lg p-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="faDollarSign" class="text-green-500"></fa-icon>
+        <div>
+          <p class="text-sm text-gray-600">Initial Budget</p>
+          <p class="font-semibold">${{ project.initialBudget }}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="faDollarSign" class="text-blue-500"></fa-icon>
+        <div>
+          <p class="text-sm text-gray-600">Actual Budget</p>
+          <p class="font-semibold">${{ project.actualBudget }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="alertMessage" class="mt-4 flex items-center gap-2 text-red-600">
+      <fa-icon [icon]="faExclamationTriangle"></fa-icon>
+      <p class="text-sm">{{ alertMessage }}</p>
+    </div>
+  </div>
+
+  <!-- Progress Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <div class="flex justify-center">
+      <circle-progress
+        [percent]="progress"
+        [radius]="80"
+        [outerStrokeWidth]="10"
+        [innerStrokeWidth]="5"
+        [outerStrokeGradient]="true"
+        [outerStrokeGradientStopColor]="progress === 0 ? '#FF0000' : '#4CAF50'"
+        [outerStrokeColor]="'#FFCC00'"
+        [innerStrokeColor]="'#E0E0E0'"
+        [animation]="true"
+        [showSubtitle]="true"
+        [subtitle]="'Project Progress'"
+        [titleFontSize]="20"
+        [subtitleFontSize]="14"
+        [animateTitle]="false"
+        [showTitle]="true">
+      </circle-progress>
+    </div>
+
+    <!-- Task List -->
+    <div class="bg-gray-50 rounded-lg p-4">
+      <div class="flex items-center gap-2 mb-4">
+        <fa-icon [icon]="faTasks" class="text-blue-600"></fa-icon>
+        <h3 class="font-bold">Recent Tasks</h3>
+      </div>
+      <div *ngIf="project.tasks && project.tasks.length > 0; else noTasks"
+           class="space-y-2 max-h-60 overflow-y-auto">
+        <div *ngFor="let task of project.tasks"
+             class="bg-white p-3 rounded-md shadow-sm hover:bg-gray-50 transition-colors">
+          <div class="flex justify-between items-start">
+            <p class="font-medium">{{ task.description }}</p>
+            <span class="px-2 py-1 text-xs rounded-full"
+                  [ngClass]="{
+                    'bg-red-100 text-red-800': task.status === 'NOT_STARTED',
+                    'bg-yellow-100 text-yellow-800': task.status === 'IN_PROGRESS',
+                    'bg-green-100 text-green-800': task.status === 'FINISHED'
+                  }">
+              {{ task.status }}
+            </span>
+          </div>
+          <div class="text-xs text-gray-500 mt-1">
+            <div class="flex items-center gap-1">
+              <fa-icon [icon]="faClock" class="text-gray-400"></fa-icon>
+              <span>{{ task.effectiveTime }} hours</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #noTasks>
+          <div class="flex flex-col items-center justify-center py-8 text-gray-500">
+            <fa-icon [icon]="faClipboardList" class="text-4xl mb-2"></fa-icon>
+            <p>No tasks have been added to this project yet.</p>
+          </div>
+        </ng-template>
+  </div>
+
+  <!-- Materials Section -->
+  <div class="mb-6">
+    <div class="flex items-center gap-2 mb-4">
+      <fa-icon [icon]="faTools" class="text-blue-600"></fa-icon>
+      <h3 class="text-lg font-bold">Materials Used</h3>
+    </div>
+    <div *ngIf="project.materials && project.materials.length > 0; else noMaterials"
+         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let material of project.materials"
+           class="bg-gray-50 p-3 rounded-lg text-gray-600">
+        {{ material }}
+      </div>
+    </div>
+    <ng-template #noMaterials>
+      <div class="flex flex-col items-center justify-center py-8 text-gray-500 bg-gray-50 rounded-lg">
+        <fa-icon [icon]="faBoxOpen" class="text-4xl mb-2"></fa-icon>
+        <p>No materials have been added to this project yet.</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="overflow-x-auto">
+    <div class="flex items-center gap-2 mb-4">
+      <fa-icon [icon]="faTasks" class="text-blue-600"></fa-icon>
+      <h3 class="text-lg font-bold">Detailed Tasks</h3>
+    </div>
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+      <tr>
+        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task</th>
+        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned To</th>
+        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dates</th>
+        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+      </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+      <tr *ngFor="let task of project.tasks">
+        <td class="px-4 py-3 whitespace-nowrap">{{ task.description }}</td>
+        <td class="px-4 py-3 whitespace-nowrap">{{ task.userId }}</td>
+        <td class="px-4 py-3">
+          <div class="text-sm">
+            <div>Start: {{ task.beginDate | date:'short' }}</div>
+            <div>Due: {{ task.dateEndEstimated | date:'short' }}</div>
+          </div>
+        </td>
+        <td class="px-4 py-3 whitespace-nowrap">
+            <span class="px-2 py-1 text-xs rounded-full"
+                  [ngClass]="{
+                    'bg-red-100 text-red-800': task.status === 'NOT_STARTED',
+                    'bg-yellow-100 text-yellow-800': task.status === 'IN_PROGRESS',
+                    'bg-green-100 text-green-800': task.status === 'FINISHED'
+                  }">
+              {{ task.status }}
+            </span>
+        </td>
+        <td class="px-4 py-3 whitespace-nowrap">{{ task.effectiveTime }}h</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
-
-<app-project-progress [tasks]="project.tasks"></app-project-progress>

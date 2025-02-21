@@ -1,8 +1,4 @@
-<div class="p-4">
-  <h3 class="text-lg font-bold">Progression du projet</h3>
-  <div class="w-full bg-gray-200 rounded-full h-6">
-    <div class="bg-green-500 h-6 rounded-full text-white text-center" [style.width.%]="getProgress()">
-      {{ getProgress() | number: '1.0-0' }}%
-    </div>
-  </div>
+<div class="p-6 bg-white shadow-lg rounded-lg">
+  <h3 class="text-xl font-bold mb-4">Project Progress</h3>
+  <canvas baseChart [data]="doughnutChartData" [options]="doughnutChartOptions" chartType="doughnut"></canvas>
 </div>

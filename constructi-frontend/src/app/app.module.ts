@@ -13,6 +13,7 @@ import { UnauthorizedComponent } from './shared/components/unauthorized/unauthor
 import {NgOptimizedImage} from '@angular/common';
 import { HomePageComponent } from './shared/components/home-page/home-page.component';
 import { NgChartsModule } from 'ng2-charts';
+import {NgCircleProgressModule} from 'ng-circle-progress';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { NgChartsModule } from 'ng2-charts';
     HttpClientModule,
     FontAwesomeModule,
     NgOptimizedImage,
-    NgChartsModule
+    NgChartsModule,
+    NgCircleProgressModule.forRoot({})
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
