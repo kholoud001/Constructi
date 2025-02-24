@@ -25,7 +25,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+@Service("projectService")
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
 
@@ -117,15 +117,12 @@ public class ProjectServiceImpl implements ProjectService {
         User authenticatedUser = userRepository.findByEmail(authenticatedUserEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found with email: " + authenticatedUserEmail));
 
-        List<Project> myProjects = projectRepository.findAll().stream()
-                .filter(project -> project.getUser().getId().equals(authenticatedUser.getId()))
-                .toList();
+        List<Project> myProjects = projectRepository.findProjectsByAssignedUser(authenticatedUser.getId());
 
         return myProjects.stream()
                 .map(projectMapper::toDto)
                 .collect(Collectors.toList());
     }
-
 
 
     private void validateProjectDates(LocalDate startDate, LocalDate endDate) {
@@ -190,16 +187,12 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Projet non trouvé"));
 
-        // Mapper l'entité Project vers DTO
         ProjectResponseDTO responseDTO = projectMapper.toDto(project);
 
-        // Ajouter les tâches sous forme de DTOs
         responseDTO.setTasks(taskMapper.toDtoList(project.getTasks()));
 
-        // Ajouter les budgets sous forme de DTOs
         responseDTO.setBudgets(budgetMapper.toDtoList(project.getBudgets()));
 
-        // Calcul du progrès du projet
         responseDTO.setProgress(calculateProjectProgress(project));
 
         return responseDTO;
@@ -215,6 +208,12 @@ public class ProjectServiceImpl implements ProjectService {
 
         return (double) completedTasks / tasks.size() * 100;
     }
+
+    @Override
+    public boolean isAssignedToProjectViaTask(String email, Long projectId) {
+        return projectRepository.isUserAssignedToProjectThroughTask(email, projectId);
+    }
+
 
 
 

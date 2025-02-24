@@ -25,4 +25,5 @@ public interface ProjectService {
 
     ProjectResponseDTO getProjectDetails(Long projectId);
 
+    boolean isAssignedToProjectViaTask(String email, Long projectId);
 }
