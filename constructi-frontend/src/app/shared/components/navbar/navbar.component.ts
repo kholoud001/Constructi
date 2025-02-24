@@ -4,12 +4,21 @@ import { AuthService } from '../../../modules/auth/auth.service';
 import { Router } from '@angular/router';
 import { AppStateService } from '../../services/app-state.service';
 
+interface NavItem {
+  name: string;
+  href: string;
+  current: boolean;
+  isDropdown?: boolean;
+}
+
 @Component({
   selector: 'app-navbar',
   standalone: false,
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
+
+
 export class NavbarComponent implements OnInit, AfterViewInit {
   faBars = faBars;
   faUser = faUser;
@@ -17,12 +26,14 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   faChevronDown = faChevronDown;
   isMobileMenuOpen = false;
   isProfileDropdownOpen = false;
-  navItems: { name: string; href: string; current: boolean }[] = [];
+  isProjectsDropdownOpen = false;
+  navItems: NavItem[] = [];
   userName: string | null = '';
   userRole: string | null = '';
   isAuthenticated = false;
 
   @ViewChild('profileDropdown') profileDropdown!: ElementRef;
+  @ViewChild('projectsDropdown') projectsDropdown!: ElementRef;
 
   constructor(
     private authService: AuthService,
@@ -59,11 +70,16 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     this.navItems = [
       {name: 'Tableau de bord', href: `/dashboard/${role.toLowerCase()}`, current: true},
-      {name: 'Projets', href: '/projects', current: false},
-      {name: 'Tâches', href: '/tasks', current: false},
     ];
 
-    if (role === 'ADMIN' || role === 'ARCHITECT') {
+    if (role === 'WORKER' || role === 'ARCHITECT'){
+      this.navItems.push(
+        {name: 'Mes Projets', href: '/projects/my-projects', current: false},
+        {name: 'Mes Tâches', href: '/tasks/my-tasks', current: false},
+      );
+    }
+
+      if (role === 'ADMIN' || role === 'ARCHITECT') {
       this.navItems.push(
         {name: 'Gestion des équipes', href: '/team-management', current: false},
         {name: 'Rapports', href: '/reports', current: false}
@@ -72,12 +88,17 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     if (role === 'ADMIN') {
       this.navItems.push(
+        {name: 'Tâches', href: '/tasks', current: false},
+        {name: 'Gestion des projets', href: '#', current: false, isDropdown: true},
         {name: 'Gestion des acteurs', href: '/actor-management', current: false},
         {name: 'Gestion des ressources', href: '/admin/users', current: false},
-        {name: 'Gestion des stocks', href: '/inventory', current: false}
       );
     }
   }
+  get isGestionProjetsAvailable(): boolean {
+    return this.navItems.some(item => item.name === 'Gestion des projets');
+  }
+
 
   setUserInfo() {
     this.userName = this.authService.getUserName();
@@ -92,13 +113,19 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     this.isProfileDropdownOpen = !this.isProfileDropdownOpen;
   }
 
+  toggleProjectsDropdown() {
+    this.isProjectsDropdownOpen = !this.isProjectsDropdownOpen;
+  }
+
   addClickOutsideListener() {
     document.addEventListener('click', this.handleClickOutside.bind(this));
   }
 
   handleClickOutside(event: Event) {
-    if (this.profileDropdown && !this.profileDropdown.nativeElement.contains(event.target)) {
+    if (this.profileDropdown && !this.profileDropdown.nativeElement.contains(event.target) &&
+      this.projectsDropdown && !this.projectsDropdown.nativeElement.contains(event.target)) {
       this.isProfileDropdownOpen = false;
+      this.isProjectsDropdownOpen = false;
     }
   }
 
@@ -108,7 +135,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   ngOnDestroy() {
-    // Remove the click listener when the component is destroyed
     document.removeEventListener('click', this.handleClickOutside.bind(this));
   }
 }
