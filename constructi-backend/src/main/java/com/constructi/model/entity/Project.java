@@ -64,7 +64,8 @@ public class Project {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Budget> budgets= new ArrayList<>();
+    private List<Budget> budgets = new ArrayList<>();
+
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -75,6 +76,7 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Material> materials= new ArrayList<>();
+
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference

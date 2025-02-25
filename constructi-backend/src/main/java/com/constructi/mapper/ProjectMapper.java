@@ -3,12 +3,9 @@ package com.constructi.mapper;
 import com.constructi.DTO.ProjectRequestDTO;
 import com.constructi.DTO.ProjectResponseDTO;
 import com.constructi.model.entity.Project;
-import com.constructi.model.entity.Task;
-import com.constructi.model.entity.Budget;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {TaskMapper.class, BudgetMapper.class}) 
 public interface ProjectMapper {

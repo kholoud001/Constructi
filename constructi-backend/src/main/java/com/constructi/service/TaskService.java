@@ -3,6 +3,7 @@ package com.constructi.service;
 
 import com.constructi.DTO.TaskRequestDTO;
 import com.constructi.DTO.TaskResponseDTO;
+import com.constructi.model.entity.Task;
 
 import java.util.List;
 
@@ -23,6 +24,9 @@ public interface TaskService {
     TaskResponseDTO assignTaskToWorker(Long taskId, Long workerId);
 
     List<TaskResponseDTO> getTasksAssignedToWorker();
+
+//    List<TaskResponseDTO> getTasksByProjectId(Long projectId);
+
 
 //    List<TaskResponseDTO> getMyTasks();
 }

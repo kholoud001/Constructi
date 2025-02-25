@@ -15,4 +15,5 @@ public class TaskResponseDTO {
     private Double effectiveTime;
     private Long projectId;
     private Long userId;
+    private String userEmail;
 }

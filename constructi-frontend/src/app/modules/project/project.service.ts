@@ -2,11 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface TaskResponseDTO {
+  id: number;
+  description: string;
+  beginDate: string;
+  dateEndEstimated: string;
+  userName: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class ProjectService {
   private apiUrl = 'http://localhost:8086/projects';
+  // private taskApiUrl = 'http://localhost:8086/tasks';
 
   constructor(private http: HttpClient) {}
 
@@ -45,4 +54,8 @@ export class ProjectService {
   deleteProject(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/delete/${id}`);
   }
+
+  // getProjectTasks(projectId: number): Observable<TaskResponseDTO[]> {
+  //   return this.http.get<TaskResponseDTO[]>(`${this.taskApiUrl}/project/${projectId}`);
+  // }
 }

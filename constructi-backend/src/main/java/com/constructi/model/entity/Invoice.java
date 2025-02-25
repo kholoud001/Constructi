@@ -35,6 +35,9 @@ public class Invoice {
     @Column(name = "state", nullable = false)
     private InvoiceState state;
 
+    @Column(name = "justification_path")
+    private String justificationPath;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

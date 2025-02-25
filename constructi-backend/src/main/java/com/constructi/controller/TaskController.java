@@ -2,6 +2,7 @@ package com.constructi.controller;
 
 import com.constructi.DTO.TaskRequestDTO;
 import com.constructi.DTO.TaskResponseDTO;
+import com.constructi.model.entity.Task;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -81,6 +82,11 @@ public class TaskController {
         List<TaskResponseDTO> tasks = taskService.getTasksAssignedToWorker();
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
+
+//    @GetMapping("/project/{projectId}")
+//    public ResponseEntity<List<TaskResponseDTO>> getTasksByProject(@PathVariable Long projectId) {
+//        return ResponseEntity.ok(taskService.getTasksByProjectId(projectId));
+//    }
 
 
 }

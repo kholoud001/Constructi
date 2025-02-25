@@ -10,6 +10,7 @@ import {NgCircleProgressModule} from 'ng-circle-progress';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import { MyProjectsComponent } from './my-projects/my-projects.component';
 import { MyProjectDetailComponent } from './my-project-detail/my-project-detail.component';
+import {FormsModule} from "@angular/forms";
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { MyProjectDetailComponent } from './my-project-detail/my-project-detail.
         ProjectRoutingModule,
         NgChartsModule,
         NgCircleProgressModule.forRoot({}),
-        FaIconComponent
+        FaIconComponent,
+        FormsModule
     ],
   providers: []
 })

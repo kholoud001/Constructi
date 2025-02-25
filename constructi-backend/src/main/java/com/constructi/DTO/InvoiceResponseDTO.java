@@ -11,5 +11,6 @@ public class InvoiceResponseDTO {
     private Double amount;
     private LocalDateTime emissionDate;
     private InvoiceState state;
+    private String justificationPath;
     private Long userId;
 }

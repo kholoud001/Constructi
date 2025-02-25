@@ -22,15 +22,6 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or " +
-//            "@projectService.isAssignedToProjectViaTask(authentication.principal.username, #projectId)")
-//    @GetMapping("/{projectId}")
-//    public ResponseEntity<ProjectResponseDTO> getProjectById(@PathVariable Long projectId) {
-//        ProjectResponseDTO response = projectService.getProjectById(projectId);
-//        return ResponseEntity.ok(response);
-//    }
-
     @GetMapping("/{projectId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ProjectResponseDTO getProjectById(@PathVariable Long projectId) {

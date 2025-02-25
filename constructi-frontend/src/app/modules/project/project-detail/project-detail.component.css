@@ -1,4 +1,9 @@
-/* project-detail.component.css */
+/*.drag-over {*/
+/*  border-color: #3B82F6 !important;*/
+/*  background-color: #EFF6FF !important;*/
+/*}*/
+
+
 :host {
   display: block;
   padding: 1rem;
@@ -62,3 +67,4 @@
 .transition-colors {
   transition: background-color 0.2s ease-in-out;
 }
+
