@@ -2,6 +2,7 @@ package com.constructi.service.impl;
 
 import com.constructi.DTO.ProjectRequestDTO;
 import com.constructi.DTO.ProjectResponseDTO;
+import com.constructi.DTO.TaskResponseDTO;
 import com.constructi.exception.InvalidProjectDateException;
 import com.constructi.mapper.ProjectMapper;
 import com.constructi.mapper.UserMapper;
@@ -101,6 +102,31 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
         return projectMapper.toDto(project);
     }
+
+
+    @Override
+    public ProjectResponseDTO getProjectByIdForAssignedUser(Long id) {
+        String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User authenticatedUser = userRepository.findByEmail(authenticatedUserEmail)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + authenticatedUserEmail));
+
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+
+        ProjectResponseDTO projectDTO = projectMapper.toDto(project);
+
+        List<TaskResponseDTO> userTasks = project.getTasks().stream()
+                .filter(task -> task.getUser().getId().equals(authenticatedUser.getId()))
+                .map(taskMapper::toTaskResponseDTO)
+                .collect(Collectors.toList());
+
+        projectDTO.setTasks(userTasks);
+        return projectDTO;
+    }
+
+
+
+
 
     @Override
     public List<ProjectResponseDTO> getAllProjects() {

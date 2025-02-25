@@ -27,4 +27,5 @@ public class ProjectResponseDTO {
     private List<String> materials;
 
     private Double progress;
+    private int teamSize;
 }

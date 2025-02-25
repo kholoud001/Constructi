@@ -9,12 +9,10 @@
       </div>
     </div>
 
-    <!-- Loading State -->
     <div *ngIf="loading" class="flex justify-center items-center min-h-[400px]">
       <fa-icon [icon]="faSpinner" [spin]="true" class="text-4xl text-blue-600"></fa-icon>
     </div>
 
-    <!-- Error State -->
     <div *ngIf="error" class="text-center py-8">
       <p class="text-red-500">{{ error }}</p>
     </div>
@@ -81,7 +79,6 @@
             </div>
           </div>
 
-          <!-- Action Button -->
           <button (click)="viewProject(project.id)"
                   class="w-full mt-6 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center">
             View Details

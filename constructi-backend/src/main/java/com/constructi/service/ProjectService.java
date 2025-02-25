@@ -17,6 +17,8 @@ public interface ProjectService {
 
     ProjectResponseDTO getProjectById(Long id);
 
+    ProjectResponseDTO getProjectByIdForAssignedUser(Long id);
+
     List<ProjectResponseDTO> getAllProjects();
 
     List<ProjectResponseDTO> getMyProjects();

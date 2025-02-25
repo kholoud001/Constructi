@@ -68,6 +68,12 @@ public class User {
     @JsonManagedReference
     private List<Project> projects;
 
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    @JsonBackReference
+    private Project project;
+
+
     @Override
     public String toString() {
         return "User{id=" + id + ", email=" + email + "}";

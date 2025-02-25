@@ -18,6 +18,10 @@ export class ProjectService {
     return this.http.get<any[]>(`${this.apiUrl}/my-projects`);
   }
 
+  getMyProjectTasks(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}/my-tasks`);
+  }
+
   getProjectById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }

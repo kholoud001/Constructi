@@ -9,6 +9,7 @@ import {NgChartsConfiguration, NgChartsModule} from "ng2-charts";
 import {NgCircleProgressModule} from 'ng-circle-progress';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import { MyProjectsComponent } from './my-projects/my-projects.component';
+import { MyProjectDetailComponent } from './my-project-detail/my-project-detail.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { MyProjectsComponent } from './my-projects/my-projects.component';
     ProjectListComponent,
     ProjectDetailComponent,
     ProjectProgressComponent,
-    MyProjectsComponent
+    MyProjectsComponent,
+    MyProjectDetailComponent
   ],
     imports: [
         CommonModule,

@@ -55,8 +55,9 @@ export class MyProjectsComponent implements OnInit {
     });
   }
 
+
   viewProject(id: number): void {
-    this.router.navigate(['/projects', id, 'details']);
+    this.router.navigate(['/projects', id, 'my-tasks']);
   }
 
   getStatusClass(state: string): string {

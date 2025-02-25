@@ -23,13 +23,26 @@ public class ProjectController {
     private final ProjectService projectService;
 
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or " +
-            "@projectService.isAssignedToProjectViaTask(authentication.principal.username, #projectId)")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or " +
+//            "@projectService.isAssignedToProjectViaTask(authentication.principal.username, #projectId)")
+//    @GetMapping("/{projectId}")
+//    public ResponseEntity<ProjectResponseDTO> getProjectById(@PathVariable Long projectId) {
+//        ProjectResponseDTO response = projectService.getProjectById(projectId);
+//        return ResponseEntity.ok(response);
+//    }
+
     @GetMapping("/{projectId}")
-    public ResponseEntity<ProjectResponseDTO> getProjectById(@PathVariable Long projectId) {
-        ProjectResponseDTO response = projectService.getProjectById(projectId);
-        return ResponseEntity.ok(response);
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ProjectResponseDTO getProjectById(@PathVariable Long projectId) {
+        return projectService.getProjectById(projectId);
     }
+
+    @GetMapping("/{projectId}/my-tasks")
+    @PreAuthorize("@projectService.isAssignedToProjectViaTask(authentication.principal.username, #projectId)")
+    public ProjectResponseDTO getProjectByIdForAssignedUser(@PathVariable Long projectId) {
+        return projectService.getProjectByIdForAssignedUser(projectId);
+    }
+
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")

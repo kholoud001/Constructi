@@ -75,4 +75,14 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Material> materials= new ArrayList<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<User> teamMembers = new ArrayList<>();
+
+    public int getTeamSize() {
+        return teamMembers != null ? teamMembers.size() : 0;
+    }
+
+
 }

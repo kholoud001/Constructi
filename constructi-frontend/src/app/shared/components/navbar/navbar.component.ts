@@ -31,6 +31,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   userName: string | null = '';
   userRole: string | null = '';
   isAuthenticated = false;
+  isMobileProjectsDropdownOpen = false;
 
   @ViewChild('profileDropdown') profileDropdown!: ElementRef;
   @ViewChild('projectsDropdown') projectsDropdown!: ElementRef;
@@ -90,7 +91,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       this.navItems.push(
         {name: 'Tâches', href: '/tasks', current: false},
         {name: 'Gestion des projets', href: '#', current: false, isDropdown: true},
-        {name: 'Gestion des acteurs', href: '/actor-management', current: false},
         {name: 'Gestion des ressources', href: '/admin/users', current: false},
       );
     }
@@ -126,6 +126,23 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       this.projectsDropdown && !this.projectsDropdown.nativeElement.contains(event.target)) {
       this.isProfileDropdownOpen = false;
       this.isProjectsDropdownOpen = false;
+    }
+  }
+
+  toggleMobileProjectsDropdown() {
+    this.isMobileProjectsDropdownOpen = !this.isMobileProjectsDropdownOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    // Close projects dropdown if clicking outside
+    if (this.projectsDropdown && !this.projectsDropdown.nativeElement.contains(event.target)) {
+      this.isProjectsDropdownOpen = false;
+    }
+
+    // Close profile dropdown if clicking outside
+    if (this.profileDropdown && !this.profileDropdown.nativeElement.contains(event.target)) {
+      this.isProfileDropdownOpen = false;
     }
   }
 
