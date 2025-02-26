@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -53,10 +51,14 @@ public class Task {
     @JoinColumn(name = "project_id", nullable = false)
     @NotNull(message = "Task must be associated with at least one project.")
     @JsonBackReference
+    @ToString.Exclude // Avoid circular reference in toString()
+    @EqualsAndHashCode.Exclude
     private Project project;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @ToString.Exclude // Avoid circular reference in toString()
+    @EqualsAndHashCode.Exclude
     private User user;
 
 

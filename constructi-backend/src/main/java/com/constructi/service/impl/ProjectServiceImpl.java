@@ -55,7 +55,6 @@ public class ProjectServiceImpl implements ProjectService {
 
 
 
-
     @Override
     public ProjectResponseDTO updateProject(Long id, ProjectRequestDTO dto) {
 
@@ -102,7 +101,6 @@ public class ProjectServiceImpl implements ProjectService {
         return projectMapper.toDto(project);
     }
 
-
     @Override
     public ProjectResponseDTO getProjectByIdForAssignedUser(Long id) {
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -122,9 +120,6 @@ public class ProjectServiceImpl implements ProjectService {
         projectDTO.setTasks(userTasks);
         return projectDTO;
     }
-
-
-
 
 
     @Override
@@ -184,28 +179,6 @@ public class ProjectServiceImpl implements ProjectService {
 //        }
 //    }
 
-    @Override
-    public double getProjectProgress(Long projectId) {
-        Optional<Project> optionalProject = projectRepository.findById(projectId);
-        if (optionalProject.isEmpty()) {
-            throw new RuntimeException("Project not found");
-        }
-
-        Project project = optionalProject.get();
-        List<Task> tasks = project.getTasks();
-
-        if (tasks.isEmpty()) {
-            return 0.0;
-        }
-
-        long completedTasks = tasks.stream()
-                .filter(task -> task.getStatus() == StatusTask.FINISHED)
-                .count();
-
-        return (double) completedTasks / tasks.size() * 100;
-    }
-
-
 
     @Override
     public ProjectResponseDTO getProjectDetails(Long projectId) {
@@ -218,21 +191,10 @@ public class ProjectServiceImpl implements ProjectService {
 
         responseDTO.setBudgets(budgetMapper.toDtoList(project.getBudgets()));
 
-        responseDTO.setProgress(calculateProjectProgress(project));
 
         return responseDTO;
     }
 
-    private double calculateProjectProgress(Project project) {
-        List<Task> tasks = project.getTasks();
-        if (tasks.isEmpty()) return 0.0;
-
-        long completedTasks = tasks.stream()
-                .filter(task -> task.getStatus() == StatusTask.FINISHED)
-                .count();
-
-        return (double) completedTasks / tasks.size() * 100;
-    }
 
     @Override
     public boolean isAssignedToProjectViaTask(String email, Long projectId) {

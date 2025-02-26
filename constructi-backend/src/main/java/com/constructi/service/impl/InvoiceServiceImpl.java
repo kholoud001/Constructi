@@ -64,6 +64,10 @@ public class InvoiceServiceImpl implements InvoiceService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
 
+        if (!task.getProject().getId().equals(projectId)) {
+            throw new RuntimeException("Task does not belong to the specified project.");
+        }
+
         if (amount > task.getBudgetLimit()) {
             throw new RuntimeException("Payment exceeds the task's budget limit.");
         }
@@ -99,15 +103,6 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
 
-
-    @Override
-    public List<InvoiceResponseDTO> getUserInvoices(Long userId) {
-        return invoiceRepository.findByUserId(userId)
-                .stream()
-                .map(InvoiceMapper.INSTANCE::toDto)
-                .collect(Collectors.toList());
-    }
-
     private String saveJustificationFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new RuntimeException("Justification file is required");
@@ -124,6 +119,15 @@ public class InvoiceServiceImpl implements InvoiceService {
         } catch (IOException e) {
             throw new RuntimeException("Failed to save justification file", e);
         }
+    }
+
+
+    @Override
+    public List<InvoiceResponseDTO> getUserInvoices(Long userId) {
+        return invoiceRepository.findByUserId(userId)
+                .stream()
+                .map(InvoiceMapper.INSTANCE::toDto)
+                .collect(Collectors.toList());
     }
 
 }

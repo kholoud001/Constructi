@@ -13,11 +13,11 @@ public interface TaskMapper {
     @Mapping(source = "project.id", target = "projectId")
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.email", target = "userEmail")
-
     TaskResponseDTO toTaskResponseDTO(Task task);
 
     @Mapping(source = "projectId", target = "project.id")
     @Mapping(target = "user.id" , ignore = true)
+    @Mapping(source = "budgetLimit", target = "budgetLimit")
     Task toTaskEntity(TaskRequestDTO taskRequestDTO);
 
     List<TaskResponseDTO> toDtoList(List<Task> tasks);

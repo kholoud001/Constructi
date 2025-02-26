@@ -24,7 +24,7 @@ public class ProjectResponseDTO {
 
     private List<TaskResponseDTO> tasks;
     private List<BudgetResponseDTO> budgets;
-    private List<String> materials;
+    private List<MaterialResponseDTO> materials;
 
     private Double progress;
     private int teamSize;

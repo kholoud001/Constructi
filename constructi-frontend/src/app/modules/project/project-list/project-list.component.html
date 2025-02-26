@@ -2,10 +2,8 @@
   <div *ngFor="let project of projects" class="p-4 bg-white shadow-lg rounded-lg">
     <h3 class="text-xl font-bold mb-2">{{ project.name }}</h3>
     <p class="text-gray-600 mb-2">Status: {{ project.state }}</p>
-
     <circle-progress
-      *ngIf="project.initialBudget && project.actualBudget"
-      [percent]="(project.actualBudget / project.initialBudget) * 100"
+      [percent]="project.progress"
       [radius]="50"
       [outerStrokeWidth]="8"
       [innerStrokeWidth]="4"

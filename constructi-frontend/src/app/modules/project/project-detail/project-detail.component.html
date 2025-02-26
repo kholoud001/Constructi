@@ -137,22 +137,86 @@
   </div>
 
   <!-- Materials Section -->
-  <div class="mb-6">
-    <div class="flex items-center gap-2 mb-4">
-      <fa-icon [icon]="faTools" class="text-blue-600"></fa-icon>
-      <h3 class="text-lg font-bold">Materials Used</h3>
-    </div>
-    <div *ngIf="project.materials && project.materials.length > 0; else noMaterials"
-         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div *ngFor="let material of project.materials"
-           class="bg-gray-50 p-3 rounded-lg text-gray-600">
-        {{ material }}
+  <div class="mb-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-blue-100 rounded-lg">
+          <fa-icon [icon]="faTools" class="text-blue-600 text-xl"></fa-icon>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800">Materials Used</h3>
+      </div>
+      <div class="text-sm text-gray-500">
+        Total Materials: {{ project.materials?.length || 0 }}
       </div>
     </div>
+
+    <!-- Materials Grid -->
+    <div *ngIf="project.materials && project.materials.length > 0; else noMaterials"
+         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngFor="let material of project.materials"
+           class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex-1">
+            <h4 class="text-lg font-semibold text-gray-800 mb-1">{{ material.name }}</h4>
+            <div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                 [ngClass]="{
+                 'bg-green-100 text-green-800': material.quantity > 10,
+                 'bg-yellow-100 text-yellow-800': material.quantity <= 10 && material.quantity > 0,
+                 'bg-red-100 text-red-800': material.quantity === 0
+               }">
+              {{ material.quantity > 0 ? 'In Stock' : 'Out of Stock' }}
+            </div>
+          </div>
+          <div class="flex items-center justify-center w-10 h-10 bg-gray-50 rounded-full">
+            <fa-icon [icon]="faBoxOpen" class="text-gray-400"></fa-icon>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex justify-between items-center text-sm">
+            <span class="text-gray-600">Price per Unit</span>
+            <span class="font-medium text-gray-900">${{ material.priceUnit.toFixed(2) }}</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span class="text-gray-600">Quantity</span>
+            <span class="font-medium text-gray-900">{{ material.quantity }}</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span class="text-gray-600">Total Value</span>
+            <span class="font-medium text-gray-900">${{ (material.priceUnit * material.quantity).toFixed(2) }}</span>
+          </div>
+        </div>
+
+        <!-- Progress bar for stock level -->
+        <div class="mt-4">
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                 [style.width.%]="(material.quantity / 100) * 100"
+                 [ngClass]="{
+                 'bg-green-500': material.quantity > 10,
+                 'bg-yellow-500': material.quantity <= 10 && material.quantity > 0,
+                 'bg-red-500': material.quantity === 0
+               }">
+            </div>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">Stock Level</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Materials Template -->
     <ng-template #noMaterials>
-      <div class="flex flex-col items-center justify-center py-8 text-gray-500 bg-gray-50 rounded-lg">
-        <fa-icon [icon]="faBoxOpen" class="text-4xl mb-2"></fa-icon>
-        <p>No materials have been added to this project yet.</p>
+      <div class="bg-gray-50 rounded-xl p-8 border-2 border-dashed border-gray-200">
+        <div class="flex flex-col items-center justify-center text-center">
+          <div class="p-3 bg-gray-100 rounded-full mb-4">
+            <fa-icon [icon]="faBoxOpen" class="text-4xl text-gray-400"></fa-icon>
+          </div>
+          <h4 class="text-lg font-semibold text-gray-800 mb-2">No Materials Found</h4>
+          <p class="text-gray-500 max-w-sm">
+            No materials have been added to this project yet. Materials will appear here once they are assigned.
+          </p>
+        </div>
       </div>
     </ng-template>
   </div>

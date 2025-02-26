@@ -74,12 +74,6 @@ public class ProjectController {
     }
 
 
-    @GetMapping("/{projectId}/progress")
-    public ResponseEntity<Double> getProjectProgress(@PathVariable Long projectId) {
-        double progress = projectService.getProjectProgress(projectId);
-        return ResponseEntity.ok(progress);
-    }
-
     @GetMapping("/{projectId}/details")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ProjectResponseDTO> getProjectDetails(@PathVariable Long projectId) {

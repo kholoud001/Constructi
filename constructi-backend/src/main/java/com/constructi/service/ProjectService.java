@@ -23,7 +23,7 @@ public interface ProjectService {
 
     List<ProjectResponseDTO> getMyProjects();
 
-    double getProjectProgress(Long projectId);
+//    double getProjectProgress(Long projectId);
 
     ProjectResponseDTO getProjectDetails(Long projectId);
 
