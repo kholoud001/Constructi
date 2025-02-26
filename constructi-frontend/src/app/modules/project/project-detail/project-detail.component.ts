@@ -68,9 +68,16 @@ export class ProjectDetailComponent implements OnInit {
       this.project = data;
       this.progress = data.progress || 0;
 
-      this.project.tasks.forEach((task: { totalPaid: any; invoices: any[]; }) => {
-        task.totalPaid = task.invoices?.reduce((sum, invoice) => sum + invoice.amount, 0) || 0;
-      });
+      // Check if tasks exist and calculate totalPaid if invoices are present
+      if (this.project.tasks && this.project.tasks.length > 0) {
+        this.project.tasks.forEach((task: any) => {
+          if (task.invoices && task.invoices.length > 0) {
+            task.totalPaid = task.invoices.reduce((sum: number, invoice: any) => sum + invoice.amount, 0);
+          } else {
+            task.totalPaid = task.totalPaid || 0; // Use the totalPaid from the task if invoices are not present
+          }
+        });
+      }
 
       console.log("projets => ", this.project);
 
@@ -91,7 +98,6 @@ export class ProjectDetailComponent implements OnInit {
       });
     });
   }
-
   toggleUserDetails(): void {
     this.showUserDetails = !this.showUserDetails;
     const detailsElement = document.querySelector('.animate-fade-in');
