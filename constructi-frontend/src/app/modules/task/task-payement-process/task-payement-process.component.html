@@ -202,70 +202,16 @@
         </button>
 
         <!-- Process Payment Button -->
-        <!--        <div class="mt-6 flex justify-end">-->
-        <!--          <button-->
-        <!--            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"-->
-        <!--            [disabled]="isPaymentDisabled() || paymentProcessing"-->
-        <!--            (click)="processPayment()">-->
-        <!--            <span *ngIf="!paymentProcessing">Process Payment</span>-->
-        <!--            <span *ngIf="paymentProcessing">Processing...</span>-->
-        <!--          </button>-->
-        <!--        </div>-->
-
-        <!-- Bouton pour ouvrir le modal -->
-        <button (click)="openPaymentModal(taskDetails.id)"
-                [disabled]="isPaymentDisabled() || paymentProcessing"
-                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-          Payer maintenant
-        </button>
-
-        <!-- Payment Modal Backdrop -->
-        <div *ngIf="isPaymentModalOpen"
-             class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
-             (click)="closePaymentModal()">
-
-          <!-- Modal Content -->
-          <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all"
-               (click)="$event.stopPropagation()">
-
-            <!-- Modal Header -->
-            <div class="flex items-center justify-between p-6 border-b">
-              <h2 class="text-xl font-semibold text-gray-900">Process Payment</h2>
-              <button (click)="closePaymentModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
-                <fa-icon [icon]="faTimes" class="h-5 w-5"></fa-icon>
-              </button>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="p-6 space-y-4">
-              <!-- Montant -->
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Montant (€)</label>
-                <input type="number"
-                       [(ngModel)]="paymentData.amount"
-                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                       placeholder="Entrez le montant">
-              </div>
-
-              <!-- Justification -->
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Document de justification</label>
-                <input type="file" (change)="handleFileInput($event)">
-              </div>
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="px-6 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
-              <button (click)="closePaymentModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
-                Annuler
-              </button>
-              <button (click)="doPayment()" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700">
-                Confirmer Paiement
-              </button>
-            </div>
-          </div>
-        </div>
-
+                <div class="mt-6 flex justify-end">
+                  <button
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+                    [disabled]="isPaymentDisabled() || paymentProcessing"
+                    (click)="processPayment()">
+                    <span *ngIf="!paymentProcessing">Process Payment</span>
+                    <span *ngIf="paymentProcessing">Processing...</span>
+                  </button>
+                </div>
+        
 
       </div>
     </div>
