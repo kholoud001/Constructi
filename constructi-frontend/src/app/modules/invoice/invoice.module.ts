@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 
 import { InvoiceRoutingModule } from './invoice-routing.module';
 import { InvoiceListComponent } from './invoice-list/invoice-list.component';
+import { PayementComponent } from './payement/payement.component';
 
 
 @NgModule({
   declarations: [
-    InvoiceListComponent
+    InvoiceListComponent,
+    PayementComponent
   ],
   imports: [
     CommonModule,

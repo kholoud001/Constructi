@@ -10,7 +10,7 @@ import {
   faTimesCircle,
   faSpinner,
   faCalendarAlt,
-  faClock, faCalendarCheck, faPhone, faEnvelope, faUser, faArrowLeft, faTimes
+  faClock, faCalendarCheck, faPhone, faEnvelope, faUser, faArrowLeft, faTimes, faImage, faFile, faCloudUpload
 } from '@fortawesome/free-solid-svg-icons';
 import { TaskService } from '../task.service';
 import {InvoiceService} from '../../invoice/invoice.service';
@@ -27,6 +27,8 @@ export class TaskPayementProcessComponent implements OnInit {
   loading: boolean = true;
   paymentProcessing: boolean = false;
   isPaymentModalOpen = false;
+  isDragging = false;
+  imagePreview: string | null = null;
 
 
   faClipboardList = faClipboardList;
@@ -43,6 +45,8 @@ export class TaskPayementProcessComponent implements OnInit {
   protected readonly faChartLine = faChartLine;
   protected readonly faMoneyBillWave = faMoneyBillWave;
   protected readonly faArrowLeft = faArrowLeft;
+  protected readonly faImage = faImage;
+  protected readonly faFile = faFile;
 
 
   paymentData = {
@@ -118,7 +122,89 @@ export class TaskPayementProcessComponent implements OnInit {
     return this.taskDetails?.budgetLimit <= this.taskDetails?.totalPaid;
   }
 
-  processPayment() {
+  // Method to open the payment modal
+  openPaymentModal() {
+    this.isPaymentModalOpen = true;
+      // Populate paymentData with valid IDs
+      this.paymentData = {
+        userId: this.taskDetails?.userId || 0, // Replace with the correct property
+        amount: 0,
+        justificationFile: null,
+        projectId: this.taskDetails?.projectId || 0, // Replace with the correct property
+        taskId: this.taskDetails?.id || 0, // Replace with the correct property
+      };
+      this.isPaymentModalOpen = true;
 
   }
+
+// Method to close the payment modal
+  closePaymentModal() {
+    this.isPaymentModalOpen = false;
+    this.resetPaymentData();
+  }
+
+// Method to handle file input
+  handleFileInput(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.paymentData.justificationFile = file;
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.imagePreview = reader.result as string;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.imagePreview = null;
+      }
+    }
+  }
+
+// Method to reset payment data
+  resetPaymentData() {
+    this.paymentData = {
+      userId: 0,
+      amount: 0,
+      justificationFile: null,
+      projectId: 0,
+      taskId: 0,
+    };
+    this.imagePreview = null;
+  }
+
+  doPayment() {
+    if (!this.paymentData.justificationFile || this.paymentData.amount <= 0) {
+      Swal.fire('Error', 'Please fill all required fields.', 'error');
+      return;
+    }
+
+    console.log('Payment Data:', this.paymentData); // Log the payment data
+
+    this.paymentProcessing = true;
+    this.invoiceService
+      .paySomeone(
+        this.paymentData.userId,
+        this.paymentData.amount,
+        this.paymentData.justificationFile,
+        this.paymentData.projectId,
+        this.paymentData.taskId
+      )
+      .subscribe({
+        next: () => {
+          Swal.fire('Success', 'Payment processed successfully!', 'success');
+          this.closePaymentModal();
+          this.fetchTaskDetails(Number(this.taskId)); // Refresh task details
+        },
+        error: (err) => {
+          console.error('Error processing payment:', err);
+          Swal.fire('Error', 'Failed to process payment.', 'error');
+        },
+        complete: () => {
+          this.paymentProcessing = false;
+        },
+      });
+  }
+
+  protected readonly faTimes = faTimes;
+  protected readonly faCloudUpload = faCloudUpload;
 }
