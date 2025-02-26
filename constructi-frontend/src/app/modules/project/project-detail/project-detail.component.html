@@ -225,9 +225,10 @@
  <!-- Tasks -->
   <div class="overflow-x-auto">
     <div class="flex items-center gap-2 mb-4">
-      <fa-icon [icon]="faTasks" class="text-blue-600"></fa-icon>
-      <h3 class="text-lg font-bold">Detailed Tasks</h3>
+      <fa-icon [icon]="faExchangeAlt" class="text-blue-600"></fa-icon>
+      <h3 class="text-lg font-bold">Payment Processing Tasks</h3>
     </div>
+
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
       <tr>
@@ -239,7 +240,11 @@
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
       <tr *ngFor="let task of project.tasks">
-        <td class="px-4 py-3 whitespace-nowrap">{{ task.description }}</td>
+        <td class="px-4 py-3 whitespace-nowrap">
+          <a [routerLink]="['/tasks/task-payment-details', task.id]" class="text-blue-600 hover:underline">
+            {{ task.description }}
+          </a>
+        </td>
         <td class="px-4 py-3 whitespace-nowrap">{{ task.userEmail }}</td>
         <td class="px-4 py-3">
           <div class="text-sm">

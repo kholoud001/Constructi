@@ -188,11 +188,6 @@ public class ProjectServiceImpl implements ProjectService {
 
         ProjectResponseDTO responseDTO = projectMapper.toDto(project);
 
-//        responseDTO.getTasks().forEach(task -> {
-//            Double totalPaid = invoiceRepository.sumAmountByTaskId(task.getId());
-//            task.setTotalPaid(totalPaid != null ? totalPaid : 0.0);
-//        });
-
         responseDTO.setTasks(taskMapper.toDtoList(project.getTasks()));
 
         responseDTO.setBudgets(budgetMapper.toDtoList(project.getBudgets()));

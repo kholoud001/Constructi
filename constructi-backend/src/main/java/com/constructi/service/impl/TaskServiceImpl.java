@@ -3,6 +3,7 @@ package com.constructi.service.impl;
 import com.constructi.DTO.TaskRequestDTO;
 import com.constructi.DTO.TaskResponseDTO;
 import com.constructi.exception.TaskNotFoundException;
+import com.constructi.mapper.InvoiceMapper;
 import com.constructi.mapper.TaskMapper;
 import com.constructi.model.entity.Project;
 import com.constructi.model.entity.Task;
@@ -12,6 +13,7 @@ import com.constructi.repository.ProjectRepository;
 import com.constructi.repository.TaskRepository;
 import com.constructi.repository.UserRepository;
 import com.constructi.service.TaskService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskMapper taskMapper;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
+    private final InvoiceMapper invoiceMapper;
 
 
     @Override
@@ -148,13 +151,20 @@ public class TaskServiceImpl implements TaskService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public TaskResponseDTO getTaskWithInvoices(Long taskId) {
+        Task task = taskRepository.findByIdWithInvoices(taskId)
+                .orElseThrow(() -> new EntityNotFoundException("Task not found"));
 
-
-
-
-
-
-
-
+        return taskMapper.toTaskResponseDTO(task);
+    }
 
 }
+
+
+
+
+
+
+
+
