@@ -17,12 +17,15 @@ public interface ProjectService {
 
     ProjectResponseDTO getProjectById(Long id);
 
+    ProjectResponseDTO getProjectByIdForAssignedUser(Long id);
+
     List<ProjectResponseDTO> getAllProjects();
 
     List<ProjectResponseDTO> getMyProjects();
 
-    double getProjectProgress(Long projectId);
+//    double getProjectProgress(Long projectId);
 
     ProjectResponseDTO getProjectDetails(Long projectId);
 
+    boolean isAssignedToProjectViaTask(String email, Long projectId);
 }

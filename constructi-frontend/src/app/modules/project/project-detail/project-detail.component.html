@@ -1,1 +1,392 @@
-<p>project-detail works!</p>
+<div *ngIf="project" class="p-4 md:p-6 bg-white shadow-lg rounded-lg max-w-7xl mx-auto">
+  <!-- Project Header -->
+  <div class="mb-6">
+    <div class="flex items-center gap-2 mb-2">
+      <fa-icon [icon]="faProjectDiagram" class="text-blue-600 text-xl"></fa-icon>
+      <h2 class="text-xl md:text-2xl font-bold">{{ project.name }}</h2>
+    </div>
+    <p class="text-gray-700">{{ project.description }}</p>
+  </div>
+
+  <!-- Project Dates -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div class="flex items-center gap-2">
+      <fa-icon [icon]="faCalendar" class="text-gray-500"></fa-icon>
+      <div>
+        <p class="text-sm text-gray-600">Start Date</p>
+        <p class="font-semibold">{{ project.startDate | date }}</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <fa-icon [icon]="faCalendar" class="text-gray-500"></fa-icon>
+      <div>
+        <p class="text-sm text-gray-600">End Date</p>
+        <p class="font-semibold">{{ project.endDate | date }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-gray-50 rounded-lg p-4 mb-6">
+    <div (click)="toggleUserDetails()" class="flex items-center justify-between cursor-pointer hover:bg-gray-100 p-2 rounded-md transition-colors">
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="faUser" class="text-gray-500"></fa-icon>
+        <p class="font-semibold">{{ userName }}</p>
+      </div>
+      <fa-icon [icon]="faChevronDown"
+               [class.rotate-180]="showUserDetails"
+               class="text-gray-500 transition-transform duration-200">
+      </fa-icon>
+    </div>
+
+    <div *ngIf="showUserDetails"
+         class="mt-4 space-y-2 pl-8 animate-fade-in">
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="faEnvelope" class="text-gray-500"></fa-icon>
+        <p>{{ userEmail }}</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="faPhone" class="text-gray-500"></fa-icon>
+        <p>{{ userPhone }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Budget Section -->
+  <div class="bg-gray-50 rounded-lg p-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="faDollarSign" class="text-green-500"></fa-icon>
+        <div>
+          <p class="text-sm text-gray-600">Initial Budget</p>
+          <p class="font-semibold">${{ project.initialBudget }}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="faDollarSign" class="text-blue-500"></fa-icon>
+        <div>
+          <p class="text-sm text-gray-600">Actual Budget</p>
+          <p class="font-semibold">${{ project.actualBudget }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="alertMessage" class="mt-4 flex items-center gap-2 text-red-600">
+      <fa-icon [icon]="faExclamationTriangle"></fa-icon>
+      <p class="text-sm">{{ alertMessage }}</p>
+    </div>
+  </div>
+
+  <!-- Progress Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <div class="flex justify-center">
+      <circle-progress
+        [percent]="progress"
+        [radius]="80"
+        [outerStrokeWidth]="10"
+        [innerStrokeWidth]="5"
+        [outerStrokeGradient]="true"
+        [outerStrokeGradientStopColor]="progress === 0 ? '#FF0000' : '#4CAF50'"
+        [outerStrokeColor]="'#FFCC00'"
+        [innerStrokeColor]="'#E0E0E0'"
+        [animation]="true"
+        [showSubtitle]="true"
+        [subtitle]="'Project Progress'"
+        [titleFontSize]="20"
+        [subtitleFontSize]="14"
+        [animateTitle]="false"
+        [showTitle]="true">
+      </circle-progress>
+    </div>
+
+    <!-- Task List -->
+    <div class="bg-gray-50 rounded-lg p-4">
+      <div class="flex items-center gap-2 mb-4">
+        <fa-icon [icon]="faTasks" class="text-blue-600"></fa-icon>
+        <h3 class="font-bold">Recent Tasks</h3>
+      </div>
+      <div *ngIf="project.tasks && project.tasks.length > 0; else noTasks"
+           class="space-y-2 max-h-60 overflow-y-auto">
+        <div *ngFor="let task of project.tasks"
+             class="bg-white p-3 rounded-md shadow-sm hover:bg-gray-50 transition-colors">
+          <div class="flex justify-between items-start">
+            <p class="font-medium">{{ task.description }}</p>
+            <span class="px-2 py-1 text-xs rounded-full"
+                  [ngClass]="{
+                    'bg-red-100 text-red-800': task.status === 'NOT_STARTED',
+                    'bg-yellow-100 text-yellow-800': task.status === 'IN_PROGRESS',
+                    'bg-green-100 text-green-800': task.status === 'FINISHED'
+                  }">
+              {{ task.status }}
+            </span>
+          </div>
+          <div class="text-xs text-gray-500 mt-1">
+            <div class="flex items-center gap-1">
+              <fa-icon [icon]="faClock" class="text-gray-400"></fa-icon>
+              <span>{{ task.effectiveTime }} hours</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #noTasks>
+          <div class="flex flex-col items-center justify-center py-8 text-gray-500">
+            <fa-icon [icon]="faClipboardList" class="text-4xl mb-2"></fa-icon>
+            <p>No tasks have been added to this project yet.</p>
+          </div>
+        </ng-template>
+  </div>
+  </div>
+
+  <!-- Materials Section -->
+  <div class="mb-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-blue-100 rounded-lg">
+          <fa-icon [icon]="faTools" class="text-blue-600 text-xl"></fa-icon>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800">Materials Used</h3>
+      </div>
+      <div class="text-sm text-gray-500">
+        Total Materials: {{ project.materials?.length || 0 }}
+      </div>
+    </div>
+
+    <!-- Materials Grid -->
+    <div *ngIf="project.materials && project.materials.length > 0; else noMaterials"
+         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngFor="let material of project.materials"
+           class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex-1">
+            <h4 class="text-lg font-semibold text-gray-800 mb-1">{{ material.name }}</h4>
+            <div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                 [ngClass]="{
+                 'bg-green-100 text-green-800': material.quantity > 10,
+                 'bg-yellow-100 text-yellow-800': material.quantity <= 10 && material.quantity > 0,
+                 'bg-red-100 text-red-800': material.quantity === 0
+               }">
+              {{ material.quantity > 0 ? 'In Stock' : 'Out of Stock' }}
+            </div>
+          </div>
+          <div class="flex items-center justify-center w-10 h-10 bg-gray-50 rounded-full">
+            <fa-icon [icon]="faBoxOpen" class="text-gray-400"></fa-icon>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex justify-between items-center text-sm">
+            <span class="text-gray-600">Price per Unit</span>
+            <span class="font-medium text-gray-900">${{ material.priceUnit.toFixed(2) }}</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span class="text-gray-600">Quantity</span>
+            <span class="font-medium text-gray-900">{{ material.quantity }}</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span class="text-gray-600">Total Value</span>
+            <span class="font-medium text-gray-900">${{ (material.priceUnit * material.quantity).toFixed(2) }}</span>
+          </div>
+        </div>
+
+        <!-- Progress bar for stock level -->
+        <div class="mt-4">
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                 [style.width.%]="(material.quantity / 100) * 100"
+                 [ngClass]="{
+                 'bg-green-500': material.quantity > 10,
+                 'bg-yellow-500': material.quantity <= 10 && material.quantity > 0,
+                 'bg-red-500': material.quantity === 0
+               }">
+            </div>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">Stock Level</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Materials Template -->
+    <ng-template #noMaterials>
+      <div class="bg-gray-50 rounded-xl p-8 border-2 border-dashed border-gray-200">
+        <div class="flex flex-col items-center justify-center text-center">
+          <div class="p-3 bg-gray-100 rounded-full mb-4">
+            <fa-icon [icon]="faBoxOpen" class="text-4xl text-gray-400"></fa-icon>
+          </div>
+          <h4 class="text-lg font-semibold text-gray-800 mb-2">No Materials Found</h4>
+          <p class="text-gray-500 max-w-sm">
+            No materials have been added to this project yet. Materials will appear here once they are assigned.
+          </p>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+
+ <!-- Tasks -->
+  <div class="overflow-x-auto">
+    <div class="flex items-center gap-2 mb-4">
+      <fa-icon [icon]="faTasks" class="text-blue-600"></fa-icon>
+      <h3 class="text-lg font-bold">Detailed Tasks</h3>
+    </div>
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+      <tr>
+        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task</th>
+        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned To</th>
+        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dates</th>
+        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice</th>
+      </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+      <tr *ngFor="let task of project.tasks">
+        <td class="px-4 py-3 whitespace-nowrap">{{ task.description }}</td>
+        <td class="px-4 py-3 whitespace-nowrap">{{ task.userEmail }}</td>
+        <td class="px-4 py-3">
+          <div class="text-sm">
+            <div>Start: {{ task.beginDate | date:'short' }}</div>
+            <div>Due: {{ task.dateEndEstimated | date:'short' }}</div>
+          </div>
+        </td>
+        <td class="px-4 py-3 whitespace-nowrap">
+
+          <!-- Payment Modal Backdrop -->
+          <div *ngIf="isPaymentModalOpen"
+               class="fixed inset-0  bg-opacity-50 z-50 flex items-center justify-center"
+               (click)="closePaymentModal()">
+
+            <!-- Modal Content -->
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all"
+                 (click)="$event.stopPropagation()">
+
+              <!-- Modal Header -->
+              <div class="flex items-center justify-between p-6 border-b">
+                <h2 class="text-xl font-semibold text-gray-900">Process Payment</h2>
+                <button (click)="closePaymentModal()"
+                        class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                  <fa-icon [icon]="faTimes" class="h-5 w-5"></fa-icon>
+                </button>
+              </div>
+
+              <!-- Modal Body -->
+              <div class="p-6 space-y-4">
+                <div class="space-y-2">
+                  <input type="hidden"
+                         [(ngModel)]="paymentData.userId"
+                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                         readonly>
+                </div>
+
+                <!-- Amount Field -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    Amount ($)
+                  </label>
+                  <input type="number"
+                         [(ngModel)]="paymentData.amount"
+                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                         placeholder="Enter amount">
+                </div>
+
+                <!-- File Upload Field -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    Justification Document
+                  </label>
+                  <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md transition-colors duration-200"
+                       [ngClass]="{'drag-over': isDragging}">
+                    <div class="space-y-1 text-center">
+                      <fa-icon [icon]="faCloudUpload" class="mx-auto h-12 w-12 text-gray-400"></fa-icon>
+                      <div class="flex text-sm text-gray-600">
+                        <label for="file-upload" class="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                          <span>Upload a file</span>
+                          <input id="file-upload"
+                                 type="file"
+                                 accept=".pdf,.doc,.docx,image/*"
+                                 class="sr-only"
+                                 #fileInput
+                                 (change)="handleFileInput($event)">
+                        </label>
+                        <p class="pl-1">or drag and drop</p>
+                      </div>
+                      <p class="text-xs text-gray-500">
+                        PDF, DOC, or Images up to 25MB
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- File Preview Section -->
+                  <div *ngIf="paymentData.justificationFile" class="mt-4">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div class="flex items-center space-x-3">
+                        <fa-icon [icon]="paymentData.justificationFile.type.startsWith('image/') ? faImage : faFile"
+                                 class="text-blue-500 text-xl"></fa-icon>
+                        <div>
+                          <p class="text-sm font-medium text-gray-900">
+                            {{ paymentData.justificationFile.name }}
+                          </p>
+                          <p class="text-xs text-gray-500">
+                            {{ (paymentData.justificationFile.size / 1024 / 1024).toFixed(2) }} MB
+                          </p>
+                        </div>
+                      </div>
+                      <button (click)="fileInput.value = ''; paymentData.justificationFile = null; imagePreview = null"
+                              class="text-sm text-red-600 hover:text-red-700">
+                        Remove
+                      </button>
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div *ngIf="imagePreview" class="mt-4">
+                      <p class="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+                      <div class="relative rounded-lg overflow-hidden border border-gray-200">
+                        <img [src]="imagePreview"
+                             alt="File preview"
+                             class="max-h-48 w-full object-contain">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Drag and Drop Zone Directive -->
+                  <div class="mt-2 text-xs text-gray-500 flex items-center justify-center space-x-2">
+                    <fa-icon [icon]="faImage" class="text-gray-400"></fa-icon>
+                    <span>Supported formats: PDF, DOC, JPEG, PNG, GIF, WEBP</span>
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  <input type="hidden"
+                         [(ngModel)]="paymentData.projectId"
+                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                         readonly>
+                </div>
+              </div>
+
+              <!-- Modal Footer -->
+              <div class="px-6 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
+                <button (click)="closePaymentModal()"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  Cancel
+                </button>
+                <button (click)="doPayment()"
+                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  Process Payment
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pay Button in the Table -->
+          <button (click)="openPaymentModal(task)"
+                  [disabled]="task.totalPaid >= task.budgetLimit"
+                  class="px-3 py-1 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  [ngClass]="{'opacity-50 cursor-not-allowed': task.totalPaid >= task.budgetLimit}">
+            {{ task.totalPaid >= task.budgetLimit ? 'Paid' : 'Pay' }}
+          </button>
+
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+</div>

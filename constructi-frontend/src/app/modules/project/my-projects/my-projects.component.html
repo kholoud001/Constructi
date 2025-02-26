@@ -1,0 +1,98 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">My Projects</h1>
+      <div class="flex items-center space-x-2">
+        <fa-icon [icon]="faToolbox" class="text-blue-600"></fa-icon>
+        <span class="text-gray-600">{{ projects.length }} Projects</span>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="flex justify-center items-center min-h-[400px]">
+      <fa-icon [icon]="faSpinner" [spin]="true" class="text-4xl text-blue-600"></fa-icon>
+    </div>
+
+    <div *ngIf="error" class="text-center py-8">
+      <p class="text-red-500">{{ error }}</p>
+    </div>
+
+    <!-- Projects Grid -->
+    <div *ngIf="!loading && !error" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngFor="let project of projects"
+           class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+        <!-- Project Header -->
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex items-center space-x-3">
+              <fa-icon [icon]="faBuilding" class="text-blue-600 text-xl"></fa-icon>
+              <h3 class="text-xl font-bold text-gray-900">{{ project.name }}</h3>
+            </div>
+            <span [class]="'px-3 py-1 rounded-full text-sm ' + getStatusClass(project.state)">
+              {{ project.state }}
+            </span>
+          </div>
+
+          <!-- Project Info -->
+          <div class="space-y-3 mb-6">
+            <div class="flex items-center text-gray-600">
+              <fa-icon [icon]="faCalendarAlt" class="mr-2"></fa-icon>
+              <span>Start: {{ project.startDate | date:'mediumDate' }}</span>
+            </div>
+            <div class="flex items-center text-gray-600">
+              <fa-icon [icon]="faClock" class="mr-2"></fa-icon>
+              <span>End: {{ project.endDate | date:'mediumDate' }}</span>
+            </div>
+            <div *ngIf="userRole === 'ADMIN' || userRole === 'ARCHITECT'" class="flex items-center text-gray-600">
+              <fa-icon [icon]="faMoneyBill" class="mr-2"></fa-icon>
+              <span>Budget: ${{ project.initialBudget }}</span>
+            </div>
+          </div>
+
+          <!-- Progress Circle -->
+          <div class="flex items-center justify-between">
+            <circle-progress
+              [percent]="calculateProgress(project)"
+              [radius]="50"
+              [outerStrokeWidth]="8"
+              [innerStrokeWidth]="4"
+              [outerStrokeColor]="'#4CAF50'"
+              [innerStrokeColor]="'#E0E0E0'"
+              [animation]="true"
+              [showTitle]="true"
+              [showSubtitle]="false"
+              [showUnits]="true"
+              [units]="'%'"
+              [titleFontSize]="20"
+            ></circle-progress>
+
+            <!-- Task Summary -->
+            <div class="text-right">
+              <div class="flex items-center justify-end mb-2">
+                <fa-icon [icon]="faTasks" class="mr-2 text-gray-500"></fa-icon>
+                <span class="text-sm text-gray-600">{{ project.tasks?.length || 0 }} Tasks</span>
+              </div>
+              <div class="flex items-center justify-end">
+                <fa-icon [icon]="faUsers" class="mr-2 text-gray-500"></fa-icon>
+                <span class="text-sm text-gray-600">{{ project.teamSize || 0 }} Members</span>
+              </div>
+            </div>
+          </div>
+
+          <button (click)="viewProject(project.id)"
+                  class="w-full mt-6 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center">
+            View Details
+          </button>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="projects.length === 0" class="col-span-full flex justify-center items-center py-12">
+        <div class="text-center">
+          <fa-icon [icon]="faBuilding" class="text-4xl text-gray-400 mb-4"></fa-icon>
+          <p class="text-gray-600">No projects assigned to you yet</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

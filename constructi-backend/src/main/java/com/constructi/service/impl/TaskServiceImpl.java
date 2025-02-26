@@ -43,6 +43,8 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskMapper.toTaskEntity(taskRequestDTO);
         task.setProject(project);
         task.setUser(authenticatedUser);
+        System.out.println("Task entity before save: " + task);
+
 
         Task savedTask = taskRepository.save(task);
         return taskMapper.toTaskResponseDTO(savedTask);
@@ -114,11 +116,11 @@ public class TaskServiceImpl implements TaskService {
     public TaskResponseDTO assignTaskToWorker(Long taskId, Long workerId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        User architect = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Architect not found"));
+        User admin = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
 
-        if (architect.getRole() == null || architect.getRole().getRoleType() != RoleType.ARCHITECT) {
-            throw new RuntimeException("Only architects can assign tasks");
+        if (admin.getRole() == null || admin.getRole().getRoleType() != RoleType.ADMIN  ) {
+            throw new RuntimeException("Only admin can assign tasks");
         }
 
         Task task = taskRepository.findById(taskId)
@@ -145,6 +147,8 @@ public class TaskServiceImpl implements TaskService {
                 .map(taskMapper::toTaskResponseDTO)
                 .collect(Collectors.toList());
     }
+
+
 
 
 

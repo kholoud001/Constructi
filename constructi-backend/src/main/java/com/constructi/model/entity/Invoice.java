@@ -35,7 +35,16 @@ public class Invoice {
     @Column(name = "state", nullable = false)
     private InvoiceState state;
 
+    @Column(name = "justification_path")
+    private String justificationPath;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "task_id", nullable = false)
+    @NotNull(message = "Invoice must be associated with a task.")
+    private Task task;
+
 }

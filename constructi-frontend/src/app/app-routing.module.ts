@@ -11,6 +11,9 @@ const routes: Routes = [
 
   { path: 'dashboard', loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule) },
 
+  { path: 'projects', loadChildren: () => import('./modules/project/project.module').then(m => m.ProjectModule) },
+
+
   { path: 'unauthorized', component: UnauthorizedComponent },
 
   { path: 'admin', loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule) },

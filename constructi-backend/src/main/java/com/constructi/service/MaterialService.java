@@ -15,4 +15,6 @@ public interface MaterialService {
     MaterialResponseDTO updateMaterial(Long id, MaterialRequestDTO materialRequestDTO);
 
     void deleteMaterial(Long id);
+
+    void purchaseMaterial(Long projectId, Double materialCost);
 }

@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Data
 public class ProjectRequestDTO {
-
     @NotBlank(message = "Project name is required.")
     @Size(max = 100, message = "Project name must not exceed 100 characters.")
     private String name;
@@ -28,11 +27,4 @@ public class ProjectRequestDTO {
     @DecimalMin(value = "0.0", inclusive = false, message = "Initial budget must be greater than 0.")
     @NotNull(message = "Initial budget is required.")
     private Double initialBudget;
-
-    @DecimalMin(value = "0.0", inclusive = false, message = "Actual budget must be greater than 0.")
-    @NotNull(message = "Actual budget is required.")
-    private Double actualBudget;
-
-//    @NotNull(message = "Project must be associated with a user ID.")
-//    private Long userId;
 }

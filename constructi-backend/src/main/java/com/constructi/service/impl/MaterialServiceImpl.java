@@ -4,9 +4,11 @@ import com.constructi.DTO.MaterialRequestDTO;
 import com.constructi.DTO.MaterialResponseDTO;
 import com.constructi.exception.ResourceNotFoundException;
 import com.constructi.mapper.MaterialMapper;
+import com.constructi.model.entity.Budget;
 import com.constructi.model.entity.Material;
 import com.constructi.model.entity.Project;
 import com.constructi.model.entity.Provider;
+import com.constructi.repository.BudgetRepository;
 import com.constructi.repository.MaterialRepository;
 import com.constructi.repository.ProjectRepository;
 import com.constructi.repository.ProviderRepository;
@@ -14,6 +16,7 @@ import com.constructi.service.MaterialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +28,8 @@ public class MaterialServiceImpl implements MaterialService {
     private final ProjectRepository projectRepository;
     private final ProviderRepository providerRepository;
     private final MaterialMapper materialMapper;
+    private final BudgetRepository budgetRepository;
+
 
     @Override
     public MaterialResponseDTO createMaterial(MaterialRequestDTO materialRequestDTO) {
@@ -88,4 +93,25 @@ public class MaterialServiceImpl implements MaterialService {
         }
         materialRepository.deleteById(id);
     }
+
+
+
+    @Override
+    public void purchaseMaterial(Long projectId, Double materialCost) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        project.setActualBudget(project.getActualBudget() + materialCost);
+
+        Budget transaction = new Budget();
+        transaction.setAmount(materialCost);
+        transaction.setTransactionDate(LocalDateTime.now());
+        transaction.setTransactionType("material");
+        transaction.setProject(project);
+
+        budgetRepository.save(transaction);
+
+        projectRepository.save(project);
+    }
+
 }

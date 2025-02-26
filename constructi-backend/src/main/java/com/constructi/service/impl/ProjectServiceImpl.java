@@ -2,6 +2,7 @@ package com.constructi.service.impl;
 
 import com.constructi.DTO.ProjectRequestDTO;
 import com.constructi.DTO.ProjectResponseDTO;
+import com.constructi.DTO.TaskResponseDTO;
 import com.constructi.exception.InvalidProjectDateException;
 import com.constructi.mapper.ProjectMapper;
 import com.constructi.mapper.UserMapper;
@@ -14,6 +15,7 @@ import com.constructi.model.entity.Task;
 import com.constructi.model.enums.ProjectState;
 import com.constructi.model.enums.StatusTask;
 
+import com.constructi.repository.InvoiceRepository;
 import com.constructi.repository.ProjectRepository;
 import com.constructi.repository.UserRepository;
 import com.constructi.service.ProjectService;
@@ -25,20 +27,19 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+@Service("projectService")
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
-    private final UserMapper userMapper;
     private final TaskMapper taskMapper;
     private final BudgetMapper budgetMapper;
     private final UserRepository userRepository;
+    private final InvoiceRepository invoiceRepository;
 
     @Override
     public ProjectResponseDTO createProject(ProjectRequestDTO dto) {
-
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         validateProjectDates(dto.getStartDate(), dto.getEndDate());
 
@@ -47,9 +48,9 @@ public class ProjectServiceImpl implements ProjectService {
 
         Project project = projectMapper.toEntity(dto);
         project.setUser(user);
+        project.setActualBudget(0.0);
 
         project = projectRepository.save(project);
-
         return projectMapper.toDto(project);
     }
 
@@ -78,7 +79,6 @@ public class ProjectServiceImpl implements ProjectService {
         existingProject.setEndDate(dto.getEndDate());
         existingProject.setState(ProjectState.valueOf(dto.getState()));
         existingProject.setInitialBudget(dto.getInitialBudget());
-        existingProject.setActualBudget(dto.getActualBudget());
 
         Project updatedProject = projectRepository.save(existingProject);
 
@@ -103,6 +103,27 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public ProjectResponseDTO getProjectByIdForAssignedUser(Long id) {
+        String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User authenticatedUser = userRepository.findByEmail(authenticatedUserEmail)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + authenticatedUserEmail));
+
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+
+        ProjectResponseDTO projectDTO = projectMapper.toDto(project);
+
+        List<TaskResponseDTO> userTasks = project.getTasks().stream()
+                .filter(task -> task.getUser().getId().equals(authenticatedUser.getId()))
+                .map(taskMapper::toTaskResponseDTO)
+                .collect(Collectors.toList());
+
+        projectDTO.setTasks(userTasks);
+        return projectDTO;
+    }
+
+
+    @Override
     public List<ProjectResponseDTO> getAllProjects() {
         List<Project> projects = projectRepository.findAll();
         return projects.stream()
@@ -117,15 +138,12 @@ public class ProjectServiceImpl implements ProjectService {
         User authenticatedUser = userRepository.findByEmail(authenticatedUserEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found with email: " + authenticatedUserEmail));
 
-        List<Project> myProjects = projectRepository.findAll().stream()
-                .filter(project -> project.getUser().getId().equals(authenticatedUser.getId()))
-                .toList();
+        List<Project> myProjects = projectRepository.findProjectsByAssignedUser(authenticatedUser.getId());
 
         return myProjects.stream()
                 .map(projectMapper::toDto)
                 .collect(Collectors.toList());
     }
-
 
 
     private void validateProjectDates(LocalDate startDate, LocalDate endDate) {
@@ -162,59 +180,33 @@ public class ProjectServiceImpl implements ProjectService {
 //        }
 //    }
 
-    @Override
-    public double getProjectProgress(Long projectId) {
-        Optional<Project> optionalProject = projectRepository.findById(projectId);
-        if (optionalProject.isEmpty()) {
-            throw new RuntimeException("Project not found");
-        }
-
-        Project project = optionalProject.get();
-        List<Task> tasks = project.getTasks();
-
-        if (tasks.isEmpty()) {
-            return 0.0;
-        }
-
-        long completedTasks = tasks.stream()
-                .filter(task -> task.getStatus() == StatusTask.FINISHED)
-                .count();
-
-        return (double) completedTasks / tasks.size() * 100;
-    }
-
-
 
     @Override
     public ProjectResponseDTO getProjectDetails(Long projectId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Projet non trouvé"));
 
-        // Mapper l'entité Project vers DTO
         ProjectResponseDTO responseDTO = projectMapper.toDto(project);
 
-        // Ajouter les tâches sous forme de DTOs
+//        responseDTO.getTasks().forEach(task -> {
+//            Double totalPaid = invoiceRepository.sumAmountByTaskId(task.getId());
+//            task.setTotalPaid(totalPaid != null ? totalPaid : 0.0);
+//        });
+
         responseDTO.setTasks(taskMapper.toDtoList(project.getTasks()));
 
-        // Ajouter les budgets sous forme de DTOs
         responseDTO.setBudgets(budgetMapper.toDtoList(project.getBudgets()));
 
-        // Calcul du progrès du projet
-        responseDTO.setProgress(calculateProjectProgress(project));
 
         return responseDTO;
     }
 
-    private double calculateProjectProgress(Project project) {
-        List<Task> tasks = project.getTasks();
-        if (tasks.isEmpty()) return 0.0;
 
-        long completedTasks = tasks.stream()
-                .filter(task -> task.getStatus() == StatusTask.FINISHED)
-                .count();
-
-        return (double) completedTasks / tasks.size() * 100;
+    @Override
+    public boolean isAssignedToProjectViaTask(String email, Long projectId) {
+        return projectRepository.isUserAssignedToProjectThroughTask(email, projectId);
     }
+
 
 
 

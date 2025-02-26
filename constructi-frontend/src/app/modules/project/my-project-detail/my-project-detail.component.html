@@ -1,0 +1,144 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center h-64">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="text-center py-12">
+    <div class="text-red-600 text-xl">{{ error }}</div>
+    <button (click)="goBack()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+      Return to Projects
+    </button>
+  </div>
+
+  <!-- Project Details -->
+  <div *ngIf="!loading && !error && project" class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex justify-between items-start">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">{{ project.name }}</h1>
+          <p class="mt-2 text-gray-600">{{ project.description }}</p>
+        </div>
+        <button (click)="goBack()"
+                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200">
+          Return to Projects
+        </button>
+      </div>
+
+      <!-- Project Status and Progress -->
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Status -->
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <fa-icon [icon]="faChartLine" class="text-blue-600 text-xl"></fa-icon>
+            <h3 class="ml-2 text-lg font-semibold">Status</h3>
+          </div>
+          <div class="mt-2">
+            <span [class]="'px-3 py-1 rounded-full text-white text-sm ' + getStatusColor(project.state)">
+              {{ project.state }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Dates -->
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <fa-icon [icon]="faCalendar" class="text-blue-600 text-xl"></fa-icon>
+            <h3 class="ml-2 text-lg font-semibold">Timeline</h3>
+          </div>
+          <div class="mt-2 text-sm">
+            <p>Start: {{ formatDate(project.startDate) }}</p>
+            <p>End: {{ formatDate(project.endDate) }}</p>
+          </div>
+        </div>
+
+        <!-- Budget -->
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <fa-icon [icon]="faDollarSign" class="text-blue-600 text-xl"></fa-icon>
+            <h3 class="ml-2 text-lg font-semibold">Budget</h3>
+          </div>
+          <div class="mt-2 text-sm">
+            <p>Initial: ${{ project.initialBudget?.toLocaleString() }}</p>
+            <p>Actual: ${{ project.actualBudget?.toLocaleString() }}</p>
+          </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <fa-icon [icon]="faChartLine" class="text-blue-600 text-xl"></fa-icon>
+            <h3 class="ml-2 text-lg font-semibold">Progress</h3>
+          </div>
+          <div class="mt-2">
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div class="bg-blue-600 h-2.5 rounded-full" [style.width.%]="calculateProgress()"></div>
+            </div>
+            <p class="text-sm mt-1">{{ calculateProgress() }}% Complete</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tasks Section -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <fa-icon [icon]="faTasks" class="text-blue-600 text-xl"></fa-icon>
+        <h2 class="ml-2 text-2xl font-bold">Tasks</h2>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timeline</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time Spent</th>
+          </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let task of project.tasks">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ task.description }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <span [class]="'px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-white ' + getStatusColor(task.status)">
+                  {{ task.status }}
+                </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ formatDate(task.beginDate) }} - {{ formatDate(task.dateEndEstimated) }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ task.effectiveTime }} hours
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Materials Section -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <fa-icon [icon]="faTools" class="text-blue-600 text-xl"></fa-icon>
+        <h2 class="ml-2 text-2xl font-bold">Materials</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let material of project.materials"
+             class="bg-gray-50 rounded-lg p-4 flex items-center">
+          <fa-icon [icon]="faList" class="text-blue-600"></fa-icon>
+          <span class="ml-2">{{ material }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="!project.materials?.length" class="text-gray-500 text-center py-4">
+        No materials listed for this project
+      </div>
+    </div>
+  </div>
+</div>

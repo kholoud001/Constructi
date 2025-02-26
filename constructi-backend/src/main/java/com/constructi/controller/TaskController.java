@@ -2,6 +2,7 @@ package com.constructi.controller;
 
 import com.constructi.DTO.TaskRequestDTO;
 import com.constructi.DTO.TaskResponseDTO;
+import com.constructi.model.entity.Task;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping("/add")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<TaskResponseDTO> createTask(@Valid @RequestBody TaskRequestDTO taskRequestDTO) {
         TaskResponseDTO taskResponseDTO = taskService.createTask(taskRequestDTO);
         return new ResponseEntity<>(taskResponseDTO, HttpStatus.CREATED);
@@ -44,20 +45,13 @@ public class TaskController {
     }
 
     @PutMapping("/update/{taskId}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
 
     public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long taskId,
                                                       @Valid @RequestBody TaskRequestDTO taskRequestDTO) {
         TaskResponseDTO taskResponseDTO = taskService.updateTask(taskId, taskRequestDTO);
         return new ResponseEntity<>(taskResponseDTO, HttpStatus.OK);
     }
-
-//    @GetMapping("/mytasks")
-//    @PreAuthorize("isAuthenticated()")
-//    public ResponseEntity<List<TaskResponseDTO>> getMyTasks() {
-//        List<TaskResponseDTO> tasks = taskService.getMyTasks();
-//        return ResponseEntity.ok(tasks);
-//    }
 
 
     @DeleteMapping("/delete/{taskId}")
@@ -68,7 +62,7 @@ public class TaskController {
     }
 
     @PostMapping("/assign/{taskId}/{workerId}")
-    @PreAuthorize("hasAuthority('ROLE_ARCHITECT')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<TaskResponseDTO> assignTaskToWorker(@PathVariable Long taskId,
                                                               @PathVariable Long workerId) {
         TaskResponseDTO taskResponseDTO = taskService.assignTaskToWorker(taskId, workerId);
@@ -81,6 +75,7 @@ public class TaskController {
         List<TaskResponseDTO> tasks = taskService.getTasksAssignedToWorker();
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
+
 
 
 }

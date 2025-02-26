@@ -1,6 +1,8 @@
 package com.constructi.DTO;
 
 import com.constructi.model.enums.StatusTask;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -26,5 +28,10 @@ public class TaskRequestDTO {
 
     @NotNull(message = "Project ID is required.")
     private Long projectId;
+
+    @DecimalMin(value = "0.0", inclusive = true, message = "Budget limit must be greater than 0.")
+    @JsonProperty("budgetLimit")
+    private Double budgetLimit;
+
 
 }
