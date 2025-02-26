@@ -68,8 +68,14 @@ public class InvoiceServiceImpl implements InvoiceService {
             throw new RuntimeException("Task does not belong to the specified project.");
         }
 
-        if (amount > task.getBudgetLimit()) {
-            throw new RuntimeException("Payment exceeds the task's budget limit.");
+        Double totalPaidForTask = invoiceRepository.sumAmountByTaskId(taskId);
+        if (totalPaidForTask == null) {
+            totalPaidForTask = 0.0;
+        }
+
+        Double remainingBudget = task.getBudgetLimit() - totalPaidForTask;
+        if (amount > remainingBudget) {
+            throw new RuntimeException("Payment exceeds the task's remaining budget limit. Remaining budget: " + remainingBudget);
         }
 
         double projectedBudget = project.getActualBudget() + amount;
@@ -101,7 +107,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         return InvoiceMapper.INSTANCE.toDto(invoice);
     }
-
 
     private String saveJustificationFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {

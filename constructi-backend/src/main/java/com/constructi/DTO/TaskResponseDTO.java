@@ -14,6 +14,7 @@ public class TaskResponseDTO {
     private LocalDate dateEndEstimated;
     private Double effectiveTime;
     private Double budgetLimit;
+    private Double totalPaid;//i added this
     private Long projectId;
     private Long userId;
     private String userEmail;

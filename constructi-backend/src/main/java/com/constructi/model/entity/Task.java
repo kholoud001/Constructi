@@ -8,6 +8,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -46,18 +47,21 @@ public class Task {
     @Column(name = "budget_limit", nullable = false)
     private Double budgetLimit;
 
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Invoice> invoices;
+
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     @NotNull(message = "Task must be associated with at least one project.")
     @JsonBackReference
-    @ToString.Exclude // Avoid circular reference in toString()
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Project project;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @ToString.Exclude // Avoid circular reference in toString()
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private User user;
 

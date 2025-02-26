@@ -15,6 +15,7 @@ import com.constructi.model.entity.Task;
 import com.constructi.model.enums.ProjectState;
 import com.constructi.model.enums.StatusTask;
 
+import com.constructi.repository.InvoiceRepository;
 import com.constructi.repository.ProjectRepository;
 import com.constructi.repository.UserRepository;
 import com.constructi.service.ProjectService;
@@ -32,10 +33,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
-    private final UserMapper userMapper;
     private final TaskMapper taskMapper;
     private final BudgetMapper budgetMapper;
     private final UserRepository userRepository;
+    private final InvoiceRepository invoiceRepository;
 
     @Override
     public ProjectResponseDTO createProject(ProjectRequestDTO dto) {
@@ -186,6 +187,11 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(() -> new RuntimeException("Projet non trouvé"));
 
         ProjectResponseDTO responseDTO = projectMapper.toDto(project);
+
+        responseDTO.getTasks().forEach(task -> {
+            Double totalPaid = invoiceRepository.sumAmountByTaskId(task.getId());
+            task.setTotalPaid(totalPaid != null ? totalPaid : 0.0);
+        });
 
         responseDTO.setTasks(taskMapper.toDtoList(project.getTasks()));
 

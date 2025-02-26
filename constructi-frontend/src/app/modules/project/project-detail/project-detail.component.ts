@@ -51,7 +51,8 @@ export class ProjectDetailComponent implements OnInit {
     userId: 0,
     amount: 0,
     justificationFile: null as File | null,
-    projectId: 0
+    projectId: 0,
+    taskId: 0
   };
 
   constructor(
@@ -66,7 +67,12 @@ export class ProjectDetailComponent implements OnInit {
     this.projectService.getProjectDetails(id).subscribe((data) => {
       this.project = data;
       this.progress = data.progress || 0;
-      console.log("projets => ", this.project)
+
+      this.project.tasks.forEach((task: { totalPaid: any; invoices: any[]; }) => {
+        task.totalPaid = task.invoices?.reduce((sum, invoice) => sum + invoice.amount, 0) || 0;
+      });
+
+      console.log("projets => ", this.project);
 
       if (this.project.initialBudget < this.project.actualBudget) {
         this.alertMessage = `⚠️ Alert: The actual budget (${this.project.actualBudget}) is higher than the initial budget (${this.project.initialBudget}). Please review expenses.`;
@@ -77,7 +83,6 @@ export class ProjectDetailComponent implements OnInit {
         });
       }
 
-
       this.userService.getUserById(this.project.userId).subscribe((userData) => {
         this.user = userData;
         this.userName = userData.lname;
@@ -86,7 +91,6 @@ export class ProjectDetailComponent implements OnInit {
       });
     });
   }
-
 
   toggleUserDetails(): void {
     this.showUserDetails = !this.showUserDetails;
@@ -98,7 +102,8 @@ export class ProjectDetailComponent implements OnInit {
 
   openPaymentModal(task: any) {
     this.paymentData.userId = task.userId;
-    this.paymentData.projectId = this.project.id;
+    this.paymentData.projectId = task.projectId;
+    this.paymentData.taskId = task.id;
     this.isPaymentModalOpen = true;
   }
 
@@ -111,9 +116,10 @@ export class ProjectDetailComponent implements OnInit {
     const userId = Number(this.paymentData.userId);
     const amount = Number(this.paymentData.amount);
     const projectId = this.paymentData.projectId;
+    const taskId = this.paymentData.taskId;
     const justificationFile = this.paymentData.justificationFile;
 
-    if (!userId || !projectId) {
+    if (!userId || !projectId || !taskId) {
       Swal.fire({
         icon: 'warning',
         title: 'Données manquantes',
@@ -162,14 +168,14 @@ export class ProjectDetailComponent implements OnInit {
       cancelButtonText: 'Annuler'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.payUser(userId, amount, justificationFile, projectId);
+        this.payUser(userId, amount, justificationFile, projectId, taskId); // Pass taskId
         this.closePaymentModal();
       }
     });
   }
 
 
-  payUser(userId: number, amount: number, fileInput: File, projectId: number) {
+  payUser(userId: number, amount: number, fileInput: File, projectId: number, taskId: number) {
     Swal.fire({
       title: 'Traitement en cours',
       text: 'Veuillez patienter pendant le traitement du paiement...',
@@ -179,7 +185,7 @@ export class ProjectDetailComponent implements OnInit {
       }
     });
 
-    this.invoiceService.paySomeone(userId, amount, fileInput, projectId).subscribe({
+    this.invoiceService.paySomeone(userId, amount, fileInput, projectId, taskId).subscribe({
       next: (response) => {
         Swal.fire({
           icon: 'success',
@@ -197,7 +203,7 @@ export class ProjectDetailComponent implements OnInit {
         } else if (err.status === 403) {
           errorMessage = 'Vous n\'avez pas les droits nécessaires pour effectuer ce paiement.';
         } else if (err.status === 404) {
-          errorMessage = 'Utilisateur ou projet non trouvé.';
+          errorMessage = 'Utilisateur, projet ou tâche non trouvé.';
         }
 
         Swal.fire({
