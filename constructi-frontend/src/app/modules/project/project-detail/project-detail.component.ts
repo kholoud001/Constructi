@@ -69,7 +69,7 @@ export class ProjectDetailComponent implements OnInit {
       console.log("projets => ", this.project)
 
       if (this.project.initialBudget < this.project.actualBudget) {
-        this.alertMessage = `⚠️ Alert: The initial budget (${this.project.initialBudget}) is higher than the actual budget (${this.project.actualBudget}). Please review expenses.`;
+        this.alertMessage = `⚠️ Alert: The actual budget (${this.project.actualBudget}) is higher than the initial budget (${this.project.initialBudget}). Please review expenses.`;
         Swal.fire({
           icon: 'warning',
           title: 'Budget Alert',

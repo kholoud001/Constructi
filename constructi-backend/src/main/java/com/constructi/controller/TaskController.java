@@ -24,7 +24,7 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping("/add")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<TaskResponseDTO> createTask(@Valid @RequestBody TaskRequestDTO taskRequestDTO) {
         TaskResponseDTO taskResponseDTO = taskService.createTask(taskRequestDTO);
         return new ResponseEntity<>(taskResponseDTO, HttpStatus.CREATED);
@@ -45,20 +45,13 @@ public class TaskController {
     }
 
     @PutMapping("/update/{taskId}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
 
     public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long taskId,
                                                       @Valid @RequestBody TaskRequestDTO taskRequestDTO) {
         TaskResponseDTO taskResponseDTO = taskService.updateTask(taskId, taskRequestDTO);
         return new ResponseEntity<>(taskResponseDTO, HttpStatus.OK);
     }
-
-//    @GetMapping("/mytasks")
-//    @PreAuthorize("isAuthenticated()")
-//    public ResponseEntity<List<TaskResponseDTO>> getMyTasks() {
-//        List<TaskResponseDTO> tasks = taskService.getMyTasks();
-//        return ResponseEntity.ok(tasks);
-//    }
 
 
     @DeleteMapping("/delete/{taskId}")
@@ -69,7 +62,7 @@ public class TaskController {
     }
 
     @PostMapping("/assign/{taskId}/{workerId}")
-    @PreAuthorize("hasAuthority('ROLE_ARCHITECT')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<TaskResponseDTO> assignTaskToWorker(@PathVariable Long taskId,
                                                               @PathVariable Long workerId) {
         TaskResponseDTO taskResponseDTO = taskService.assignTaskToWorker(taskId, workerId);
@@ -83,10 +76,6 @@ public class TaskController {
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
-//    @GetMapping("/project/{projectId}")
-//    public ResponseEntity<List<TaskResponseDTO>> getTasksByProject(@PathVariable Long projectId) {
-//        return ResponseEntity.ok(taskService.getTasksByProjectId(projectId));
-//    }
 
 
 }

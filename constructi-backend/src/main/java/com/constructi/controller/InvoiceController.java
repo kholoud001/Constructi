@@ -31,9 +31,10 @@ public class InvoiceController {
             @RequestParam Long userId,
             @RequestParam Double amount,
             @RequestParam("justificationFile") MultipartFile justificationFile,
-            @RequestParam Long projectId) {
+            @RequestParam Long projectId,
+            @RequestParam Long taskId) {
 
-        InvoiceResponseDTO response = invoiceService.paySomeone(userId, amount, justificationFile, projectId);
+        InvoiceResponseDTO response = invoiceService.paySomeone(userId, amount, justificationFile, projectId, taskId);
         return ResponseEntity.ok(response);
     }
 

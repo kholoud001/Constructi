@@ -52,10 +52,11 @@ public class Project {
     @Column(name = "initial_budget", nullable = false)
     private Double initialBudget;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "Actual budget must be greater than 0.")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Actual budget must be at least 0.")
     @NotNull(message = "Actual budget is required.")
     @Column(name = "actual_budget", nullable = false)
-    private Double actualBudget;
+    private Double actualBudget = 0.0;
+
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonManagedReference

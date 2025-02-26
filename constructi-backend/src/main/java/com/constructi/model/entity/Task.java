@@ -44,6 +44,11 @@ public class Task {
     @Column(name = "effective_time")
     private Double effectiveTime;
 
+    @DecimalMin(value = "0.0", inclusive = true, message = "Budget limit must be greater than 0.")
+    @Column(name = "budget_limit", nullable = false)
+    private Double budgetLimit;
+
+
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     @NotNull(message = "Task must be associated with at least one project.")

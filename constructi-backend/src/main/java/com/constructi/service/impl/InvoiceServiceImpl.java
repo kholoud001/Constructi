@@ -2,16 +2,10 @@ package com.constructi.service.impl;
 
 import com.constructi.DTO.InvoiceResponseDTO;
 import com.constructi.mapper.InvoiceMapper;
-import com.constructi.model.entity.Budget;
-import com.constructi.model.entity.Invoice;
-import com.constructi.model.entity.Project;
-import com.constructi.model.entity.User;
+import com.constructi.model.entity.*;
 import com.constructi.model.enums.InvoiceState;
-import com.constructi.repository.BudgetRepository;
-import com.constructi.repository.ProjectRepository;
+import com.constructi.repository.*;
 import com.constructi.service.InvoiceService;
-import com.constructi.repository.UserRepository;
-import com.constructi.repository.InvoiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +27,8 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final BudgetRepository budgetRepository;
+    private final TaskRepository taskRepository;
+
 
 
     @Override
@@ -58,9 +54,24 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public InvoiceResponseDTO paySomeone(Long userId, Double amount, MultipartFile justificationFile, Long projectId) {
+    public InvoiceResponseDTO paySomeone(Long userId, Double amount, MultipartFile justificationFile, Long projectId, Long taskId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        if (amount > task.getBudgetLimit()) {
+            throw new RuntimeException("Payment exceeds the task's budget limit.");
+        }
+
+        double projectedBudget = project.getActualBudget() + amount;
+        if (projectedBudget > project.getInitialBudget()) {
+            throw new RuntimeException("Payment exceeds the project's initial budget.");
+        }
 
         String filePath = saveJustificationFile(justificationFile);
 
@@ -70,12 +81,12 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setEmissionDate(LocalDateTime.now());
         invoice.setState(InvoiceState.PAID);
         invoice.setJustificationPath(filePath);
+        invoice.setTask(task);
 
         invoice = invoiceRepository.save(invoice);
 
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
-        project.setActualBudget(project.getActualBudget() + amount);
+        project.setActualBudget(projectedBudget);
+        projectRepository.save(project);
 
         Budget transaction = new Budget();
         transaction.setAmount(amount);
@@ -83,8 +94,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         transaction.setTransactionType("payment");
         transaction.setProject(project);
         budgetRepository.save(transaction);
-
-        projectRepository.save(project);
 
         return InvoiceMapper.INSTANCE.toDto(invoice);
     }

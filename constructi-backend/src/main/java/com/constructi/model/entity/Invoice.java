@@ -41,4 +41,10 @@ public class Invoice {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "task_id", nullable = false)
+    @NotNull(message = "Invoice must be associated with a task.")
+    private Task task;
+
 }

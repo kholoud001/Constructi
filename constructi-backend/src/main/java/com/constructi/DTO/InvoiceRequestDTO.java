@@ -15,4 +15,11 @@ public class InvoiceRequestDTO {
     @DecimalMin(value = "0.0", inclusive = false, message = "Amount must be greater than 0.")
     @NotNull(message = "Amount is required.")
     private Double amount;
+
+    @NotNull(message = "Project ID is required.")
+    private Long projectId;
+
+    @NotNull(message = "Task ID is required.")
+    private Long taskId;
+
 }

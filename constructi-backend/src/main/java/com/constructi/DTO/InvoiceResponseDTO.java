@@ -13,4 +13,6 @@ public class InvoiceResponseDTO {
     private InvoiceState state;
     private String justificationPath;
     private Long userId;
+    private Long projectId;
+    private Long taskId;  
 }

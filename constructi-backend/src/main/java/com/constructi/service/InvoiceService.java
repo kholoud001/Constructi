@@ -15,7 +15,9 @@ public interface InvoiceService {
 
 //    InvoiceResponseDTO paySomeone(Long userId, Double amount, MultipartFile justificationFile);
 
-    InvoiceResponseDTO paySomeone(Long userId, Double amount, MultipartFile justificationFile, Long projectId);
+//    InvoiceResponseDTO paySomeone(Long userId, Double amount, MultipartFile justificationFile, Long projectId);
+
+    InvoiceResponseDTO paySomeone(Long userId, Double amount, MultipartFile justificationFile, Long projectId, Long taskId);
 
     List<InvoiceResponseDTO> getUserInvoices(Long userId);
 }

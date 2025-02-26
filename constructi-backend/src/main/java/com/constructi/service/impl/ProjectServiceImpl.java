@@ -39,7 +39,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponseDTO createProject(ProjectRequestDTO dto) {
-
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         validateProjectDates(dto.getStartDate(), dto.getEndDate());
 
@@ -48,11 +47,12 @@ public class ProjectServiceImpl implements ProjectService {
 
         Project project = projectMapper.toEntity(dto);
         project.setUser(user);
+        project.setActualBudget(0.0);
 
         project = projectRepository.save(project);
-
         return projectMapper.toDto(project);
     }
+
 
 
 
@@ -79,7 +79,6 @@ public class ProjectServiceImpl implements ProjectService {
         existingProject.setEndDate(dto.getEndDate());
         existingProject.setState(ProjectState.valueOf(dto.getState()));
         existingProject.setInitialBudget(dto.getInitialBudget());
-        existingProject.setActualBudget(dto.getActualBudget());
 
         Project updatedProject = projectRepository.save(existingProject);
 

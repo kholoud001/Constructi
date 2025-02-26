@@ -25,8 +25,6 @@ public interface TaskService {
 
     List<TaskResponseDTO> getTasksAssignedToWorker();
 
-//    List<TaskResponseDTO> getTasksByProjectId(Long projectId);
-
 
 //    List<TaskResponseDTO> getMyTasks();
 }

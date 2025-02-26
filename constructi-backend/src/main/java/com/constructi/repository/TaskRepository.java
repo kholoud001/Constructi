@@ -16,11 +16,6 @@ public interface TaskRepository extends JpaRepository<Task,Long> {
     List<Task> findByUserId(Long userId);
     List<Task> findByUser(User user);
 
-//        @Query("SELECT new com.constructi.DTO.TaskResponseDTO( " +
-//                "t.id, t.description, t.status, t.beginDate, t.dateEndEstimated, t.effectiveTime, " +
-//                "t.project.id, u.id, u.email) " +
-//                "FROM Task t JOIN t.user u WHERE t.project.id = :projectId")
-//        List<TaskResponseDTO> findTasksByProjectId(@Param("projectId") Long projectId);
 
 
 }
