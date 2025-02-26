@@ -11,6 +11,19 @@ export class InvoiceService {
   constructor(private http: HttpClient) {}
 
   /**
+   * Pay someone and attach justification file
+   */
+  paySomeone(userId: number, amount: number, justificationFile: File, projectId: number, taskId: number): Observable<any> {
+    const formData = new FormData();
+    formData.append('userId', userId.toString());
+    formData.append('amount', amount.toString());
+    formData.append('justificationFile', justificationFile);
+    formData.append('projectId', projectId.toString());
+    formData.append('taskId', taskId.toString()); // Add taskId
+
+    return this.http.post(`${this.apiUrl}/pay`, formData);
+  }
+  /**
    * Get invoices for the logged-in user
    */
   getMyInvoices(userId: number): Observable<any> {
@@ -25,17 +38,5 @@ export class InvoiceService {
     return this.http.get(`${this.apiUrl}/user/${userId}`);
   }
 
-  /**
-   * Pay someone and attach justification file
-   */
-  paySomeone(userId: number, amount: number, justificationFile: File, projectId: number, taskId: number): Observable<any> {
-    const formData = new FormData();
-    formData.append('userId', userId.toString());
-    formData.append('amount', amount.toString());
-    formData.append('justificationFile', justificationFile);
-    formData.append('projectId', projectId.toString());
-    formData.append('taskId', taskId.toString()); // Add taskId
 
-    return this.http.post(`${this.apiUrl}/pay`, formData);
-  }
 }
