@@ -1,0 +1,46 @@
+<div class="container mx-auto p-6">
+  <!-- Task Details Header -->
+  <div class="flex items-center gap-2 mb-6">
+    <fa-icon [icon]="faCreditCard" class="text-blue-600"></fa-icon>
+    <h3 class="text-2xl font-bold">Payment Processing Details</h3>
+  </div>
+
+  <!-- Task Description -->
+  <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+    <h4 class="text-xl font-semibold text-gray-800">Task Description</h4>
+    <p class="text-gray-600 mt-2">{{ taskDetails?.description }}</p>
+  </div>
+
+  <!-- Budget and Payment Status -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <h4 class="text-lg font-semibold text-gray-800">Budget Limit</h4>
+      <p class="text-gray-600 mt-2">${{ taskDetails?.budgetLimit }}</p>
+    </div>
+
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <h4 class="text-lg font-semibold text-gray-800">Total Paid</h4>
+      <p class="text-gray-600 mt-2">${{ taskDetails?.totalPaid }}</p>
+    </div>
+  </div>
+
+  <!-- Payment Status -->
+  <div class="bg-white p-4 rounded-lg shadow-md mt-6">
+    <h4 class="text-lg font-semibold text-gray-800">Payment Status</h4>
+    <p class="text-gray-600 mt-2">{{ taskDetails?.paymentStatus }}</p>
+  </div>
+
+  <!-- Invoice -->
+  <div class="bg-white p-4 rounded-lg shadow-md mt-6">
+    <h4 class="text-lg font-semibold text-gray-800">Invoice</h4>
+    <p class="text-gray-600 mt-2">{{ taskDetails?.invoice }}</p>
+  </div>
+
+  <!-- Payment Button -->
+  <div class="mt-6 flex justify-end">
+    <button (click)="processPayment()"
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+      Process Payment
+    </button>
+  </div>
+</div>

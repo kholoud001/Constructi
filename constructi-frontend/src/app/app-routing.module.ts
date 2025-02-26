@@ -13,6 +13,7 @@ const routes: Routes = [
 
   { path: 'projects', loadChildren: () => import('./modules/project/project.module').then(m => m.ProjectModule) },
 
+  { path: 'tasks', loadChildren: () => import('./modules/task/task.module').then(m => m.TaskModule) },
 
   { path: 'unauthorized', component: UnauthorizedComponent },
 

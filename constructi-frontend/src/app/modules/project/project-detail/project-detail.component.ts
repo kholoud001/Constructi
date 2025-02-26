@@ -4,9 +4,9 @@ import { ProjectService } from '../project.service';
 import Swal from 'sweetalert2';
 import { UserService } from '../../user/user.service';
 import {
-  faEnvelope, faUser, faCalendar, faPhone, faDollarSign,faImage,faFile,
-  faTasks, faTools, faChevronDown, faProjectDiagram,faCloudUpload,
-  faClock, faExclamationTriangle, faBoxOpen, faClipboardList,faTimes
+  faEnvelope, faUser, faCalendar, faPhone, faDollarSign, faImage, faFile,
+  faTasks, faTools, faChevronDown, faProjectDiagram, faCloudUpload,
+  faClock, faExclamationTriangle, faBoxOpen, faClipboardList, faTimes, faExchangeAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { InvoiceService } from '../../invoice/invoice.service';
 
@@ -34,6 +34,8 @@ export class ProjectDetailComponent implements OnInit {
   faCloudUpload = faCloudUpload
   faImage = faImage;
   faFile = faFile;
+  faExchangeAlt = faExchangeAlt;
+
 
   project: any;
   progress: number = 0;
@@ -68,13 +70,12 @@ export class ProjectDetailComponent implements OnInit {
       this.project = data;
       this.progress = data.progress || 0;
 
-      // Check if tasks exist and calculate totalPaid if invoices are present
       if (this.project.tasks && this.project.tasks.length > 0) {
         this.project.tasks.forEach((task: any) => {
           if (task.invoices && task.invoices.length > 0) {
             task.totalPaid = task.invoices.reduce((sum: number, invoice: any) => sum + invoice.amount, 0);
           } else {
-            task.totalPaid = task.totalPaid || 0; // Use the totalPaid from the task if invoices are not present
+            task.totalPaid = task.totalPaid || 0;
           }
         });
       }
@@ -98,6 +99,7 @@ export class ProjectDetailComponent implements OnInit {
       });
     });
   }
+
   toggleUserDetails(): void {
     this.showUserDetails = !this.showUserDetails;
     const detailsElement = document.querySelector('.animate-fade-in');
