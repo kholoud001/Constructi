@@ -77,12 +77,14 @@
         <!-- Projet -->
         <div class="space-y-2">
           <label for="projectId" class="block text-sm font-medium text-gray-700">Projet</label>
-          <input type="number" id="projectId" formControlName="projectId"
-                 class="block w-full pl-10 pr-3 py-2 border rounded-md"
-                 [ngClass]="{'border-red-300': projectId?.invalid && projectId?.touched}"
-                 placeholder="Entrez l'ID du projet" min="1">
+          <select id="projectId" formControlName="projectId"
+                  class="block w-full pl-10 pr-3 py-2 border rounded-md"
+                  [ngClass]="{'border-red-300': projectId?.invalid && projectId?.touched}">
+            <option value="" disabled>Sélectionnez un projet</option>
+            <option *ngFor="let project of projects" [value]="project.id">{{ project.name }}</option>
+          </select>
           <div *ngIf="projectId?.invalid && projectId?.touched" class="text-sm text-red-600">
-            <span *ngIf="projectId?.errors?.['required']">L'ID du projet est requis.</span>
+            <span *ngIf="projectId?.errors?.['required']">Le projet est requis.</span>
           </div>
         </div>
 

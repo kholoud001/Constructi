@@ -13,6 +13,7 @@ import {
   faBuilding,
   faProjectDiagram
 } from '@fortawesome/free-solid-svg-icons';
+import {ProjectService} from '../../project/project.service';
 
 @Component({
   selector: 'app-material-update',
@@ -24,10 +25,10 @@ export class MaterialUpdateComponent implements OnInit {
   materialForm!: FormGroup;
   loading = false;
   providers: ProviderResponseDTO[] = [];
+  projects: any[] = [];
   materialId!: number;
   material!: MaterialResponseDTO;
 
-  // Icons
   faBox = faBox;
   faSave = faSave;
   faArrowLeft = faArrowLeft;
@@ -40,35 +41,32 @@ export class MaterialUpdateComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private materialService: MaterialService,
+    private projectService: ProjectService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    // Initialiser le formulaire
     this.materialForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       quantity: [null, [Validators.required, Validators.min(0)]],
       priceUnit: [null, [Validators.required, Validators.min(0)]],
       providerId: ['', Validators.required],
-      projectId: [null, [Validators.required, Validators.min(1)]]
+      projectId: ['', Validators.required] // Remove Validators.min(1) for select input
     });
 
-    // Récupérer l'ID du matériel à mettre à jour depuis l'URL
     this.materialId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.materialId) {
       this.loadMaterial(this.materialId);
     }
-
-    // Charger la liste des fournisseurs
     this.loadProviders();
+    this.loadProjects();
   }
 
   loadMaterial(id: number): void {
     this.materialService.getMaterialById(id).subscribe({
       next: (data) => {
         this.material = data;
-        // Pré-remplir le formulaire avec les données du matériel
         this.materialForm.patchValue({
           name: data.name,
           quantity: data.quantity,
@@ -92,6 +90,18 @@ export class MaterialUpdateComponent implements OnInit {
       error: (error) => {
         console.error('Erreur lors du chargement des fournisseurs :', error);
         Swal.fire('Erreur', 'Impossible de charger la liste des fournisseurs', 'error');
+      }
+    });
+  }
+
+  loadProjects(): void {
+    this.projectService.getProjects().subscribe({
+      next: (data) => {
+        this.projects = data; // Store projects in the array
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des projets :', error);
+        Swal.fire('Erreur', 'Impossible de charger la liste des projets', 'error');
       }
     });
   }
