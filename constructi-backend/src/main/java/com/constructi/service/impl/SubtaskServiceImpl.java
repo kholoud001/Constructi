@@ -37,6 +37,7 @@ public class SubtaskServiceImpl implements SubtaskService {
         return subtaskMapper.toSubtaskResponseDTO(savedSubtask);
     }
 
+
     @Override
     public SubtaskResponseDTO updateSubtask(Long subtaskId, SubtaskRequestDTO subtaskRequestDTO) {
         Subtask existingSubtask = subtaskRepository.findById(subtaskId)
@@ -88,15 +89,5 @@ public class SubtaskServiceImpl implements SubtaskService {
         return subtaskMapper.toSubtaskResponseDTO(approvedSubtask);
     }
 
-    @Override
-    public List<SubtaskResponseDTO> getMyAssignedSubtasks() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return subtaskRepository.findByUserId(user.getId())
-                .stream()
-                .map(subtaskMapper::toSubtaskResponseDTO)
-                .toList();
-    }
 }

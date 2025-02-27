@@ -27,7 +27,7 @@ public class SubtaskController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT', 'ROLE_WORKER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<SubtaskResponseDTO>> getAllSubtasks() {
         List<SubtaskResponseDTO> subtasks = subtaskService.getAllSubtasks();
         return new ResponseEntity<>(subtasks, HttpStatus.OK);
@@ -56,7 +56,7 @@ public class SubtaskController {
     }
 
     @GetMapping("/parent/{parentTaskId}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT', 'ROLE_WORKER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<SubtaskResponseDTO>> getSubtasksByParentTaskId(@PathVariable Long parentTaskId) {
         List<SubtaskResponseDTO> subtasks = subtaskService.getSubtasksByParentTaskId(parentTaskId);
         return new ResponseEntity<>(subtasks, HttpStatus.OK);
@@ -68,4 +68,6 @@ public class SubtaskController {
         SubtaskResponseDTO subtaskResponseDTO = subtaskService.approveSubtask(subtaskId);
         return new ResponseEntity<>(subtaskResponseDTO, HttpStatus.OK);
     }
+
+
 }

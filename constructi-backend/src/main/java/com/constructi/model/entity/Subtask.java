@@ -48,11 +48,6 @@ public class Subtask {
     @NotNull(message = "Subtask must be associated with a parent task.")
     private Task parentTask;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private User user;
 }
 
 

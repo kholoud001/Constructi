@@ -20,5 +20,7 @@ public class TaskResponseDTO {
     private Long projectId;
     private Long userId;
     private String userEmail;
+    private Double progress;
+    private List<SubtaskResponseDTO> subtasks;
 
 }

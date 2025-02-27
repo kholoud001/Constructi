@@ -28,6 +28,5 @@ public class SubtaskRequestDTO {
     @NotNull(message = "Parent task ID is required.")
     private Long parentTaskId;
 
-    @NotNull(message = "Assigned user ID is required.")
-    private Long userId;
+
 }

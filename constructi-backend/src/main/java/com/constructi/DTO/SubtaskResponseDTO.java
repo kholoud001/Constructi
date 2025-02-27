@@ -14,7 +14,5 @@ public class SubtaskResponseDTO {
     private LocalDate dateEndEstimated;
     private Double effectiveTime;
     private Long parentTaskId;
-    private Long userId;
-    private String userEmail;
     private boolean approved;
 }

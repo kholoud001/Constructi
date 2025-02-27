@@ -17,6 +17,7 @@ public interface TaskMapper {
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.email", target = "userEmail")
     @Mapping(source = "invoices", target = "totalPaid", qualifiedByName = "calculateTotalPaid")
+    @Mapping(target = "progress", expression = "java(calculateTaskProgress(task.getId()))")
     TaskResponseDTO toTaskResponseDTO(Task task);
 
     @Mapping(source = "projectId", target = "project.id")
@@ -36,5 +37,9 @@ public interface TaskMapper {
                 .sum();
     }
 
+
+    default Double calculateTaskProgress(Task task) {
+        return 0.0;
+    }
 
 }

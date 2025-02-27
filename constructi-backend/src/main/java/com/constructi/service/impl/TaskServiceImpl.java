@@ -3,7 +3,7 @@ package com.constructi.service.impl;
 import com.constructi.DTO.TaskRequestDTO;
 import com.constructi.DTO.TaskResponseDTO;
 import com.constructi.exception.TaskNotFoundException;
-import com.constructi.mapper.InvoiceMapper;
+import com.constructi.mapper.SubtaskMapper;
 import com.constructi.mapper.TaskMapper;
 import com.constructi.model.entity.Project;
 import com.constructi.model.entity.Subtask;
@@ -12,6 +12,7 @@ import com.constructi.model.entity.User;
 import com.constructi.model.enums.RoleType;
 import com.constructi.model.enums.StatusTask;
 import com.constructi.repository.ProjectRepository;
+import com.constructi.repository.SubtaskRepository;
 import com.constructi.repository.TaskRepository;
 import com.constructi.repository.UserRepository;
 import com.constructi.service.TaskService;
@@ -31,8 +32,8 @@ public class TaskServiceImpl implements TaskService {
     private final TaskMapper taskMapper;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
-    private final InvoiceMapper invoiceMapper;
-
+    private final SubtaskRepository subtaskRepository;
+    private final SubtaskMapper subtaskMapper;
 
     @Override
     public TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO) {
@@ -89,18 +90,39 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.deleteById(taskId);
     }
 
-    @Override
-    public List<TaskResponseDTO> getAllTasks() {
-        List<Task> tasks = taskRepository.findAll();
-        return tasks.stream().map(taskMapper::toTaskResponseDTO).toList();
-    }
 
     @Override
     public TaskResponseDTO getTaskById(Long taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
-        return taskMapper.toTaskResponseDTO(task);
+
+        TaskResponseDTO dto = taskMapper.toTaskResponseDTO(task);
+        dto.setProgress(calculateTaskProgress(taskId));
+        return dto;
     }
+
+    @Override
+    public List<TaskResponseDTO> getAllTasks() {
+        return taskRepository.findAll().stream()
+                .map(task -> {
+                    TaskResponseDTO dto = taskMapper.toTaskResponseDTO(task);
+                    dto.setProgress(calculateTaskProgress(task.getId()));
+                    return dto;
+                })
+                .toList();
+    }
+//    @Override
+//    public List<TaskResponseDTO> getAllTasks() {
+//        List<Task> tasks = taskRepository.findAll();
+//        return tasks.stream().map(taskMapper::toTaskResponseDTO).toList();
+//    }
+
+//    @Override
+//    public TaskResponseDTO getTaskById(Long taskId) {
+//        Task task = taskRepository.findById(taskId)
+//                .orElseThrow(() -> new RuntimeException("Task not found"));
+//        return taskMapper.toTaskResponseDTO(task);
+//    }
 
     @Override
     public List<TaskResponseDTO> getMyTasks() {
@@ -161,6 +183,24 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.toTaskResponseDTO(task);
     }
 
+
+
+    public Double calculateTaskProgress(Long taskId) {
+        List<Subtask> subtasks = subtaskRepository.findByParentTaskId(taskId);
+
+        if (subtasks.isEmpty()) return 0.0;
+
+        long approvedCompleted = subtasks.stream()
+                .filter(s -> s.getStatus() == StatusTask.FINISHED && s.isApproved())
+                .count();
+
+        return (double) approvedCompleted / subtasks.size() * 100;
+    }
+
+    @Override
+    public Double getTaskProgress(Long taskId) {
+        return calculateTaskProgress(taskId);
+    }
 }
 
 

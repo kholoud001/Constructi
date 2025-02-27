@@ -20,5 +20,4 @@ public interface SubtaskService {
 
     SubtaskResponseDTO approveSubtask(Long subtaskId);
 
-    List<SubtaskResponseDTO> getMyAssignedSubtasks();
 }

@@ -66,12 +66,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/materials/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/materials/**").hasAnyAuthority("ROLE_ADMIN","ROLE_ARCHITECT")
                         .requestMatchers(HttpMethod.DELETE, "/materials/**").hasAuthority("ROLE_ADMIN")
-
                         .requestMatchers(HttpMethod.GET, "/invoices/my").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT", "ROLE_WORKER")
                         .requestMatchers(HttpMethod.GET, "/invoices/user/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/invoices/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/invoices/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/invoices/**").hasAuthority("ROLE_ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/subtasks/my-tasks").hasAnyAuthority( "ROLE_ARCHITECT", "ROLE_WORKER")
+                        .requestMatchers(HttpMethod.GET, "/subtasks/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/subtasks/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/subtasks/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/subtasks/**").hasAuthority("ROLE_ADMIN")
 
                         .requestMatchers("/resources/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/reports/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT")
