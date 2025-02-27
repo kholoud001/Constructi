@@ -30,12 +30,10 @@ export class AuthService {
     try {
       const decodedToken: any = jwtDecode(token);
 
-      // Check if the token is expired
-      const currentTime = Date.now() / 1000; // Current time in seconds
+      const currentTime = Date.now() / 1000;
       if (decodedToken.exp < currentTime) {
-        // Token is expired
-        this.removeToken();  // Remove expired token
-        return null;  // Return null as the token is no longer valid
+        this.removeToken();
+        return null;
       }
 
       return decodedToken;

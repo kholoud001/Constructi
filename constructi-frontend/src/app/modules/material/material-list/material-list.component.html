@@ -1,1 +1,139 @@
-<p>material-list works!</p>
+<!-- material-list.component.html -->
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header Section -->
+    <div class="mb-8">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="flex items-center gap-3">
+          <div class="p-3 bg-blue-100 rounded-lg">
+            <fa-icon [icon]="faWarehouse" class="text-blue-600 text-xl"></fa-icon>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Gestion des Matériaux</h2>
+            <p class="text-sm text-gray-500">Gérez votre inventaire de matériaux</p>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-3">
+          <button (click)="refreshList()"
+                  class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+            <fa-icon [icon]="faSync" class="mr-2"></fa-icon>
+            Actualiser
+          </button>
+          <a routerLink="/materials/add"
+             class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+            <fa-icon [icon]="faPlus" class="mr-2"></fa-icon>
+            Ajouter un Matériel
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center gap-3">
+          <div class="p-3 bg-blue-100 rounded-lg">
+            <fa-icon [icon]="faBox" class="text-blue-600"></fa-icon>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Total Articles</p>
+            <p class="text-xl font-bold text-gray-900">{{ materials.length }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center gap-3">
+          <div class="p-3 bg-green-100 rounded-lg">
+            <fa-icon [icon]="faCalculator" class="text-green-600"></fa-icon>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Valeur Totale</p>
+            <p class="text-xl font-bold text-gray-900">{{ getTotalValue() | currency }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center gap-3">
+          <div class="p-3 bg-purple-100 rounded-lg">
+            <fa-icon [icon]="faCoins" class="text-purple-600"></fa-icon>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Prix Moyen</p>
+            <p class="text-xl font-bold text-gray-900">
+              {{ materials.length ? ((getTotalValue() / materials.length) | currency) : ('0' | currency) }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Materials Table -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Matériel
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Stock
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Prix Unitaire
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Valeur Totale
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let material of materials" class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="p-2 bg-gray-100 rounded-lg mr-3">
+                  <fa-icon [icon]="faBox" class="text-gray-600"></fa-icon>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-900">{{ material.name }}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                      [ngClass]="getStockStatus(material.quantity)">
+                  {{ material.quantity }} unités
+                </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ material.priceUnit | currency }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ material.priceUnit * material.quantity | currency }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <div class="flex items-center gap-3">
+                <a [routerLink]="['/materials/edit', material.id]"
+                   class="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-lg transition-colors duration-200">
+                  <fa-icon [icon]="faEdit"></fa-icon>
+                </a>
+                <button (click)="deleteMaterial(material.id)"
+                        class="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-colors duration-200">
+                  <fa-icon [icon]="faTrash"></fa-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

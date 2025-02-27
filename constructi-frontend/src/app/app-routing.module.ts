@@ -15,6 +15,9 @@ const routes: Routes = [
 
   { path: 'tasks', loadChildren: () => import('./modules/task/task.module').then(m => m.TaskModule) },
 
+  { path: 'materials', loadChildren: () => import('./modules/material/material.module').then(m => m.MaterialModule) },
+
+
   { path: 'unauthorized', component: UnauthorizedComponent },
 
   { path: 'admin', loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule) },
