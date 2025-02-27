@@ -35,4 +35,6 @@ public interface TaskMapper {
                 .mapToDouble(Invoice::getAmount)
                 .sum();
     }
+
+
 }

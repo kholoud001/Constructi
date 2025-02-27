@@ -34,6 +34,8 @@ public interface ProjectMapper {
         return (double) completedTasks / tasks.size() * 100;
     }
 
+
+
     default List<MaterialResponseDTO> mapMaterials(List<Material> materials) {
         return materials.stream()
                 .map(material -> {
