@@ -109,15 +109,17 @@
         <div *ngFor="let task of project.tasks"
              class="bg-white p-3 rounded-md shadow-sm hover:bg-gray-50 transition-colors">
           <div class="flex justify-between items-start">
-            <p class="font-medium">{{ task.description }}</p>
+            <a (click)="viewTaskDetails(task)" class="cursor-pointer">
+              <p class="font-medium hover:underline">{{ task.description }}</p>
+            </a>
             <span class="px-2 py-1 text-xs rounded-full"
                   [ngClass]="{
-                    'bg-red-100 text-red-800': task.status === 'NOT_STARTED',
-                    'bg-yellow-100 text-yellow-800': task.status === 'IN_PROGRESS',
-                    'bg-green-100 text-green-800': task.status === 'FINISHED'
-                  }">
-              {{ task.status }}
-            </span>
+                'bg-red-100 text-red-800': task.status === 'NOT_STARTED',
+                'bg-yellow-100 text-yellow-800': task.status === 'IN_PROGRESS',
+                'bg-green-100 text-green-800': task.status === 'FINISHED'
+              }">
+          {{ task.status }}
+        </span>
           </div>
           <div class="text-xs text-gray-500 mt-1">
             <div class="flex items-center gap-1">
@@ -128,12 +130,13 @@
         </div>
       </div>
       <ng-template #noTasks>
-          <div class="flex flex-col items-center justify-center py-8 text-gray-500">
-            <fa-icon [icon]="faClipboardList" class="text-4xl mb-2"></fa-icon>
-            <p>No tasks have been added to this project yet.</p>
-          </div>
-        </ng-template>
-  </div>
+        <div class="flex flex-col items-center justify-center py-8 text-gray-500">
+          <fa-icon [icon]="faClipboardList" class="text-4xl mb-2"></fa-icon>
+          <p>No tasks have been added to this project yet.</p>
+        </div>
+      </ng-template>
+    </div>
+
   </div>
 
   <!-- Materials Section -->

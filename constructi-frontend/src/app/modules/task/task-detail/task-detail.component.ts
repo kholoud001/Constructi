@@ -32,7 +32,6 @@ interface Task {
   totalPaid: number;
   userEmail: string;
   userId: number;
-  invoices: any[];
 }
 
 @Component({
