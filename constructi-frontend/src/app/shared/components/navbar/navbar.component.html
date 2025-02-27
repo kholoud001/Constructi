@@ -13,7 +13,6 @@
         <div class="hidden md:block">
           <div class="ml-10 flex items-baseline space-x-4">
             <ng-container *ngFor="let item of navItems">
-              <!-- Regular Nav Items -->
               <ng-container *ngIf="!item.isDropdown">
                 <a [routerLink]="item.href"
                    class="px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition duration-150 ease-in-out"
@@ -22,7 +21,8 @@
                 </a>
               </ng-container>
 
-              <div *ngIf="item.isDropdown" class="relative inline-block text-left" #projectsDropdown>
+              <!-- Gestion des projets Dropdown -->
+              <div *ngIf="item.isDropdown && item.name === 'Gestion des projets'" class="relative inline-block text-left" #projectsDropdown>
                 <button (click)="toggleProjectsDropdown()"
                         class="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition duration-150 ease-in-out"
                         [class.bg-blue-700]="isProjectsDropdownOpen">
@@ -46,6 +46,36 @@
                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150"
                        role="menuitem">
                       Tous les projets
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Gestion des ressources Dropdown -->
+              <div *ngIf="item.isDropdown && item.name === 'Gestion des ressources'" class="relative inline-block text-left" #resourcesDropdown>
+                <button (click)="toggleResourcesDropdown()"
+                        class="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition duration-150 ease-in-out"
+                        [class.bg-blue-700]="isResourcesDropdownOpen">
+                  {{ item.name }}
+                  <fa-icon [icon]="faChevronDown"
+                           class="ml-2 transition-transform duration-200"
+                           [class.transform]="isResourcesDropdownOpen"
+                           [class.rotate-180]="isResourcesDropdownOpen">
+                  </fa-icon>
+                </button>
+
+                <div *ngIf="isResourcesDropdownOpen"
+                     class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 transform origin-top-right transition-all duration-200 ease-out">
+                  <div class="py-1" role="menu">
+                    <a routerLink="/admin/users"
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150"
+                       role="menuitem">
+                      Utilisateurs
+                    </a>
+                    <a routerLink="/materials"
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150"
+                       role="menuitem">
+                      Matériels
                     </a>
                   </div>
                 </div>
@@ -96,7 +126,6 @@
     </div>
   </div>
 
-  <!-- Mobile Menu -->
   <div class="md:hidden" [class.hidden]="!isMobileMenuOpen">
     <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
       <ng-container *ngFor="let item of navItems">
@@ -110,7 +139,7 @@
         </ng-container>
 
         <!-- Mobile Projects Dropdown -->
-        <div *ngIf="item.isDropdown" class="space-y-1">
+        <div *ngIf="item.isDropdown && item.name === 'Gestion des projets'" class="space-y-1">
           <button (click)="toggleMobileProjectsDropdown()"
                   class="flex justify-between items-center w-full px-3 py-2 rounded-md text-base font-medium hover:bg-blue-700 transition duration-150 ease-in-out">
             {{ item.name }}
@@ -128,6 +157,29 @@
             <a routerLink="/projects"
                class="block px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition duration-150 ease-in-out">
               Tous les projets
+            </a>
+          </div>
+        </div>
+
+        <!-- Mobile Gestion des ressources Dropdown -->
+        <div *ngIf="item.isDropdown && item.name === 'Gestion des ressources'" class="space-y-1">
+          <button (click)="toggleMobileResourcesDropdown()"
+                  class="flex justify-between items-center w-full px-3 py-2 rounded-md text-base font-medium hover:bg-blue-700 transition duration-150 ease-in-out">
+            {{ item.name }}
+            <fa-icon [icon]="faChevronDown"
+                     class="transition-transform duration-200"
+                     [class.transform]="isMobileResourcesDropdownOpen"
+                     [class.rotate-180]="isMobileResourcesDropdownOpen">
+            </fa-icon>
+          </button>
+          <div *ngIf="isMobileResourcesDropdownOpen" class="pl-4 space-y-1">
+            <a routerLink="/admin/users"
+               class="block px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition duration-150 ease-in-out">
+              Utilisateurs
+            </a>
+            <a routerLink="/materials"
+               class="block px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition duration-150 ease-in-out">
+              Matériels
             </a>
           </div>
         </div>

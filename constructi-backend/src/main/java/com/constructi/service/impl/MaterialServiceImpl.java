@@ -39,16 +39,31 @@ public class MaterialServiceImpl implements MaterialService {
         Provider provider = providerRepository.findById(materialRequestDTO.getProviderId())
                 .orElseThrow(() -> new ResourceNotFoundException("Provider not found with id: " + materialRequestDTO.getProviderId()));
 
+        Double totalCost = materialRequestDTO.getPriceUnit() * materialRequestDTO.getQuantity();
+
+        Double projectedBudget = project.getActualBudget() + totalCost;
+        if (projectedBudget > project.getInitialBudget()) {
+            throw new RuntimeException("Adding this material exceeds the project's initial budget. Remaining budget: " + (project.getInitialBudget() - project.getActualBudget()));
+        }
+
         Material material = materialMapper.toEntity(materialRequestDTO);
         material.setProject(project);
         material.setProvider(provider);
 
         Material savedMaterial = materialRepository.save(material);
 
+        project.setActualBudget(projectedBudget);
+        projectRepository.save(project);
+
+        Budget transaction = new Budget();
+        transaction.setAmount(totalCost);
+        transaction.setTransactionDate(LocalDateTime.now());
+        transaction.setTransactionType("material");
+        transaction.setProject(project);
+        budgetRepository.save(transaction);
+
         return materialMapper.toResponseDTO(savedMaterial);
-}
-
-
+    }
     @Override
     public MaterialResponseDTO getMaterialById(Long id) {
         Material material = materialRepository.findById(id)

@@ -32,7 +32,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   userRole: string | null = '';
   isAuthenticated = false;
   isMobileProjectsDropdownOpen = false;
+  isResourcesDropdownOpen = false;
+  isMobileResourcesDropdownOpen = false;
 
+  @ViewChild('resourcesDropdown') resourcesDropdown!: ElementRef;
   @ViewChild('profileDropdown') profileDropdown!: ElementRef;
   @ViewChild('projectsDropdown') projectsDropdown!: ElementRef;
 
@@ -80,21 +83,22 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       );
     }
 
-      if (role === 'ADMIN' || role === 'ARCHITECT') {
-      this.navItems.push(
-        {name: 'Gestion des équipes', href: '/team-management', current: false},
-        {name: 'Rapports', href: '/reports', current: false}
-      );
-    }
+    //   if (role === 'ADMIN' || role === 'ARCHITECT') {
+    //   this.navItems.push(
+    //     {name: 'Gestion des équipes', href: '/team-management', current: false},
+    //     {name: 'Rapports', href: '/reports', current: false}
+    //   );
+    // }
 
     if (role === 'ADMIN') {
       this.navItems.push(
         {name: 'Tâches', href: '/tasks', current: false},
         {name: 'Gestion des projets', href: '#', current: false, isDropdown: true},
-        {name: 'Gestion des ressources', href: '/admin/users', current: false},
+        {name: 'Gestion des ressources', href: '#', current: false, isDropdown: true},
       );
     }
   }
+
   get isGestionProjetsAvailable(): boolean {
     return this.navItems.some(item => item.name === 'Gestion des projets');
   }
@@ -117,32 +121,40 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     this.isProjectsDropdownOpen = !this.isProjectsDropdownOpen;
   }
 
+  toggleResourcesDropdown() {
+    this.isResourcesDropdownOpen = !this.isResourcesDropdownOpen;
+  }
+
   addClickOutsideListener() {
     document.addEventListener('click', this.handleClickOutside.bind(this));
   }
 
   handleClickOutside(event: Event) {
     if (this.profileDropdown && !this.profileDropdown.nativeElement.contains(event.target) &&
-      this.projectsDropdown && !this.projectsDropdown.nativeElement.contains(event.target)) {
+      this.projectsDropdown && !this.projectsDropdown.nativeElement.contains(event.target) &&
+      this.resourcesDropdown && !this.resourcesDropdown.nativeElement.contains(event.target)) {
       this.isProfileDropdownOpen = false;
       this.isProjectsDropdownOpen = false;
+      this.isResourcesDropdownOpen = false;
     }
   }
+
 
   toggleMobileProjectsDropdown() {
     this.isMobileProjectsDropdownOpen = !this.isMobileProjectsDropdownOpen;
   }
 
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
-    // Close projects dropdown if clicking outside
     if (this.projectsDropdown && !this.projectsDropdown.nativeElement.contains(event.target)) {
       this.isProjectsDropdownOpen = false;
     }
-
-    // Close profile dropdown if clicking outside
     if (this.profileDropdown && !this.profileDropdown.nativeElement.contains(event.target)) {
       this.isProfileDropdownOpen = false;
+    }
+    if (this.resourcesDropdown && !this.resourcesDropdown.nativeElement.contains(event.target)) {
+      this.isResourcesDropdownOpen = false;
     }
   }
 
@@ -153,5 +165,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy() {
     document.removeEventListener('click', this.handleClickOutside.bind(this));
+  }
+
+  toggleMobileResourcesDropdown() {
+    this.isMobileResourcesDropdownOpen = !this.isMobileResourcesDropdownOpen;
   }
 }

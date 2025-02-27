@@ -15,7 +15,6 @@ export interface TaskResponseDTO {
 })
 export class ProjectService {
   private apiUrl = 'http://localhost:8086/projects';
-  // private taskApiUrl = 'http://localhost:8086/tasks';
 
   constructor(private http: HttpClient) {}
 
@@ -55,7 +54,4 @@ export class ProjectService {
     return this.http.delete<any>(`${this.apiUrl}/delete/${id}`);
   }
 
-  // getProjectTasks(projectId: number): Observable<TaskResponseDTO[]> {
-  //   return this.http.get<TaskResponseDTO[]>(`${this.taskApiUrl}/project/${projectId}`);
-  // }
 }
