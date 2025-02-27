@@ -1,4 +1,3 @@
-// material-list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { MaterialResponseDTO, MaterialService } from '../material.service';
 import Swal from 'sweetalert2';

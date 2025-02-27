@@ -13,6 +13,7 @@ import {
   faBuilding,
   faProjectDiagram
 } from '@fortawesome/free-solid-svg-icons';
+import {ProjectService} from '../../project/project.service';
 
 @Component({
   selector: 'app-material-add',
@@ -24,6 +25,7 @@ export class MaterialAddComponent implements OnInit {
   materialForm!: FormGroup;
   loading = false;
   providers: ProviderResponseDTO[] = [];
+  projects: any[] = [];
 
   // Icons
   faBox = faBox;
@@ -38,6 +40,7 @@ export class MaterialAddComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private materialService: MaterialService,
+    private projectService: ProjectService,
     private router: Router
   ) {}
 
@@ -47,11 +50,11 @@ export class MaterialAddComponent implements OnInit {
       quantity: ['', [Validators.required, Validators.min(0)]],
       priceUnit: ['', [Validators.required, Validators.min(0)]],
       providerId: ['', [Validators.required]],
-      projectId: ['', [Validators.required, Validators.min(1)]]
+      projectId: ['', [Validators.required]]
     });
 
-    // Charger la liste des fournisseurs
     this.loadProviders();
+    this.loadProjects(); // Load projects on component initialization
   }
 
   private loadProviders(): void {
@@ -61,6 +64,17 @@ export class MaterialAddComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur lors du chargement des fournisseurs:', err);
+      }
+    });
+  }
+
+  private loadProjects(): void {
+    this.projectService.getProjects().subscribe({
+      next: (data) => {
+        this.projects = data; // Store projects in the array
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des projets:', err);
       }
     });
   }
