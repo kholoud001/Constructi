@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface SubtaskRepository extends JpaRepository<Subtask, Long> {
     List<Subtask> findByParentTaskId(Long parentTaskId);
-    List<Subtask> findByUserId(Long userId);
+//    List<Subtask> findByUserId(Long userId);
 
 }

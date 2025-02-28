@@ -50,7 +50,6 @@ public class Task {
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Invoice> invoices;
 
-
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     @NotNull(message = "Task must be associated with at least one project.")
@@ -64,6 +63,9 @@ public class Task {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private User user;
+
+    @OneToMany(mappedBy = "parentTask", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Subtask> subtasks;
 
 
 }

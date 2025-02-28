@@ -69,5 +69,4 @@ public class SubtaskController {
         return new ResponseEntity<>(subtaskResponseDTO, HttpStatus.OK);
     }
 
-
 }

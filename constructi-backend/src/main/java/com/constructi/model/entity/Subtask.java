@@ -1,6 +1,7 @@
 package com.constructi.model.entity;
 
 import com.constructi.model.enums.StatusTask;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -46,8 +47,8 @@ public class Subtask {
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
     @NotNull(message = "Subtask must be associated with a parent task.")
+    @JsonBackReference
     private Task parentTask;
-
 }
 
 

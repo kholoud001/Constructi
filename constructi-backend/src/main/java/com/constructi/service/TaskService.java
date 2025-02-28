@@ -29,8 +29,5 @@ public interface TaskService {
 
     TaskResponseDTO getTaskWithInvoices(Long taskId);
 
-    Double getTaskProgress(Long taskId);
 
-
-//    List<TaskResponseDTO> getMyTasks();
 }

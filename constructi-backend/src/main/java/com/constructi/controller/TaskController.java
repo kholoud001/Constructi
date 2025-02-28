@@ -83,12 +83,4 @@ public class TaskController {
         return ResponseEntity.ok(taskResponseDTO);
     }
 
-    @GetMapping("/{taskId}/progress")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT')")
-    public ResponseEntity<Double> getTaskProgress(@PathVariable Long taskId) {
-        return ResponseEntity.ok(taskService.getTaskProgress(taskId));
-    }
-
-
-
 }

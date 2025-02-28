@@ -37,7 +37,6 @@ public class SubtaskServiceImpl implements SubtaskService {
         return subtaskMapper.toSubtaskResponseDTO(savedSubtask);
     }
 
-
     @Override
     public SubtaskResponseDTO updateSubtask(Long subtaskId, SubtaskRequestDTO subtaskRequestDTO) {
         Subtask existingSubtask = subtaskRepository.findById(subtaskId)
