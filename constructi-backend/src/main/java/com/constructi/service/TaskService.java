@@ -5,6 +5,7 @@ import com.constructi.DTO.TaskRequestDTO;
 import com.constructi.DTO.TaskResponseDTO;
 import com.constructi.model.entity.Task;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TaskService {
@@ -30,4 +31,5 @@ public interface TaskService {
     TaskResponseDTO getTaskWithInvoices(Long taskId);
 
 
+    TaskResponseDTO prolongTask(Long taskId, LocalDate newEndDate);
 }

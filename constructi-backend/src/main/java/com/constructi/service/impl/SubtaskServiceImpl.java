@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -31,10 +32,32 @@ public class SubtaskServiceImpl implements SubtaskService {
         Task parentTask = taskRepository.findById(subtaskRequestDTO.getParentTaskId())
                 .orElseThrow(() -> new RuntimeException("Parent task not found"));
 
+        validateSubtaskDates(subtaskRequestDTO, parentTask);
+
         Subtask subtask = subtaskMapper.toSubtaskEntity(subtaskRequestDTO);
         subtask.setParentTask(parentTask);
+
         Subtask savedSubtask = subtaskRepository.save(subtask);
         return subtaskMapper.toSubtaskResponseDTO(savedSubtask);
+    }
+
+    private void validateSubtaskDates(SubtaskRequestDTO subtaskRequestDTO, Task parentTask) {
+        LocalDate subtaskBeginDate = subtaskRequestDTO.getBeginDate();
+        LocalDate subtaskEndDate = subtaskRequestDTO.getDateEndEstimated();
+        LocalDate parentBeginDate = parentTask.getBeginDate();
+        LocalDate parentEndDate = parentTask.getDateEndEstimated();
+
+        if (subtaskBeginDate.isBefore(parentBeginDate) ){
+            throw new IllegalArgumentException("Subtask begin date cannot be before the parent task's begin date.");
+        }
+
+        if (subtaskEndDate != null && parentEndDate != null && subtaskEndDate.isAfter(parentEndDate)) {
+            throw new IllegalArgumentException("Subtask end date cannot exceed the parent task's end date.");
+        }
+
+        if (subtaskEndDate != null && subtaskBeginDate.isAfter(subtaskEndDate)) {
+            throw new IllegalArgumentException("Subtask begin date cannot be after its end date.");
+        }
     }
 
     @Override

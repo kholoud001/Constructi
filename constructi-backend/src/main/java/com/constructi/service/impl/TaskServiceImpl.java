@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -190,6 +191,21 @@ public class TaskServiceImpl implements TaskService {
                 .count();
 
         return (double) approvedCompleted / subtasks.size() * 100;
+    }
+
+    @Override
+    public TaskResponseDTO prolongTask(Long taskId, LocalDate newEndDate) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        if (task.getOriginalDateEndEstimated() == null) {
+            task.setOriginalDateEndEstimated(task.getDateEndEstimated());
+        }
+
+        task.setDateEndEstimated(newEndDate);
+
+        Task updatedTask = taskRepository.save(task);
+        return taskMapper.toTaskResponseDTO(updatedTask);
     }
 
 }

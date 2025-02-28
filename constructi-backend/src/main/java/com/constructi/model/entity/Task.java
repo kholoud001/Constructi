@@ -39,6 +39,9 @@ public class Task {
     @Column(name = "date_end_estimated")
     private LocalDate dateEndEstimated;
 
+    @Column(name = "original_date_end_estimated")
+    private LocalDate originalDateEndEstimated;
+
     @DecimalMin(value = "0.0", inclusive = true, message = "Effective time must be 0 or greater.")
     @Column(name = "effective_time")
     private Double effectiveTime;
