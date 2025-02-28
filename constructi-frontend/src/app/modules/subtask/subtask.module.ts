@@ -6,6 +6,7 @@ import { SubtaskListComponent } from './subtask-list/subtask-list.component';
 import { SubtaskDetailComponent } from './subtask-detail/subtask-detail.component';
 import { SubtaskAddComponent } from './subtask-add/subtask-add.component';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {FormsModule} from "@angular/forms";
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
     imports: [
         CommonModule,
         SubtaskRoutingModule,
-        FaIconComponent
+        FaIconComponent,
+        FormsModule
     ]
 })
 export class SubtaskModule { }

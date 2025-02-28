@@ -1,21 +1,52 @@
-<div class="subtask-add">
-  <h2>{{ isEditMode ? 'Edit Subtask' : 'Add Subtask' }}</h2>
-  <form (ngSubmit)="onSubmit()">
-    <label for="description">Description:</label>
-    <input id="description" [(ngModel)]="subtask.description" name="description" required />
+<div class="subtask-add p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ isEditMode ? 'Edit Subtask' : 'Add Subtask' }}</h2>
+  <form (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Description -->
+    <div>
+      <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+      <input id="description" [(ngModel)]="subtask.description" name="description" required
+             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+    </div>
 
-    <label for="status">Status:</label>
-    <select id="status" [(ngModel)]="subtask.status" name="status" required>
-      <option value="IN_PROGRESS">In Progress</option>
-      <option value="FINISHED">Finished</option>
-    </select>
+    <!-- Status -->
+    <div>
+      <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+      <select id="status" [(ngModel)]="subtask.status" name="status" required
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+        <option value="IN_PROGRESS">In Progress</option>
+        <option value="FINISHED">Finished</option>
+        <option value="NOT_STARTED">Not Started</option>
 
-    <label for="beginDate">Begin Date:</label>
-    <input type="date" id="beginDate" [(ngModel)]="subtask.beginDate" name="beginDate" required />
+      </select>
+    </div>
 
-    <label for="dateEndEstimated">Estimated End Date:</label>
-    <input type="date" id="dateEndEstimated" [(ngModel)]="subtask.dateEndEstimated" name="dateEndEstimated" required />
+    <!-- Begin Date -->
+    <div>
+      <label for="beginDate" class="block text-sm font-medium text-gray-700">Begin Date</label>
+      <input type="date" id="beginDate" [(ngModel)]="subtask.beginDate" name="beginDate" required
+             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+    </div>
 
-    <button type="submit">{{ isEditMode ? 'Update' : 'Add' }}</button>
+    <!-- Estimated End Date -->
+    <div>
+      <label for="dateEndEstimated" class="block text-sm font-medium text-gray-700">Estimated End Date</label>
+      <input type="date" id="dateEndEstimated" [(ngModel)]="subtask.dateEndEstimated" name="dateEndEstimated" required
+             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+    </div>
+
+    <!-- Effective Time -->
+    <div>
+      <label for="effectiveTime" class="block text-sm font-medium text-gray-700">Effective Time (hours)</label>
+      <input type="number" id="effectiveTime" [(ngModel)]="subtask.effectiveTime" name="effectiveTime" required
+             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+    </div>
+
+    <!-- Submit Button -->
+    <div>
+      <button type="submit" [disabled]="isSubmitting"
+              class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        {{ isSubmitting ? 'Saving...' : (isEditMode ? 'Update' : 'Add') }}
+      </button>
+    </div>
   </form>
 </div>

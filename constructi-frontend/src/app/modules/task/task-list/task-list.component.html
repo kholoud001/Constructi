@@ -117,13 +117,12 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center gap-2">
                 <button (click)="toggleSubtasks(task)"
-                        class="p-1.5 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-md transition-all duration-200"
+                        class="p-1.5 text-gray-500 hover:text-blue-500 hover:bg-blue-50 rounded-md transition-all duration-200"
                         title="Display Subtasks">
                   <fa-icon [icon]="task.showSubtasks ? faChevronUp : faChevronDown" class="text-sm"></fa-icon>
                 </button>
                 <button (click)="addSubtask(task.id)"
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg
-                        hover:bg-blue-700 transition-colors duration-200"
+                        class="p-1.5 text-gray-500 hover:text-green-500 hover:bg-green-50 rounded-md transition-all duration-200"
                         title="Add Subtasks">
                   <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
                 </button>
