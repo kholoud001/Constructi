@@ -5,6 +5,7 @@ import { SubtaskRoutingModule } from './subtask-routing.module';
 import { SubtaskListComponent } from './subtask-list/subtask-list.component';
 import { SubtaskDetailComponent } from './subtask-detail/subtask-detail.component';
 import { SubtaskAddComponent } from './subtask-add/subtask-add.component';
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
 
 @NgModule({
@@ -13,9 +14,10 @@ import { SubtaskAddComponent } from './subtask-add/subtask-add.component';
     SubtaskDetailComponent,
     SubtaskAddComponent
   ],
-  imports: [
-    CommonModule,
-    SubtaskRoutingModule
-  ]
+    imports: [
+        CommonModule,
+        SubtaskRoutingModule,
+        FaIconComponent
+    ]
 })
 export class SubtaskModule { }

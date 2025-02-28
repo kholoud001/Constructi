@@ -9,8 +9,12 @@ import {
   faClipboardList,
   faEye,
   faPencil,
-  faTrash
+  faTrash,
+  faChevronDown,
+  faChevronUp,
+  faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
+import {SubtaskService} from '../../subtask/subtask.service';
 
 @Component({
   selector: 'app-task-list',
@@ -26,11 +30,18 @@ export class TaskListComponent implements OnInit {
   faEye = faEye;
   faPencil = faPencil;
   faTrash = faTrash;
+  faChevronDown = faChevronDown;
+  faChevronUp = faChevronUp;
+  faCheckCircle = faCheckCircle;
 
   tasks: any[] = [];
   isLoading = true;
 
-  constructor(private taskService: TaskService, private router: Router) {}
+  constructor(
+    private taskService: TaskService,
+    private subtaskService: SubtaskService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadTasks();
@@ -40,7 +51,12 @@ export class TaskListComponent implements OnInit {
     this.isLoading = true;
     this.taskService.getAllTasks().subscribe({
       next: (data) => {
-        this.tasks = data;
+        this.tasks = data.map(task => ({
+          ...task,
+          showSubtasks: false,
+          subtasks: [],
+          subtasksLoading: false
+        }));
         this.isLoading = false;
       },
       error: (error) => {
@@ -50,6 +66,116 @@ export class TaskListComponent implements OnInit {
       }
     });
   }
+
+  toggleSubtasks(task: any): void {
+    task.showSubtasks = !task.showSubtasks;
+    if (task.showSubtasks && task.subtasks.length === 0) {
+      this.loadSubtasks(task);
+    }
+  }
+
+  loadSubtasks(task: any): void {
+    task.subtasksLoading = true;
+    this.subtaskService.getSubtasksByParentTaskId(task.id).subscribe({
+      next: (data) => {
+        task.subtasks = data;
+        task.subtasksLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading subtasks:', error);
+        task.subtasksLoading = false;
+        this.showErrorAlert('Failed to load subtasks', 'Please try again later.');
+      }
+    });
+  }
+
+  addSubtask(parentTaskId: number): void {
+    this.router.navigate(['/subtasks/add', parentTaskId]);
+  }
+
+  confirmDeleteSubtask(subtask: any): void {
+    Swal.fire({
+      title: 'Delete Subtask?',
+      text: 'Are you sure you want to delete this subtask? This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      heightAuto: false,
+      customClass: {
+        popup: 'rounded-xl',
+        confirmButton: 'px-4 py-2 text-sm font-medium text-white rounded-lg',
+        cancelButton: 'px-4 py-2 text-sm font-medium rounded-lg'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.deleteSubtask(subtask);
+      }
+    });
+  }
+
+  deleteSubtask(subtask: any): void {
+    this.subtaskService.deleteSubtask(subtask.id).subscribe({
+      next: () => {
+        this.showSuccessAlert('Subtask deleted successfully');
+        this.loadSubtasks(subtask.parentTaskId);
+      },
+      error: (error) => {
+        console.error('Error deleting subtask:', error);
+        this.showErrorAlert('Failed to delete subtask', 'Please try again later.');
+      }
+    });
+  }
+
+  confirmApproveSubtask(subtask: any): void {
+    Swal.fire({
+      title: 'Approve Subtask?',
+      text: 'Are you sure you want to approve this subtask?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, approve it',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#16a34a',
+      cancelButtonColor: '#6b7280',
+      heightAuto: false,
+      customClass: {
+        popup: 'rounded-xl',
+        confirmButton: 'px-4 py-2 text-sm font-medium text-white rounded-lg',
+        cancelButton: 'px-4 py-2 text-sm font-medium rounded-lg'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.approveSubtask(subtask);
+      }
+    });
+  }
+
+  approveSubtask(subtask: any): void {
+    this.subtaskService.approveSubtask(subtask.id).subscribe({
+      next: () => {
+        this.showSuccessAlert('Subtask approved successfully');
+        this.loadSubtasks(subtask.parentTaskId);
+      },
+      error: (error) => {
+        console.error('Error approving subtask:', error);
+        this.showErrorAlert('Failed to approve subtask', 'Please try again later.');
+      }
+    });
+  }
+
+
+
+  viewSubtask(subtaskId: number): void {
+    this.router.navigate(['/subtasks/detail', subtaskId]);
+  }
+
+  editSubtask(subtaskId: number): void {
+    this.router.navigate(['/subtasks/edit', subtaskId]);
+  }
+
+
 
   viewTask(taskId: number): void {
     this.router.navigate(['/tasks/detail', taskId]);

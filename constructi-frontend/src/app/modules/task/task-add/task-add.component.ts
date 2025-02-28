@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from '../task.service';
+import { ProjectService } from '../../project/project.service';
 import {
   faChevronRight,
   faPlus,
@@ -9,7 +10,7 @@ import {
   faCheck,
   faChevronDown,
 } from '@fortawesome/free-solid-svg-icons';
-import {ProjectService} from '../../project/project.service';
+import Swal from 'sweetalert2'; // Import Sweetalert2
 
 @Component({
   selector: 'app-task-add',
@@ -31,11 +32,11 @@ export class TaskAddComponent implements OnInit {
     status: '',
     beginDate: null,
     dateEndEstimated: null,
-    effectiveTime: null, // Can be null
+    effectiveTime: null,
     budgetLimit: null,
     projectId: null,
   };
-  projects: any[] = []; // Array to hold the list of projects
+  projects: any[] = [];
   isEditMode = false;
   isSubmitting = false;
   showSuccessToast = false;
@@ -43,7 +44,7 @@ export class TaskAddComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private taskService: TaskService,
-    private projectService: ProjectService, // Inject ProjectService
+    private projectService: ProjectService,
     private router: Router
   ) {}
 
@@ -53,7 +54,7 @@ export class TaskAddComponent implements OnInit {
       this.isEditMode = true;
       this.loadTask(taskId);
     }
-    this.loadProjects(); // Load the list of projects
+    this.loadProjects();
   }
 
   loadTask(taskId: number): void {
@@ -67,7 +68,7 @@ export class TaskAddComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading task:', error);
-        // Handle error (show toast notification, redirect, etc.)
+        Swal.fire('Error', 'Failed to load task details.', 'error');
       },
     });
   }
@@ -79,10 +80,11 @@ export class TaskAddComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading projects:', error);
-        // Handle error (show toast notification, etc.)
+        Swal.fire('Error', 'Failed to load projects.', 'error');
       },
     });
   }
+
 
   onSubmit(): void {
     if (this.isSubmitting) return;
@@ -95,16 +97,47 @@ export class TaskAddComponent implements OnInit {
     operation.subscribe({
       next: () => {
         this.showSuccessToast = true;
+        Swal.fire({
+          title: 'Success!',
+          text: 'Task saved successfully.',
+          icon: 'success',
+          timer: 2000,
+          showConfirmButton: false
+        });
         setTimeout(() => {
           this.showSuccessToast = false;
           this.router.navigate(['/tasks']);
         }, 2000);
       },
       error: (error) => {
-        console.error('Error saving task:', error);
         this.isSubmitting = false;
-        // Handle error (show toast notification, etc.)
-      },
+        if (error.status === 400) {
+          if (typeof error.error === 'object') {
+            let errorMessage = '';
+            Object.keys(error.error).forEach(key => {
+              errorMessage += `<p><b>${key}:</b> ${error.error[key]}</p>`;
+            });
+
+            Swal.fire({
+              title: 'Validation Error',
+              html: errorMessage,
+              icon: 'error'
+            });
+          } else {
+            Swal.fire({
+              title: 'Error',
+              text: error.error,
+              icon: 'error'
+            });
+          }
+        } else {
+          Swal.fire({
+            title: 'Error',
+            text: 'Something went wrong. Please try again later.',
+            icon: 'error'
+          });
+        }
+      }
     });
   }
 
