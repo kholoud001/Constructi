@@ -104,9 +104,10 @@ export class TaskDetailComponent implements OnInit {
     this.router.navigate(['/tasks']);
   }
 
-  editTask(): void {
-    this.router.navigate(['/tasks', this.taskId, 'edit']);
+  editTask(taskId: number): void {
+    this.router.navigate(['/tasks/edit', taskId]);
   }
+
 
   deleteTask(): void {
     Swal.fire({

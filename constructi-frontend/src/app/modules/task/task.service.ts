@@ -32,7 +32,6 @@ export class TaskService {
   }
 
   assignTaskToWorker(taskId: number, workerId: number): Observable<any> {
-    // Pass an empty body since the endpoint does not expect one.
     return this.http.post<any>(`${this.apiUrl}/assign/${taskId}/${workerId}`, {});
   }
 

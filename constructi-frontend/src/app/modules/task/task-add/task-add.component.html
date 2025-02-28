@@ -1,1 +1,159 @@
-<p>task-add works!</p>
+<div class="p-6 max-w-2xl mx-auto">
+  <!-- Breadcrumb -->
+  <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
+    <a routerLink="/tasks" class="hover:text-primary transition-colors">Tasks</a>
+    <fa-icon [icon]="faChevronRight" class="text-xs"></fa-icon>
+    <span class="font-medium text-gray-900">{{ isEditMode ? 'Edit Task' : 'New Task' }}</span>
+  </nav>
+
+  <!-- Header -->
+  <div class="flex items-center gap-3 mb-8">
+    <div class="p-2 bg-primary/10 rounded-lg">
+      <fa-icon [icon]="isEditMode ? faPencil : faPlus" class="text-primary text-xl"></fa-icon>
+    </div>
+    <h1 class="text-2xl font-semibold text-gray-900">
+      {{ isEditMode ? 'Edit Task' : 'Create New Task' }}
+    </h1>
+  </div>
+
+  <!-- Form Card -->
+  <div class="bg-white rounded-xl border shadow-sm">
+    <form (ngSubmit)="onSubmit()" #taskForm="ngForm" class="p-6 space-y-6">
+      <!-- Description Field -->
+      <div class="space-y-2">
+        <label for="description" class="text-sm font-medium text-gray-900">
+          Description
+          <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <textarea
+            id="description"
+            name="description"
+            rows="3"
+            [(ngModel)]="task.description"
+            #description="ngModel"
+            required
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+            [ngClass]="{'border-red-500 focus:ring-red-500/50': description.invalid && (description.dirty || description.touched)}"
+            placeholder="Enter task description"
+          ></textarea>
+          <div *ngIf="description.invalid && (description.dirty || description.touched)"
+               class="text-sm text-red-500 mt-1">
+            <div *ngIf="description.errors?.['required']">Description is required</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Field -->
+      <div class="space-y-2">
+        <label for="status" class="text-sm font-medium text-gray-900">
+          Status
+          <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <select
+            id="status"
+            name="status"
+            [(ngModel)]="task.status"
+            #status="ngModel"
+            required
+            class="w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+            [ngClass]="{'border-red-500 focus:ring-red-500/50': status.invalid && (status.dirty || status.touched)}"
+          >
+            <option value="" disabled selected>Select status</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="FINISHED">Finished</option>
+            <option value="PENDING">Pending</option>
+            <option value="BLOCKED">Blocked</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+            <fa-icon [icon]="faChevronDown" class="text-sm"></fa-icon>
+          </div>
+          <div *ngIf="status.invalid && (status.dirty || status.touched)"
+               class="text-sm text-red-500 mt-1">
+            <div *ngIf="status.errors?.['required']">Status is required</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Due Date Field (Optional) -->
+      <div class="space-y-2">
+        <label for="dueDate" class="text-sm font-medium text-gray-900">
+          Due Date
+        </label>
+        <div class="relative">
+          <input
+            type="date"
+            id="dueDate"
+            name="dueDate"
+            [(ngModel)]="task.dueDate"
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+        </div>
+      </div>
+
+      <!-- Priority Field (Optional) -->
+      <div class="space-y-2">
+        <label class="text-sm font-medium text-gray-900">Priority</label>
+        <div class="flex items-center gap-4">
+          <label class="inline-flex items-center">
+            <input
+              type="radio"
+              name="priority"
+              value="LOW"
+              [(ngModel)]="task.priority"
+              class="form-radio text-primary border-gray-300 focus:ring-primary/50"
+            >
+            <span class="ml-2 text-sm text-gray-700">Low</span>
+          </label>
+          <label class="inline-flex items-center">
+            <input
+              type="radio"
+              name="priority"
+              value="MEDIUM"
+              [(ngModel)]="task.priority"
+              class="form-radio text-primary border-gray-300 focus:ring-primary/50"
+            >
+            <span class="ml-2 text-sm text-gray-700">Medium</span>
+          </label>
+          <label class="inline-flex items-center">
+            <input
+              type="radio"
+              name="priority"
+              value="HIGH"
+              [(ngModel)]="task.priority"
+              class="form-radio text-primary border-gray-300 focus:ring-primary/50"
+            >
+            <span class="ml-2 text-sm text-gray-700">High</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex items-center justify-end gap-3 pt-6 border-t">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="!taskForm.form.valid || isSubmitting"
+          class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          <fa-icon *ngIf="isSubmitting" [icon]="faSpinner" [spin]="true"></fa-icon>
+          {{ isEditMode ? 'Update Task' : 'Create Task' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Success Toast -->
+  <div *ngIf="showSuccessToast"
+       class="fixed bottom-4 right-4 flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg transition-opacity duration-300">
+    <fa-icon [icon]="faCheck" class="text-sm"></fa-icon>
+    <span>Task successfully {{ isEditMode ? 'updated' : 'created' }}!</span>
+  </div>
+</div>
