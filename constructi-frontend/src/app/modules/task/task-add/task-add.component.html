@@ -1,0 +1,224 @@
+<div class="p-6 max-w-2xl mx-auto">
+  <!-- Breadcrumb -->
+  <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
+    <a routerLink="/tasks" class="hover:text-primary transition-colors">Tasks</a>
+    <fa-icon [icon]="faChevronRight" class="text-xs"></fa-icon>
+    <span class="font-medium text-gray-900">{{ isEditMode ? 'Edit Task' : 'New Task' }}</span>
+  </nav>
+
+  <!-- Header -->
+  <div class="flex items-center gap-3 mb-8">
+    <div class="p-2 bg-primary/10 rounded-lg">
+      <fa-icon [icon]="isEditMode ? faPencil : faPlus" class="text-primary text-xl"></fa-icon>
+    </div>
+    <h1 class="text-2xl font-semibold text-gray-900">
+      {{ isEditMode ? 'Edit Task' : 'Create New Task' }}
+    </h1>
+  </div>
+
+  <!-- Form Card -->
+  <div class="bg-white rounded-xl border shadow-sm">
+    <form (ngSubmit)="onSubmit()" #taskForm="ngForm" class="p-6 space-y-6">
+      <!-- Description Field -->
+      <div class="space-y-2">
+        <label for="description" class="text-sm font-medium text-gray-900">
+          Description
+          <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <textarea
+            id="description"
+            name="description"
+            rows="3"
+            [(ngModel)]="task.description"
+            #description="ngModel"
+            required
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+            [ngClass]="{'border-red-500 focus:ring-red-500/50': description.invalid && (description.dirty || description.touched)}"
+            placeholder="Enter task description"
+          ></textarea>
+          <div *ngIf="description.invalid && (description.dirty || description.touched)"
+               class="text-sm text-red-500 mt-1">
+            <div *ngIf="description.errors?.['required']">Description is required</div>
+            <div *ngIf="description.errors?.['maxlength']">Description must not exceed 255 characters.</div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Field -->
+      <div class="space-y-2">
+        <label for="status" class="text-sm font-medium text-gray-900">
+          Status
+          <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <select
+            id="status"
+            name="status"
+            [(ngModel)]="task.status"
+            #status="ngModel"
+            required
+            class="w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+            [ngClass]="{'border-red-500 focus:ring-red-500/50': status.invalid && (status.dirty || status.touched)}"
+          >
+            <option value="" disabled selected>Select status</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="FINISHED">Finished</option>
+            <option value="NOT_STARTED">Pending</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+            <fa-icon [icon]="faChevronDown" class="text-sm"></fa-icon>
+          </div>
+          <div *ngIf="status.invalid && (status.dirty || status.touched)"
+               class="text-sm text-red-500 mt-1">
+            <div *ngIf="status.errors?.['required']">Status is required</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Begin Date Field -->
+      <div class="space-y-2">
+        <label for="beginDate" class="text-sm font-medium text-gray-900">
+          Begin Date
+          <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <input
+            type="date"
+            id="beginDate"
+            name="beginDate"
+            [(ngModel)]="task.beginDate"
+            #beginDate="ngModel"
+            required
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+            [ngClass]="{'border-red-500 focus:ring-red-500/50': beginDate.invalid && (beginDate.dirty || beginDate.touched)}"
+          >
+          <div *ngIf="beginDate.invalid && (beginDate.dirty || beginDate.touched)"
+               class="text-sm text-red-500 mt-1">
+            <div *ngIf="beginDate.errors?.['required']">Begin Date is required</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estimated End Date Field -->
+      <div class="space-y-2">
+        <label for="dateEndEstimated" class="text-sm font-medium text-gray-900">
+          Estimated End Date
+          <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <input
+            type="date"
+            id="dateEndEstimated"
+            name="dateEndEstimated"
+            [(ngModel)]="task.dateEndEstimated"
+            #dateEndEstimated="ngModel"
+            required
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+            [ngClass]="{'border-red-500 focus:ring-red-500/50': dateEndEstimated.invalid && (dateEndEstimated.dirty || dateEndEstimated.touched)}"
+          >
+          <div *ngIf="dateEndEstimated.invalid && (dateEndEstimated.dirty || dateEndEstimated.touched)"
+               class="text-sm text-red-500 mt-1">
+            <div *ngIf="dateEndEstimated.errors?.['required']">Estimated End Date is required</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Effective Time Field -->
+      <div class="space-y-2">
+        <label for="effectiveTime" class="text-sm font-medium text-gray-900">
+          Effective Time (optional)
+        </label>
+        <div class="relative">
+          <input
+            type="number"
+            id="effectiveTime"
+            name="effectiveTime"
+            [(ngModel)]="task.effectiveTime"
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+        </div>
+      </div>
+
+      <!-- Budget Limit Field -->
+      <div class="space-y-2">
+        <label for="budgetLimit" class="text-sm font-medium text-gray-900">
+          Budget Limit
+          <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <input
+            type="number"
+            id="budgetLimit"
+            name="budgetLimit"
+            [(ngModel)]="task.budgetLimit"
+            #budgetLimit="ngModel"
+            required
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+            [ngClass]="{'border-red-500 focus:ring-red-500/50': budgetLimit.invalid && (budgetLimit.dirty || budgetLimit.touched)}"
+          >
+          <div *ngIf="budgetLimit.invalid && (budgetLimit.dirty || budgetLimit.touched)"
+               class="text-sm text-red-500 mt-1">
+            <div *ngIf="budgetLimit.errors?.['required']">Budget Limit is required</div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Field -->
+      <div class="space-y-2">
+        <label for="projectId" class="text-sm font-medium text-gray-900">
+          Project
+          <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <select
+            id="projectId"
+            name="projectId"
+            [(ngModel)]="task.projectId"
+            #projectId="ngModel"
+            required
+            class="w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+            [ngClass]="{'border-red-500 focus:ring-red-500/50': projectId.invalid && (projectId.dirty || projectId.touched)}"
+          >
+            <option value="" disabled selected>Select project</option>
+            <option *ngFor="let project of projects" [value]="project.id">{{ project.name }}</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+            <fa-icon [icon]="faChevronDown" class="text-sm"></fa-icon>
+          </div>
+          <div *ngIf="projectId.invalid && (projectId.dirty || projectId.touched)"
+               class="text-sm text-red-500 mt-1">
+            <div *ngIf="projectId.errors?.['required']">Project is required</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex items-center justify-end gap-3 pt-6 border-t">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="!taskForm.form.valid || isSubmitting"
+          class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+        >
+          <fa-icon *ngIf="isSubmitting" [icon]="faSpinner" [spin]="true"></fa-icon>
+          {{ isEditMode ? 'Update Task' : 'Create Task' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="showSuccessToast"
+       class="fixed bottom-4 right-4 flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg transition-opacity duration-300">
+    <fa-icon [icon]="faCheck" class="text-sm"></fa-icon>
+    <span>Task successfully {{ isEditMode ? 'updated' : 'created' }}!</span>
+  </div>
+</div>

@@ -19,7 +19,8 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-task-payement-process',
   templateUrl: './task-payement-process.component.html',
-  styleUrls: ['./task-payement-process.component.css']
+  styleUrls: ['./task-payement-process.component.css'],
+  standalone:false
 })
 export class TaskPayementProcessComponent implements OnInit {
   taskId: string | null = null;
@@ -75,7 +76,7 @@ export class TaskPayementProcessComponent implements OnInit {
 
   fetchTaskDetails(taskId: number) {
     this.loading = true;
-    this.taskService.getTaskDetails(taskId).subscribe({
+    this.taskService.getTaskWithInvoices(taskId).subscribe({
       next: (data: any) => {
         this.taskDetails = data;
         this.loading = false;

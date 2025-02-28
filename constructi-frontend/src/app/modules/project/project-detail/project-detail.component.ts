@@ -6,10 +6,26 @@ import { UserService } from '../../user/user.service';
 import {
   faEnvelope, faUser, faCalendar, faPhone, faDollarSign, faImage, faFile,
   faTasks, faTools, faChevronDown, faProjectDiagram, faCloudUpload,
-  faClock, faExclamationTriangle, faBoxOpen, faClipboardList, faTimes, faExchangeAlt
+  faClock, faExclamationTriangle, faBoxOpen, faClipboardList, faTimes, faExchangeAlt,
+  faFlag,faMoneyBill,faHourglassHalf,faFileInvoiceDollar
 } from '@fortawesome/free-solid-svg-icons';
+import { icon } from '@fortawesome/fontawesome-svg-core';
+
 import { InvoiceService } from '../../invoice/invoice.service';
 
+interface Task {
+  id: number;
+  description: string;
+  status: 'FINISHED' | 'IN_PROGRESS' | 'PENDING';
+  beginDate: string;
+  dateEndEstimated: string;
+  budgetLimit: number;
+  effectiveTime: number;
+  projectId: number;
+  totalPaid: number;
+  userEmail: string;
+  userId: number;
+}
 @Component({
   selector: 'app-project-detail',
   templateUrl: './project-detail.component.html',
@@ -35,6 +51,10 @@ export class ProjectDetailComponent implements OnInit {
   faImage = faImage;
   faFile = faFile;
   faExchangeAlt = faExchangeAlt;
+  faFlag = faFlag;
+  faMoneyBill = faMoneyBill;
+  faHourglassHalf = faHourglassHalf;
+  faFileInvoiceDollar = faFileInvoiceDollar;
 
 
   project: any;
@@ -275,6 +295,71 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   imagePreview: string | null = null;
+
+
+  viewTaskDetails(task: Task): void {
+    // Convert FontAwesome icons to SVG strings
+    const clipboardIcon = icon(faClipboardList).html[0];
+    const flagIcon = icon(faFlag).html[0];
+    const hourglassIcon = icon(faHourglassHalf).html[0];
+    const userIcon = icon(faUser).html[0];
+    const calendarIcon = icon(faCalendar).html[0];
+    const moneyIcon = icon(faMoneyBill).html[0];
+    const invoiceIcon = icon(faFileInvoiceDollar).html[0];
+
+    Swal.fire({
+      title: `<strong>Détails de la tâche</strong>`,
+      html: `
+      <div class="text-left space-y-3">
+        <p class="flex items-center gap-2">
+          <span class="text-gray-500 w-5 h-5">${clipboardIcon}</span>
+          <strong>Description:</strong> ${task.description}
+        </p>
+        <p class="flex items-center gap-2">
+          <span class="text-gray-500 w-5 h-5">${flagIcon}</span>
+          <strong>Statut:</strong>
+          <span class="px-2 py-1 text-xs rounded-full ${
+        task.status === 'FINISHED' ? 'bg-green-100 text-green-800' :
+          task.status === 'IN_PROGRESS' ? 'bg-yellow-100 text-yellow-800' :
+            'bg-red-100 text-red-800'
+      }">${task.status}</span>
+        </p>
+        <p class="flex items-center gap-2">
+          <span class="text-gray-500 w-5 h-5">${hourglassIcon}</span>
+          <strong>Temps effectif:</strong> ${task.effectiveTime} heures
+        </p>
+        <p class="flex items-center gap-2">
+          <span class="text-gray-500 w-5 h-5">${userIcon}</span>
+          <strong>Assigné à:</strong> ${task.userEmail}
+        </p>
+        <p class="flex items-center gap-2">
+          <span class="text-gray-500 w-5 h-5">${calendarIcon}</span>
+          <strong>Date de début:</strong> ${new Date(task.beginDate).toLocaleDateString()}
+        </p>
+        <p class="flex items-center gap-2">
+          <span class="text-gray-500 w-5 h-5">${calendarIcon}</span>
+          <strong>Date de fin estimée:</strong> ${new Date(task.dateEndEstimated).toLocaleDateString()}
+        </p>
+        <p class="flex items-center gap-2">
+          <span class="text-gray-500 w-5 h-5">${moneyIcon}</span>
+          <strong>Budget limite:</strong> ${task.budgetLimit.toLocaleString()} MAD
+        </p>
+        <p class="flex items-center gap-2">
+          <span class="text-gray-500 w-5 h-5">${invoiceIcon}</span>
+          <strong>Total payé:</strong> ${task.totalPaid.toLocaleString()} MAD
+        </p>
+      </div>
+    `,
+      showCloseButton: true,
+      focusConfirm: false,
+      confirmButtonText: 'Fermer',
+      customClass: {
+        popup: 'swal2-popup-custom bg-white',
+        htmlContainer: 'swal2-html-container-custom',
+        confirmButton: 'px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors'
+      }
+    });
+  }
 
   @HostListener('dragover', ['$event'])
   onDragOver(event: DragEvent) {

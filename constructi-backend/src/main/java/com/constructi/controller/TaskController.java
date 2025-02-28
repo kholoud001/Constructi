@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.constructi.service.TaskService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -83,6 +84,13 @@ public class TaskController {
         return ResponseEntity.ok(taskResponseDTO);
     }
 
-
+    @PostMapping("/prolong/{taskId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<TaskResponseDTO> prolongTask(
+            @PathVariable Long taskId,
+            @RequestParam LocalDate newEndDate) {
+        TaskResponseDTO response = taskService.prolongTask(taskId, newEndDate);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 }

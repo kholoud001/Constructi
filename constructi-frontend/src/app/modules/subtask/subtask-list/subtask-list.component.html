@@ -1,0 +1,130 @@
+<div class="p-6 max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center gap-4">
+      <button (click)="goBack()" class="p-2 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-all duration-200">
+        <fa-icon [icon]="faArrowLeft" class="text-lg"></fa-icon>
+      </button>
+      <div class="p-3 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl shadow-sm">
+        <fa-icon [icon]="faListCheck" class="text-primary text-2xl"></fa-icon>
+      </div>
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900">Subtasks</h2>
+        <p class="text-gray-500 text-sm mt-1">Managing subtasks for Task #{{ parentTaskId }}</p>
+      </div>
+    </div>
+
+    <!-- Add button in header -->
+    <button (click)="addSubtask()"
+            class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+      <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
+      <span class="font-medium">Add Subtask</span>
+    </button>
+  </div>
+
+  <div class="bg-white rounded-xl border shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+    <div *ngIf="isLoading" class="flex flex-col items-center justify-center p-12">
+      <div class="w-16 h-16 relative">
+        <div class="absolute inset-0 rounded-full border-4 border-primary/20 animate-pulse"></div>
+        <fa-icon [icon]="faSpinner" [spin]="true" class="text-primary text-3xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></fa-icon>
+      </div>
+      <p class="text-gray-500 mt-4">Loading subtasks...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && subtasks.length === 0"
+         class="p-12 text-center bg-gradient-to-b from-white to-gray-50">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-primary/10 mb-6">
+        <fa-icon [icon]="faClipboardList" class="text-primary text-2xl"></fa-icon>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">No subtasks found</h3>
+      <p class="text-gray-500 mb-6 max-w-sm mx-auto">
+        Start breaking down your task by creating subtasks
+      </p>
+    </div>
+
+    <div *ngIf="!isLoading && subtasks.length > 0" class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead>
+        <tr class="bg-gray-50">
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Description</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Approved</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+        </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 bg-white">
+        <tr *ngFor="let subtask of subtasks"
+            class="hover:bg-gray-50 transition-colors duration-200">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="text-sm font-semibold text-primary">#{{ subtask.id }}</span>
+          </td>
+          <td class="px-6 py-4">
+            <p class="text-sm text-gray-900 line-clamp-2">{{ subtask.description }}</p>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+                  [ngClass]="{
+                    'bg-green-100 text-green-800': subtask.status === 'Completed',
+                    'bg-yellow-100 text-yellow-800': subtask.status === 'In Progress',
+                    'bg-blue-100 text-blue-800': subtask.status === 'Pending',
+                    'bg-red-100 text-red-800': subtask.status === 'Blocked'
+                  }">
+              <span class="w-2 h-2 rounded-full mr-2"
+                    [ngClass]="{
+                      'bg-green-400': subtask.status === 'Completed',
+                      'bg-yellow-400': subtask.status === 'In Progress',
+                      'bg-blue-400': subtask.status === 'Pending',
+                      'bg-red-400': subtask.status === 'Blocked'
+                    }">
+              </span>
+              {{ subtask.status }}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+                  [ngClass]="{
+                    'bg-green-100 text-green-800': subtask.approved,
+                    'bg-gray-100 text-gray-800': !subtask.approved
+                  }">
+              <span class="w-2 h-2 rounded-full mr-2"
+                    [ngClass]="{
+                      'bg-green-400': subtask.approved,
+                      'bg-gray-400': !subtask.approved
+                    }">
+              </span>
+              {{ subtask.approved ? 'Yes' : 'No' }}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center gap-2">
+              <button (click)="viewSubtask(subtask.id)"
+                      class="p-1.5 text-gray-500 hover:text-yellow-500 hover:bg-yellow-50 rounded-md transition-all duration-200"
+                      title="View Subtask">
+                <fa-icon [icon]="faEye" class="text-sm"></fa-icon>
+              </button>
+              <button (click)="editSubtask(subtask.id)"
+                      class="p-1.5 text-gray-500 hover:text-blue-500 hover:bg-blue-50 rounded-md transition-all duration-200"
+                      title="Edit Subtask">
+                <fa-icon [icon]="faPencil" class="text-sm"></fa-icon>
+              </button>
+              <button (click)="confirmDelete(subtask)"
+                      class="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-md transition-all duration-200"
+                      title="Delete Subtask">
+                <fa-icon [icon]="faTrash" class="text-sm"></fa-icon>
+              </button>
+              <button *ngIf="!subtask.approved"
+                      (click)="confirmApprove(subtask)"
+                      class="p-1.5 text-gray-500 hover:text-green-500 hover:bg-green-50 rounded-md transition-all duration-200"
+                      title="Approve Subtask">
+                <fa-icon [icon]="faCheckCircle" class="text-sm"></fa-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -10,7 +10,36 @@ export class TaskService {
 
   constructor(private http: HttpClient) {}
 
-  getTaskDetails(taskId: number): Observable<any> {
+
+  createTask(task: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/add`, task);
+  }
+
+  getAllTasks(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}`);
+  }
+
+  getTaskById(taskId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${taskId}`);
+  }
+
+  updateTask(taskId: number, task: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/update/${taskId}`, task);
+  }
+
+  deleteTask(taskId: number): Observable<string> {
+    return this.http.delete(`${this.apiUrl}/delete/${taskId}`, { responseType: 'text' });
+  }
+
+  assignTaskToWorker(taskId: number, workerId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/assign/${taskId}/${workerId}`, {});
+  }
+
+  getAssignedTasks(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/mytasks`);
+  }
+
+  getTaskWithInvoices(taskId: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/invoice/${taskId}`);
   }
 }

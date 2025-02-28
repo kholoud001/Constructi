@@ -24,7 +24,6 @@ export class MaterialListComponent implements OnInit {
   loading = false;
   searchTerm = '';
 
-  // Icons
   faPlus = faPlus;
   faEdit = faEdit;
   faTrash = faTrash;

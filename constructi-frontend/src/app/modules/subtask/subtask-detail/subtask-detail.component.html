@@ -1,0 +1,10 @@
+<div class="subtask-detail">
+  <h2>Subtask Details</h2>
+  <p><strong>ID:</strong> {{ subtask.id }}</p>
+  <p><strong>Description:</strong> {{ subtask.description }}</p>
+  <p><strong>Status:</strong> {{ subtask.status }}</p>
+  <p><strong>Begin Date:</strong> {{ subtask.beginDate }}</p>
+  <p><strong>Estimated End Date:</strong> {{ subtask.dateEndEstimated }}</p>
+  <p><strong>Approved:</strong> {{ subtask.approved ? 'Yes' : 'No' }}</p>
+  <button (click)="goBack()">Back</button>
+</div>
