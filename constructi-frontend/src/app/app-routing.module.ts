@@ -15,6 +15,9 @@ const routes: Routes = [
 
   { path: 'tasks', loadChildren: () => import('./modules/task/task.module').then(m => m.TaskModule) },
 
+  { path: 'subtasks', loadChildren: () => import('./modules/subtask/subtask.module').then(m => m.SubtaskModule) },
+
+
   { path: 'materials', loadChildren: () => import('./modules/material/material.module').then(m => m.MaterialModule) },
 
 

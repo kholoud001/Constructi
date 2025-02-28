@@ -1,1 +1,21 @@
-<p>subtask-add works!</p>
+<div class="subtask-add">
+  <h2>{{ isEditMode ? 'Edit Subtask' : 'Add Subtask' }}</h2>
+  <form (ngSubmit)="onSubmit()">
+    <label for="description">Description:</label>
+    <input id="description" [(ngModel)]="subtask.description" name="description" required />
+
+    <label for="status">Status:</label>
+    <select id="status" [(ngModel)]="subtask.status" name="status" required>
+      <option value="IN_PROGRESS">In Progress</option>
+      <option value="FINISHED">Finished</option>
+    </select>
+
+    <label for="beginDate">Begin Date:</label>
+    <input type="date" id="beginDate" [(ngModel)]="subtask.beginDate" name="beginDate" required />
+
+    <label for="dateEndEstimated">Estimated End Date:</label>
+    <input type="date" id="dateEndEstimated" [(ngModel)]="subtask.dateEndEstimated" name="dateEndEstimated" required />
+
+    <button type="submit">{{ isEditMode ? 'Update' : 'Add' }}</button>
+  </form>
+</div>

@@ -7,14 +7,14 @@ import {
   faPencil,
   faSpinner,
   faCheck,
-  faChevronDown
+  faChevronDown,
 } from '@fortawesome/free-solid-svg-icons';
+import {ProjectService} from '../../project/project.service';
 
 @Component({
   selector: 'app-task-add',
   templateUrl: './task-add.component.html',
   styleUrls: ['./task-add.component.css'],
-  standalone: false,
 })
 export class TaskAddComponent implements OnInit {
   // Icons
@@ -29,9 +29,13 @@ export class TaskAddComponent implements OnInit {
   task: any = {
     description: '',
     status: '',
-    priority: 'MEDIUM',
-    dueDate: null
+    beginDate: null,
+    dateEndEstimated: null,
+    effectiveTime: null, // Can be null
+    budgetLimit: null,
+    projectId: null,
   };
+  projects: any[] = []; // Array to hold the list of projects
   isEditMode = false;
   isSubmitting = false;
   showSuccessToast = false;
@@ -39,6 +43,7 @@ export class TaskAddComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private taskService: TaskService,
+    private projectService: ProjectService, // Inject ProjectService
     private router: Router
   ) {}
 
@@ -48,6 +53,7 @@ export class TaskAddComponent implements OnInit {
       this.isEditMode = true;
       this.loadTask(taskId);
     }
+    this.loadProjects(); // Load the list of projects
   }
 
   loadTask(taskId: number): void {
@@ -55,13 +61,26 @@ export class TaskAddComponent implements OnInit {
       next: (data) => {
         this.task = {
           ...data,
-          dueDate: data.dueDate ? new Date(data.dueDate).toISOString().split('T')[0] : null
+          beginDate: data.beginDate ? new Date(data.beginDate).toISOString().split('T')[0] : null,
+          dateEndEstimated: data.dateEndEstimated ? new Date(data.dateEndEstimated).toISOString().split('T')[0] : null,
         };
       },
       error: (error) => {
         console.error('Error loading task:', error);
         // Handle error (show toast notification, redirect, etc.)
-      }
+      },
+    });
+  }
+
+  loadProjects(): void {
+    this.projectService.getProjects().subscribe({
+      next: (data) => {
+        this.projects = data;
+      },
+      error: (error) => {
+        console.error('Error loading projects:', error);
+        // Handle error (show toast notification, etc.)
+      },
     });
   }
 
@@ -85,7 +104,7 @@ export class TaskAddComponent implements OnInit {
         console.error('Error saving task:', error);
         this.isSubmitting = false;
         // Handle error (show toast notification, etc.)
-      }
+      },
     });
   }
 

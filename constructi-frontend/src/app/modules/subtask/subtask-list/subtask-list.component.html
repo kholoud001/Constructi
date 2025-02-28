@@ -1,1 +1,29 @@
-<p>subtask-list works!</p>
+<div class="subtask-list">
+  <h2>Subtasks for Task {{ parentTaskId }}</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Description</th>
+      <th>Status</th>
+      <th>Approved</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let subtask of subtasks">
+      <td>{{ subtask.id }}</td>
+      <td>{{ subtask.description }}</td>
+      <td>{{ subtask.status }}</td>
+      <td>{{ subtask.approved ? 'Yes' : 'No' }}</td>
+      <td>
+        <button (click)="viewSubtask(subtask.id)">View</button>
+        <button (click)="editSubtask(subtask.id)">Edit</button>
+        <button (click)="deleteSubtask(subtask.id)">Delete</button>
+        <button (click)="approveSubtask(subtask.id)" *ngIf="!subtask.approved">Approve</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <button (click)="addSubtask()">Add New Subtask</button>
+</div>

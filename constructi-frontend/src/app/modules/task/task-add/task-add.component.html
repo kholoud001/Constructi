@@ -63,8 +63,7 @@
             <option value="" disabled selected>Select status</option>
             <option value="IN_PROGRESS">In Progress</option>
             <option value="FINISHED">Finished</option>
-            <option value="PENDING">Pending</option>
-            <option value="BLOCKED">Blocked</option>
+            <option value="NOT_STARTED">Pending</option>
           </select>
           <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
             <fa-icon [icon]="faChevronDown" class="text-sm"></fa-icon>
@@ -76,56 +75,120 @@
         </div>
       </div>
 
-      <!-- Due Date Field (Optional) -->
+      <!-- Begin Date Field -->
       <div class="space-y-2">
-        <label for="dueDate" class="text-sm font-medium text-gray-900">
-          Due Date
+        <label for="beginDate" class="text-sm font-medium text-gray-900">
+          Begin Date
+          <span class="text-red-500">*</span>
         </label>
         <div class="relative">
           <input
             type="date"
-            id="dueDate"
-            name="dueDate"
-            [(ngModel)]="task.dueDate"
+            id="beginDate"
+            name="beginDate"
+            [(ngModel)]="task.beginDate"
+            #beginDate="ngModel"
+            required
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+            [ngClass]="{'border-red-500 focus:ring-red-500/50': beginDate.invalid && (beginDate.dirty || beginDate.touched)}"
+          >
+          <div *ngIf="beginDate.invalid && (beginDate.dirty || beginDate.touched)"
+               class="text-sm text-red-500 mt-1">
+            <div *ngIf="beginDate.errors?.['required']">Begin Date is required</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estimated End Date Field -->
+      <div class="space-y-2">
+        <label for="dateEndEstimated" class="text-sm font-medium text-gray-900">
+          Estimated End Date
+          <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <input
+            type="date"
+            id="dateEndEstimated"
+            name="dateEndEstimated"
+            [(ngModel)]="task.dateEndEstimated"
+            #dateEndEstimated="ngModel"
+            required
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+            [ngClass]="{'border-red-500 focus:ring-red-500/50': dateEndEstimated.invalid && (dateEndEstimated.dirty || dateEndEstimated.touched)}"
+          >
+          <div *ngIf="dateEndEstimated.invalid && (dateEndEstimated.dirty || dateEndEstimated.touched)"
+               class="text-sm text-red-500 mt-1">
+            <div *ngIf="dateEndEstimated.errors?.['required']">Estimated End Date is required</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Effective Time Field -->
+      <div class="space-y-2">
+        <label for="effectiveTime" class="text-sm font-medium text-gray-900">
+          Effective Time (optional)
+        </label>
+        <div class="relative">
+          <input
+            type="number"
+            id="effectiveTime"
+            name="effectiveTime"
+            [(ngModel)]="task.effectiveTime"
             class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
           >
         </div>
       </div>
 
-      <!-- Priority Field (Optional) -->
+      <!-- Budget Limit Field -->
       <div class="space-y-2">
-        <label class="text-sm font-medium text-gray-900">Priority</label>
-        <div class="flex items-center gap-4">
-          <label class="inline-flex items-center">
-            <input
-              type="radio"
-              name="priority"
-              value="LOW"
-              [(ngModel)]="task.priority"
-              class="form-radio text-primary border-gray-300 focus:ring-primary/50"
-            >
-            <span class="ml-2 text-sm text-gray-700">Low</span>
-          </label>
-          <label class="inline-flex items-center">
-            <input
-              type="radio"
-              name="priority"
-              value="MEDIUM"
-              [(ngModel)]="task.priority"
-              class="form-radio text-primary border-gray-300 focus:ring-primary/50"
-            >
-            <span class="ml-2 text-sm text-gray-700">Medium</span>
-          </label>
-          <label class="inline-flex items-center">
-            <input
-              type="radio"
-              name="priority"
-              value="HIGH"
-              [(ngModel)]="task.priority"
-              class="form-radio text-primary border-gray-300 focus:ring-primary/50"
-            >
-            <span class="ml-2 text-sm text-gray-700">High</span>
-          </label>
+        <label for="budgetLimit" class="text-sm font-medium text-gray-900">
+          Budget Limit
+          <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <input
+            type="number"
+            id="budgetLimit"
+            name="budgetLimit"
+            [(ngModel)]="task.budgetLimit"
+            #budgetLimit="ngModel"
+            required
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+            [ngClass]="{'border-red-500 focus:ring-red-500/50': budgetLimit.invalid && (budgetLimit.dirty || budgetLimit.touched)}"
+          >
+          <div *ngIf="budgetLimit.invalid && (budgetLimit.dirty || budgetLimit.touched)"
+               class="text-sm text-red-500 mt-1">
+            <div *ngIf="budgetLimit.errors?.['required']">Budget Limit is required</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Field -->
+      <div class="space-y-2">
+        <label for="projectId" class="text-sm font-medium text-gray-900">
+          Project
+          <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <select
+            id="projectId"
+            name="projectId"
+            [(ngModel)]="task.projectId"
+            #projectId="ngModel"
+            required
+            class="w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+            [ngClass]="{'border-red-500 focus:ring-red-500/50': projectId.invalid && (projectId.dirty || projectId.touched)}"
+          >
+            <option value="" disabled selected>Select project</option>
+            <option *ngFor="let project of projects" [value]="project.id">{{ project.name }}</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+            <fa-icon [icon]="faChevronDown" class="text-sm"></fa-icon>
+          </div>
+          <div *ngIf="projectId.invalid && (projectId.dirty || projectId.touched)"
+               class="text-sm text-red-500 mt-1">
+            <div *ngIf="projectId.errors?.['required']">Project is required</div>
+          </div>
         </div>
       </div>
 
@@ -141,7 +204,7 @@
         <button
           type="submit"
           [disabled]="!taskForm.form.valid || isSubmitting"
-          class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
         >
           <fa-icon *ngIf="isSubmitting" [icon]="faSpinner" [spin]="true"></fa-icon>
           {{ isEditMode ? 'Update Task' : 'Create Task' }}
@@ -150,7 +213,6 @@
     </form>
   </div>
 
-  <!-- Success Toast -->
   <div *ngIf="showSuccessToast"
        class="fixed bottom-4 right-4 flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg transition-opacity duration-300">
     <fa-icon [icon]="faCheck" class="text-sm"></fa-icon>

@@ -19,7 +19,6 @@ import {
   standalone: false,
 })
 export class TaskListComponent implements OnInit {
-  // Icons
   faListCheck = faListCheck;
   faPlus = faPlus;
   faSpinner = faSpinner;
