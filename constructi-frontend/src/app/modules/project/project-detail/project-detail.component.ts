@@ -1,13 +1,13 @@
 import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { ProjectService } from '../project.service';
 import Swal from 'sweetalert2';
 import { UserService } from '../../user/user.service';
 import {
-  faEnvelope, faUser, faCalendar, faPhone, faDollarSign, faImage, faFile,
-  faTasks, faTools, faChevronDown, faProjectDiagram, faCloudUpload,
-  faClock, faExclamationTriangle, faBoxOpen, faClipboardList, faTimes, faExchangeAlt,
-  faFlag,faMoneyBill,faHourglassHalf,faFileInvoiceDollar
+    faEnvelope, faUser, faCalendar, faPhone, faDollarSign, faImage, faFile,
+    faTasks, faTools, faChevronDown, faProjectDiagram, faCloudUpload,
+    faClock, faExclamationTriangle, faBoxOpen, faClipboardList, faTimes, faExchangeAlt,
+    faFlag, faMoneyBill, faHourglassHalf, faFileInvoiceDollar, faArrowLeft
 } from '@fortawesome/free-solid-svg-icons';
 import { icon } from '@fortawesome/fontawesome-svg-core';
 
@@ -81,7 +81,9 @@ export class ProjectDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private projectService: ProjectService,
     private userService: UserService,
-    private invoiceService: InvoiceService
+    private invoiceService: InvoiceService,
+    private router: Router,
+
   ) {}
 
   ngOnInit(): void {
@@ -390,5 +392,13 @@ export class ProjectDetailComponent implements OnInit {
       this.handleFileInput(event);
     }
   }
+
+  goBack() {
+    this.router.navigate(['/projects']);
+  }
+
+    protected readonly faArrowLeft = faArrowLeft;
+
+
 
 }

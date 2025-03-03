@@ -7,6 +7,7 @@ import {MyProjectsComponent} from './my-projects/my-projects.component';
 import {MyProjectDetailComponent} from './my-project-detail/my-project-detail.component';
 import {AuthGuard} from '../../shared/guards/auth.guard';
 import {ProjectAddComponent} from './project-add/project-add.component';
+import {ProjectUpdateComponent} from './project-update/project-update.component';
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent ,
@@ -17,6 +18,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { role: 'ADMIN' }
   },
+
+  { path: ':id/edit', component: ProjectUpdateComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'ADMIN' }
+  },
+
 
   { path: ':id/details', component: ProjectDetailComponent ,
     canActivate: [AuthGuard],
