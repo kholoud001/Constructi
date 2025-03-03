@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from '../task.service';
 import {
@@ -16,7 +16,8 @@ import {
   faMoneyBill,
   faProjectDiagram,
   faHourglassHalf,
-  faFileInvoiceDollar
+  faFileInvoiceDollar,
+  faHistory
 } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 
@@ -42,7 +43,7 @@ interface Task {
 })
 export class TaskDetailComponent implements OnInit {
   taskId!: number;
-  task: Task | null = null;
+  @Input() task: any
   loading = false;
   error: string | null = null;
 
@@ -60,6 +61,8 @@ export class TaskDetailComponent implements OnInit {
   faProjectDiagram = faProjectDiagram;
   faHourglassHalf = faHourglassHalf;
   faFileInvoiceDollar = faFileInvoiceDollar;
+  faHistory = faHistory
+
 
   constructor(
     private route: ActivatedRoute,
@@ -80,11 +83,12 @@ export class TaskDetailComponent implements OnInit {
       next: (data) => {
         this.task = data;
         this.loading = false;
-        console.log("tasks => "+ this.task)
+        console.log("Task Details:", this.task);
       },
       error: (err) => {
         this.error = 'Failed to load task details.';
         this.loading = false;
+        console.error("Error fetching task:", err);
       }
     });
   }
