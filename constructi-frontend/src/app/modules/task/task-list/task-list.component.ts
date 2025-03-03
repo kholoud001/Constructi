@@ -12,9 +12,10 @@ import {
   faTrash,
   faChevronDown,
   faChevronUp,
-  faCheckCircle
+  faCheckCircle, faCalendarPlus, faUserCheck
 } from '@fortawesome/free-solid-svg-icons';
 import {SubtaskService} from '../../subtask/subtask.service';
+import {UserService} from '../../user/user.service';
 
 @Component({
   selector: 'app-task-list',
@@ -33,6 +34,8 @@ export class TaskListComponent implements OnInit {
   faChevronDown = faChevronDown;
   faChevronUp = faChevronUp;
   faCheckCircle = faCheckCircle;
+  faCalendarPlus = faCalendarPlus;
+  faUserCheck = faUserCheck;
 
   tasks: any[] = [];
   isLoading = true;
@@ -40,6 +43,7 @@ export class TaskListComponent implements OnInit {
   constructor(
     private taskService: TaskService,
     private subtaskService: SubtaskService,
+    private userService:UserService,
     private router: Router
   ) {}
 
@@ -165,8 +169,6 @@ export class TaskListComponent implements OnInit {
     });
   }
 
-
-
   viewSubtask(subtaskId: number): void {
     this.router.navigate(['/subtasks/detail', subtaskId]);
   }
@@ -227,6 +229,105 @@ export class TaskListComponent implements OnInit {
     this.router.navigate(['/tasks/add']);
   }
 
+
+  prolongTask(taskId: number): void {
+    Swal.fire({
+      title: 'Prolong Task',
+      input: 'date',
+      inputLabel: 'New End Date',
+      inputAttributes: {
+        required: 'true'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Prolong',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#16a34a',
+      cancelButtonColor: '#6b7280',
+      heightAuto: false,
+      customClass: {
+        popup: 'rounded-xl',
+        confirmButton: 'px-4 py-2 text-sm font-medium text-white rounded-lg',
+        cancelButton: 'px-4 py-2 text-sm font-medium rounded-lg'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const newEndDate = result.value;
+        this.taskService.prolongTask(taskId, newEndDate).subscribe({
+          next: () => {
+            this.showSuccessAlert('Task prolonged successfully');
+            this.loadTasks();
+          },
+          error: (error) => {
+            let errorMessage = 'Failed to prolong task. Please try again later.';
+
+            if (error.error) {
+              if (typeof error.error === 'string') {
+                errorMessage = error.error;
+              }
+              else if (error.error.message) {
+                errorMessage = error.error.message;
+              }
+            }
+            this.showErrorAlert('Error', errorMessage);
+          }
+        });
+      }
+    });
+  }
+
+  assignTaskToWorker(taskId: number): void {
+    this.userService.getUsers().subscribe({
+      next: (users) => {
+        const userOptions = users.reduce((acc, user) => {
+          if (user.id !== undefined) {
+            acc[user.id] = `${user.fname} ${user.lname}`;
+            // (${user.email});
+          }
+          return acc;
+        }, {} as { [key: number]: string });
+
+        Swal.fire({
+          title: 'Assign Task to Worker',
+          input: 'select',
+          inputOptions: userOptions,
+          inputLabel: 'Select a Worker',
+          inputAttributes: {
+            required: 'true'
+          },
+          showCancelButton: true,
+          confirmButtonText: 'Assign',
+          cancelButtonText: 'Cancel',
+          confirmButtonColor: '#16a34a',
+          cancelButtonColor: '#6b7280',
+          heightAuto: false,
+          customClass: {
+            popup: 'rounded-xl',
+            confirmButton: 'px-4 py-2 text-sm font-medium text-white rounded-lg',
+            cancelButton: 'px-4 py-2 text-sm font-medium rounded-lg'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const workerId = result.value;
+            this.taskService.assignTaskToWorker(taskId, workerId).subscribe({
+              next: () => {
+                this.showSuccessAlert('Task assigned successfully');
+                this.loadTasks();
+              },
+              error: (error) => {
+                console.error('Error assigning task:', error);
+                this.showErrorAlert('Failed to assign task', 'Please try again later.');
+              }
+            });
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error fetching users:', error);
+        this.showErrorAlert('Failed to load users', 'Please try again later.');
+      }
+    });
+  }
+
   private showLoadingAlert(message: string) {
     return Swal.fire({
       title: message,
@@ -269,4 +370,6 @@ export class TaskListComponent implements OnInit {
       }
     });
   }
+
+
 }

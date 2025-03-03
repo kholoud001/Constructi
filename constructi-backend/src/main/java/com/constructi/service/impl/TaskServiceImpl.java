@@ -184,7 +184,10 @@ public class TaskServiceImpl implements TaskService {
 
     private Double calculateTaskProgress(Task task) {
         List<Subtask> subtasks = subtaskRepository.findByParentTaskId(task.getId());
-        if (subtasks.isEmpty()) return 0.0;
+
+        if (subtasks.isEmpty()) {
+            return task.getStatus() == StatusTask.FINISHED ? 100.0 : 0.0;
+        }
 
         long approvedCompleted = subtasks.stream()
                 .filter(s -> s.getStatus() == StatusTask.FINISHED && s.isApproved())
@@ -193,20 +196,26 @@ public class TaskServiceImpl implements TaskService {
         return (double) approvedCompleted / subtasks.size() * 100;
     }
 
+
     @Override
     public TaskResponseDTO prolongTask(Long taskId, LocalDate newEndDate) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        if (newEndDate.isBefore(task.getDateEndEstimated())) {
+            throw new IllegalArgumentException("New end date must be later than or equal to the current estimated end date.");
+        }
 
         if (task.getOriginalDateEndEstimated() == null) {
             task.setOriginalDateEndEstimated(task.getDateEndEstimated());
         }
 
         task.setDateEndEstimated(newEndDate);
-
         Task updatedTask = taskRepository.save(task);
+
         return taskMapper.toTaskResponseDTO(updatedTask);
     }
+
 
 }
 
