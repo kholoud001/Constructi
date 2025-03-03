@@ -45,7 +45,7 @@ public class SecurityConfig {
         http
                 .cors(customizer -> customizer.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/auth/register", "/auth/login",
+                        .requestMatchers("/auth/login",
                                 "/auth/forgot-password","/auth/reset-password").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/projects/my-projects").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT", "ROLE_WORKER")

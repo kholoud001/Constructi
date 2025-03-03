@@ -33,6 +33,11 @@ public class UserServiceImpl implements UserService {
     private  PasswordEncoder passwordEncoder;
 
 
+    @Override
+    public void save(User user) {
+
+        userRepository.save(user);
+    }
 
     @Override
     @Transactional
@@ -63,7 +68,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         return userMapper.toResponseDTO(user);
     }
-
 
 
     @Override
@@ -117,10 +121,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
-    @Override
-    public void save(User user) {
-        userRepository.save(user);
-    }
+
 
 
 

@@ -20,11 +20,13 @@ public class EmailService {
             helper.setFrom("constructi@yourdomain.com");
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(htmlContent, true); // Enable HTML format
+            helper.setText(htmlContent, true);
 
             mailSender.send(message);
         } catch (MessagingException e) {
             throw new RuntimeException("Failed to send email", e);
         }
     }
+
+
 }

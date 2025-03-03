@@ -45,7 +45,6 @@ public class PasswordServiceImpl implements PasswordService {
         PasswordResetToken token = new PasswordResetToken(user);
         tokenRepository.save(token);
 
-        // Include the email in the reset URL
         String resetLink = String.format("%s?token=%s&email=%s",
                 resetPasswordLink,
                 token.getToken(),
@@ -84,7 +83,6 @@ public class PasswordServiceImpl implements PasswordService {
 
         User user = token.getUser();
 
-        // Hash the new password before saving
         String hashedPassword = passwordEncoder.encode(request.getNewPassword());
         user.setPassword(hashedPassword);
 
