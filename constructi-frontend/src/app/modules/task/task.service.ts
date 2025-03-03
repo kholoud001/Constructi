@@ -10,7 +10,6 @@ export class TaskService {
 
   constructor(private http: HttpClient) {}
 
-
   createTask(task: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/add`, task);
   }
@@ -41,5 +40,11 @@ export class TaskService {
 
   getTaskWithInvoices(taskId: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/invoice/${taskId}`);
+  }
+
+  prolongTask(taskId: number, newEndDate: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/prolong/${taskId}`, null, {
+      params: { newEndDate }
+    });
   }
 }

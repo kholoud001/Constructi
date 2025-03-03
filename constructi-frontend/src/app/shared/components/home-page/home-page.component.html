@@ -1,4 +1,4 @@
-<div class=" relative min-h-screen flex flex-col items-center justify-center bg-cover bg-center text-gray-900 py-8 px-4 sm:px-6 lg:px-8"
+<div class="relative min-h-screen flex flex-col items-center justify-center bg-cover bg-center text-gray-900 py-8 px-4 sm:px-6 lg:px-8"
      style="background-image: url('/assets/images/bg1.jpg');">
   <div class="absolute inset-0 bg-black opacity-50"></div>
 
@@ -34,12 +34,15 @@
       </div>
     </div>
 
-    <div class="mt-8 sm:mt-16 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-      <a routerLink="/auth/login" class="w-full sm:w-auto bg-blue-600 text-white px-6 sm:px-8 py-3 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 text-base sm:text-lg font-semibold text-center">
+    <div *ngIf="!isAuthenticated"
+         class="mt-8 sm:mt-16 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+      <a routerLink="/auth/login"
+         class="w-full sm:w-auto bg-blue-600 text-white px-6 sm:px-8 py-3 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 text-base sm:text-lg font-semibold text-center">
         <fa-icon [icon]="faSignInAlt" class="mr-2"></fa-icon>
         Connexion
       </a>
-      <a routerLink="/auth/register" class="w-full sm:w-auto bg-gray-800 text-white px-6 sm:px-8 py-3 rounded-lg shadow-md hover:bg-gray-900 transition duration-300 text-base sm:text-lg font-semibold text-center">
+      <a routerLink="/auth/register"
+         class="w-full sm:w-auto bg-gray-800 text-white px-6 sm:px-8 py-3 rounded-lg shadow-md hover:bg-gray-900 transition duration-300 text-base sm:text-lg font-semibold text-center">
         <fa-icon [icon]="faUserPlus" class="mr-2"></fa-icon>
         S'inscrire
       </a>

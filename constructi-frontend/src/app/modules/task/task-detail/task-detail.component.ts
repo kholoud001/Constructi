@@ -80,6 +80,7 @@ export class TaskDetailComponent implements OnInit {
       next: (data) => {
         this.task = data;
         this.loading = false;
+        console.log("tasks => "+ this.task)
       },
       error: (err) => {
         this.error = 'Failed to load task details.';

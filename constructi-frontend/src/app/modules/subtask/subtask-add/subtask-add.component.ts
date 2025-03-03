@@ -85,11 +85,9 @@ export class SubtaskAddComponent implements OnInit {
 
     if (error.error) {
       if (typeof error.error === 'string') {
-        // Handle plain text errors
         errorMessage = error.error;
       } else if (typeof error.error === 'object') {
-        // Handle structured errors (like validation errors)
-        errorMessage = Object.values(error.error).join('\n'); // Combine multiple validation errors
+        errorMessage = Object.values(error.error).join('\n');
       }
     }
 
