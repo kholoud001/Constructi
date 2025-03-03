@@ -18,6 +18,8 @@ export class ProjectListComponent implements OnInit {
   totalPages = 1
   loading = true
 
+  faCalendar=faCalendar;
+
   constructor(
     private projectService: ProjectService,
     protected router: Router,
@@ -146,34 +148,27 @@ export class ProjectListComponent implements OnInit {
     const maxPagesToShow = 5
 
     if (this.totalPages <= maxPagesToShow) {
-      // Show all pages
       for (let i = 1; i <= this.totalPages; i++) {
         pages.push(i)
       }
     } else {
-      // Always show first page
       pages.push(1)
 
-      // Calculate middle pages
       const leftBound = Math.max(2, this.currentPage - 1)
       const rightBound = Math.min(this.totalPages - 1, this.currentPage + 1)
 
-      // Add ellipsis if needed before middle pages
       if (leftBound > 2) {
         pages.push("...")
       }
 
-      // Add middle pages
       for (let i = leftBound; i <= rightBound; i++) {
         pages.push(i)
       }
 
-      // Add ellipsis if needed after middle pages
       if (rightBound < this.totalPages - 1) {
         pages.push("...")
       }
 
-      // Always show last page
       pages.push(this.totalPages)
     }
 
@@ -182,13 +177,11 @@ export class ProjectListComponent implements OnInit {
 
   getStatusClass(status: string): string {
     switch (status.toUpperCase()) {
-      case "COMPLETED":
+      case "FINISHED":
         return "bg-green-100 text-green-800"
       case "IN_PROGRESS":
         return "bg-blue-100 text-blue-800"
-      case "ON_HOLD":
-        return "bg-amber-100 text-amber-800"
-      case "CANCELLED":
+      case "NOT_STARTED":
         return "bg-red-100 text-red-800"
       default:
         return "bg-gray-100 text-gray-800"
@@ -196,12 +189,11 @@ export class ProjectListComponent implements OnInit {
   }
 
   getProgressColor(progress: number): string {
-    if (progress < 25) return "#ef4444" // red
-    if (progress < 50) return "#f97316" // orange
-    if (progress < 75) return "#eab308" // yellow
-    return "#22c55e" // green
+    if (progress < 25) return "#ef4444"
+    if (progress < 50) return "#f97316"
+    if (progress < 75) return "#eab308"
+    return "#22c55e"
   }
 
-  protected readonly faCalendar = faCalendar;
 }
 

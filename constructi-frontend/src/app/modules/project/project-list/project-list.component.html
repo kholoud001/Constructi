@@ -105,7 +105,8 @@
   </div>
 
   <!-- Pagination Controls -->
-  <div *ngIf="!loading && projects.length > 0" class="flex flex-wrap justify-center items-center gap-2 mt-8">
+  <div *ngIf="!loading && projects.length > 0"
+       class="flex flex-wrap justify-center items-center gap-2 mt-8 pb-8 sticky-pagination">
     <button
       (click)="previousPage()"
       [disabled]="currentPage === 1"
@@ -116,7 +117,7 @@
       Previous
     </button>
 
-    <div class="flex items-center">
+    <div class="flex items-center bottom-0">
       <ng-container *ngFor="let page of getPageNumbers()">
         <button
           *ngIf="page !== '...'"
