@@ -50,8 +50,9 @@ export class ProjectService {
     return this.http.put<any>(`${this.apiUrl}/update/${id}`, project);
   }
 
-  deleteProject(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/delete/${id}`);
+  deleteProject(id: number): Observable<string> {
+    return this.http.delete(`${this.apiUrl}/delete/${id}`, { responseType: 'text' });
   }
+
 
 }

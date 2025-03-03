@@ -1,19 +1,144 @@
-<div class="grid grid-cols-3 gap-4 p-4">
-  <div *ngFor="let project of projects" class="p-4 bg-white shadow-lg rounded-lg">
-    <h3 class="text-xl font-bold mb-2">{{ project.name }}</h3>
-    <p class="text-gray-600 mb-2">Status: {{ project.state }}</p>
-    <circle-progress
-      [percent]="project.progress"
-      [radius]="50"
-      [outerStrokeWidth]="8"
-      [innerStrokeWidth]="4"
-      [outerStrokeColor]="'#4CAF50'"
-      [innerStrokeColor]="'#C7E596'"
-      [animation]="true"
-    ></circle-progress>
+<div class="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+  <!-- Header Section with Animation -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+    <div class="flex items-center">
+      <i class="fas fa-project-diagram text-blue-600 text-2xl mr-3"></i>
+      <h2 class="text-2xl font-bold text-gray-900">Projects</h2>
+    </div>
 
-    <button (click)="viewProject(project.id)" class="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
-      View Details
+    <button
+      (click)="router.navigate(['/projects/add'])"
+      class="flex items-center justify-center px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md"
+    >
+      <i class="fas fa-plus-circle mr-2"></i>
+      Add Project
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-20">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && projects.length === 0" class="bg-white rounded-lg shadow-lg p-8 text-center">
+    <i class="fas fa-folder-open text-gray-400 text-5xl mb-4"></i>
+    <h3 class="text-xl font-medium text-gray-700 mb-2">No Projects Found</h3>
+    <p class="text-gray-500 mb-6">Get started by creating your first project</p>
+    <button
+      (click)="router.navigate(['/projects/add'])"
+      class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+    >
+      <i class="fas fa-plus-circle mr-2"></i>
+      Create Project
+    </button>
+  </div>
+
+  <!-- Project Grid -->
+  <div *ngIf="!loading && projects.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let project of paginatedProjects"
+         class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-100">
+
+      <!-- Card Header with Status Badge -->
+      <div class="p-5 border-b border-gray-100">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-xl font-bold text-gray-900 line-clamp-1">{{ project.name }}</h3>
+          <span [ngClass]="getStatusClass(project.state)" class="px-2.5 py-1 rounded-full text-xs font-medium">
+            {{ project.state }}
+          </span>
+        </div>
+        <p class="px-2.5 py-1 rounded-full text-xs font-medium">
+          <fa-icon [icon]="faCalendar" class="text-gray-500 mr-1"></fa-icon>
+          End date: {{ project.endDate }}
+        </p>
+
+      </div>
+
+      <!-- Progress Section -->
+      <div class="p-5 flex items-center justify-between">
+        <div class="flex-1 mr-4">
+          <p class="text-gray-600 text-sm line-clamp-2">{{ project.description || 'No description available' }}</p>
+        </div>
+
+        <circle-progress
+          [percent]="project.progress"
+          [radius]="40"
+          [outerStrokeWidth]="8"
+          [innerStrokeWidth]="4"
+          [outerStrokeColor]="getProgressColor(project.progress)"
+          [innerStrokeColor]="'#E5E7EB'"
+          [animation]="true"
+          [animationDuration]="800"
+          [showTitle]="true"
+          [showUnits]="false"
+          [titleFontSize]="'16'"
+          [titleColor]="'#374151'"
+          [titleFontWeight]="'600'"
+        ></circle-progress>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="grid grid-cols-3 divide-x divide-gray-100 border-t border-gray-100">
+        <button
+          (click)="viewProject(project.id)"
+          class="flex items-center justify-center py-3 text-blue-600 hover:bg-blue-50 transition-colors"
+        >
+          <i class="fas fa-eye mr-2"></i>
+          <span class="text-sm font-medium">View</span>
+        </button>
+        <button
+          (click)="editProject(project.id)"
+          class="flex items-center justify-center py-3 text-amber-600 hover:bg-amber-50 transition-colors"
+        >
+          <i class="fas fa-edit mr-2"></i>
+          <span class="text-sm font-medium">Edit</span>
+        </button>
+        <button
+          (click)="deleteProject(project.id)"
+          class="flex items-center justify-center py-3 text-red-600 hover:bg-red-50 transition-colors"
+        >
+          <i class="fas fa-trash-alt mr-2"></i>
+          <span class="text-sm font-medium">Delete</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination Controls -->
+  <div *ngIf="!loading && projects.length > 0"
+       class="flex flex-wrap justify-center items-center gap-2 mt-8 pb-8 sticky-pagination">
+    <button
+      (click)="previousPage()"
+      [disabled]="currentPage === 1"
+      [ngClass]="currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-200'"
+      class="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg transition-colors"
+    >
+      <i class="fas fa-chevron-left mr-2"></i>
+      Previous
+    </button>
+
+    <div class="flex items-center bottom-0">
+      <ng-container *ngFor="let page of getPageNumbers()">
+        <button
+          *ngIf="page !== '...'"
+          (click)="goToPage(page)"
+          [ngClass]="currentPage === page ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+          class="w-10 h-10 rounded-lg mx-1 transition-colors"
+        >
+          {{ page }}
+        </button>
+        <span *ngIf="page === '...'" class="mx-1 text-gray-500">...</span>
+      </ng-container>
+    </div>
+
+    <button
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+      [ngClass]="currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-200'"
+      class="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg transition-colors"
+    >
+      Next
+      <i class="fas fa-chevron-right ml-2"></i>
     </button>
   </div>
 </div>
