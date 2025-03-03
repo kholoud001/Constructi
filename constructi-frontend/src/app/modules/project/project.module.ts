@@ -10,7 +10,9 @@ import {NgCircleProgressModule} from 'ng-circle-progress';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import { MyProjectsComponent } from './my-projects/my-projects.component';
 import { MyProjectDetailComponent } from './my-project-detail/my-project-detail.component';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { ProjectAddComponent } from './project-add/project-add.component';
+import { ProjectUpdateComponent } from './project-update/project-update.component';
 
 
 @NgModule({
@@ -19,7 +21,9 @@ import {FormsModule} from "@angular/forms";
     ProjectDetailComponent,
     ProjectProgressComponent,
     MyProjectsComponent,
-    MyProjectDetailComponent
+    MyProjectDetailComponent,
+    ProjectAddComponent,
+    ProjectUpdateComponent
   ],
     imports: [
         CommonModule,
@@ -27,7 +31,8 @@ import {FormsModule} from "@angular/forms";
         NgChartsModule,
         NgCircleProgressModule.forRoot({}),
         FaIconComponent,
-        FormsModule
+        FormsModule,
+        ReactiveFormsModule
     ],
   providers: []
 })
