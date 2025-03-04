@@ -55,7 +55,9 @@ public class AdminController {
         String loginUrl = "http://localhost:4200/auth/login";
 
         User user = createUserFromRequest(registrationRequest, hashedPassword);
-        user.setPasswordUpdateExpiry(LocalDateTime.now().plusDays(7));
+//        user.setPasswordUpdateExpiry(LocalDateTime.now().plusDays(7));
+        user.setPasswordUpdateExpiry(LocalDateTime.now().plusHours(1)); // Set expiry to 1 hour from now
+
         user.setActive(true);
         userService.save(user);
         sendCredentialsEmail(user, randomPassword, loginUrl);

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../user.service';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import Swal from 'sweetalert2';
-import { RouterLink } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faUsers,
@@ -47,7 +47,8 @@ export class UserListComponent implements OnInit {
   faTimesCircle = faTimesCircle;
   faCheckCircle = faCheckCircle;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService,
+              protected router:Router) {}
 
   ngOnInit(): void {
     this.userService.getUsers().subscribe(data => {
@@ -110,7 +111,7 @@ export class UserListComponent implements OnInit {
         Swal.fire({
           icon: 'success',
           title: 'Success',
-          text: response, 
+          text: response,
         });
       },
       error: (error) => {
