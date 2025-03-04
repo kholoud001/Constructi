@@ -1,0 +1,9 @@
+@media (max-width: 640px) {
+}
+
+.dark-mode-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+

@@ -15,5 +15,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findById(Long id);
 
-    List<User> findByPasswordUpdateExpiryBeforeAndIsActiveTrue(LocalDateTime now);
+    List<User> findByPasswordUpdateExpiryBeforeAndActiveTrue(LocalDateTime now);
 }

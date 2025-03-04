@@ -1,5 +1,6 @@
 package com.constructi.service.impl;
 
+import com.constructi.DTO.ProfileUpdateRequestDTO;
 import com.constructi.DTO.UserRequestDTO;
 import com.constructi.DTO.UserResponseDTO;
 import com.constructi.model.entity.Role;
@@ -18,7 +19,7 @@ import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
-@Service
+@Service("userService")
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -99,6 +100,21 @@ public class UserServiceImpl implements UserService {
 
         User updatedUser = userRepository.save(existingUser);
         return userMapper.toResponseDTO(updatedUser);
+    }
+
+    @Override
+    @Transactional
+    public UserResponseDTO updateUserProfile(Long id, ProfileUpdateRequestDTO profileUpdateRequestDTO) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        user.setFname(profileUpdateRequestDTO.getFname());
+        user.setLname(profileUpdateRequestDTO.getLname());
+        user.setCell(profileUpdateRequestDTO.getCell());
+        user.setPassword(passwordEncoder.encode(profileUpdateRequestDTO.getPassword()));
+
+        userRepository.save(user);
+        return userMapper.toResponseDTO(user);
     }
 
 

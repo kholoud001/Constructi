@@ -1,0 +1,108 @@
+<div class="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl p-6 sm:p-8 max-w-md mx-auto my-4 border border-gray-100 dark:border-gray-700">
+  <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+    <fa-icon [icon]="faUserEdit" class="mr-3 text-blue-600 dark:text-blue-400"></fa-icon>
+    Update Profile
+  </h2>
+
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <div class="space-y-5">
+      <!-- First Name -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">First Name</label>
+        <div class="relative rounded-md shadow-sm">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <fa-icon [icon]="faUser" class="text-gray-500 dark:text-gray-400"></fa-icon>
+          </div>
+          <input
+            type="text"
+            formControlName="fname"
+            class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            [ngClass]="{'border-red-500 dark:border-red-400': profileForm.get('fname')?.invalid && profileForm.get('fname')?.touched}"
+          />
+          <div *ngIf="profileForm.get('fname')?.invalid && profileForm.get('fname')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1">
+            First name is required
+          </div>
+        </div>
+      </div>
+
+      <!-- Last Name -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Last Name</label>
+        <div class="relative rounded-md shadow-sm">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <fa-icon [icon]="faUser" class="text-gray-500 dark:text-gray-400"></fa-icon>
+          </div>
+          <input
+            type="text"
+            formControlName="lname"
+            class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            [ngClass]="{'border-red-500 dark:border-red-400': profileForm.get('lname')?.invalid && profileForm.get('lname')?.touched}"
+          />
+          <div *ngIf="profileForm.get('lname')?.invalid && profileForm.get('lname')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1">
+            Last name is required
+          </div>
+        </div>
+      </div>
+
+      <!-- Cell Number -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Cell Number</label>
+        <div class="relative rounded-md shadow-sm">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <fa-icon [icon]="faPhone" class="text-gray-500 dark:text-gray-400"></fa-icon>
+          </div>
+          <input
+            type="text"
+            formControlName="cell"
+            class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            [ngClass]="{'border-red-500 dark:border-red-400': profileForm.get('cell')?.invalid && profileForm.get('cell')?.touched}"
+          />
+          <div *ngIf="profileForm.get('cell')?.invalid && profileForm.get('cell')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1">
+            <span *ngIf="profileForm.get('cell')?.errors?.['required']">Phone number is required</span>
+            <span *ngIf="profileForm.get('cell')?.errors?.['pattern']">Please enter a valid 10-digit phone number</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Password</label>
+        <div class="relative rounded-md shadow-sm">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <fa-icon [icon]="faLock" class="text-gray-500 dark:text-gray-400"></fa-icon>
+          </div>
+          <input
+            type="password"
+            formControlName="password"
+            class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            [ngClass]="{'border-red-500 dark:border-red-400': profileForm.get('password')?.invalid && profileForm.get('password')?.touched}"
+          />
+          <div *ngIf="profileForm.get('password')?.invalid && profileForm.get('password')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1">
+            <span *ngIf="profileForm.get('password')?.errors?.['required']">Password is required</span>
+            <span *ngIf="profileForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="mt-8 space-y-3">
+      <button
+        type="submit"
+        [disabled]="profileForm.invalid"
+        class="inline-flex items-center justify-center w-full px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <fa-icon [icon]="faSave" class="mr-2"></fa-icon>
+        Save Changes
+      </button>
+
+      <a
+        routerLink="/profile/card"
+        class="inline-flex items-center justify-center w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+      >
+        <fa-icon [icon]="faTimes" class="mr-2"></fa-icon>
+        Cancel
+      </a>
+    </div>
+  </form>
+</div>

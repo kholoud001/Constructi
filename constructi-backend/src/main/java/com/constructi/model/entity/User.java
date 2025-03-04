@@ -62,7 +62,7 @@ public class User {
     private Role role;
 
     @Column(name = "is_active", nullable = false)
-    private boolean isActive = true;
+    private boolean active = true;
 
     @Column(name = "password_update_expiry")
     private LocalDateTime passwordUpdateExpiry;
@@ -87,5 +87,7 @@ public class User {
     public String toString() {
         return "User{id=" + id + ", email=" + email + "}";
     }
+
+
 
 }

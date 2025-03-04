@@ -1,0 +1,94 @@
+<div class="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl p-6 max-w-md mx-auto my-4 border border-gray-100 dark:border-gray-700">
+  <!-- Profile Header -->
+  <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+    <div class="relative group">
+      <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full opacity-75 group-hover:opacity-100 blur transition duration-300"></div>
+      <img
+        class="relative h-24 w-24 sm:h-28 sm:w-28 rounded-full object-cover border-2 border-white dark:border-gray-700"
+        src="https://via.placeholder.com/150"
+        alt="Profile Picture"
+      />
+    </div>
+    <div class="text-center sm:text-left">
+      <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{{ user?.fname }} {{ user?.lname }}</h2>
+      <div class="inline-flex items-center px-3 py-1 mt-2 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+        </svg>
+        {{ user?.roleId }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Details -->
+  <div class="mt-8 space-y-5 divide-y divide-gray-100 dark:divide-gray-700">
+    <div class="flex items-center space-x-4 py-2 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg px-3">
+      <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-200">
+        <fa-icon [icon]="faEnvelope" class="text-lg"></fa-icon>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Email Address</p>
+        <p class="text-gray-700 dark:text-gray-200 font-medium">{{ user?.email }}</p>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-4 py-2 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg px-3">
+      <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-200">
+        <fa-icon [icon]="faPhone" class="text-lg"></fa-icon>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Phone Number</p>
+        <p class="text-gray-700 dark:text-gray-200 font-medium">{{ user?.cell }}</p>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-4 py-2 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg px-3">
+      <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full"
+           [ngClass]="{'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-200': user?.active,
+                      'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-200': !user?.active}">
+        <fa-icon
+          [icon]="user?.active ? faCheckCircle : faTimesCircle"
+          class="text-lg"
+        ></fa-icon>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Account Status</p>
+        <p class="font-medium" [ngClass]="{'text-green-600 dark:text-green-400': user?.active,
+                                          'text-red-600 dark:text-red-400': !user?.active}">
+          {{ user?.active ? 'Active' : 'Inactive' }}
+        </p>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-4 py-2 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg px-3">
+      <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200">
+        <fa-icon [icon]="faFileContract" class="text-lg"></fa-icon>
+
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Contract Type</p>
+        <p class="text-gray-700 dark:text-gray-200 font-medium">{{ user?.contratType }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="mt-8 flex flex-col sm:flex-row gap-3">
+    <a
+      routerLink="/profile/update"
+      class="flex-1 inline-flex items-center justify-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+    >
+      <fa-icon [icon]="faEdit" class="mr-2"></fa-icon>
+
+      Modifier Profile
+    </a>
+
+
+    <button (click)="logout()"
+      class="flex-1 inline-flex items-center justify-center px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+    >
+      <fa-icon [icon]="faLockOpen" class="mr-2"></fa-icon>
+      Déconnexion
+    </button>
+  </div>
+</div>

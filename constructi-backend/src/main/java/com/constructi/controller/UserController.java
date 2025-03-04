@@ -1,5 +1,6 @@
 package com.constructi.controller;
 
+import com.constructi.DTO.ProfileUpdateRequestDTO;
 import com.constructi.DTO.UserRequestDTO;
 import com.constructi.DTO.UserResponseDTO;
 import com.constructi.service.UserService;
@@ -18,13 +19,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT', 'ROLE_WORKER')")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT', 'ROLE_WORKER')")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         try {
             UserResponseDTO response = userService.getUserById(id);
@@ -35,22 +36,24 @@ public class UserController {
     }
 
 
-        @PutMapping("/update/{id}")
-        @PreAuthorize("#id == authentication.principal.id or hasAuthority('ROLE_ADMIN')")
-        public ResponseEntity<UserResponseDTO> updateUserProfile(
-                @PathVariable Long id,
-                @Valid @RequestBody UserRequestDTO userRequestDTO) {
-            try {
-                UserResponseDTO response = userService.updateUser(id, userRequestDTO);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            } catch (IllegalArgumentException e) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            } catch (EntityNotFoundException e) {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }
+    @PutMapping("/update/{id}")
+    @PreAuthorize("@customSecurity.isOwnerOrAdmin(#id, authentication.principal)")
+    public ResponseEntity<UserResponseDTO> updateUserProfile(
+            @PathVariable Long id,
+            @Valid @RequestBody ProfileUpdateRequestDTO profileUpdateRequestDTO) {
+        try {
+            UserResponseDTO response = userService.updateUserProfile(id, profileUpdateRequestDTO);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+    }
+
 
         @GetMapping("/profile")
+        @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT', 'ROLE_WORKER')")
         public ResponseEntity<UserResponseDTO> getCurrentUserProfile() {
             Long userId = getCurrentUserId();
             try {
