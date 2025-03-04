@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
-@Service
+@Service("userService")
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 

@@ -19,13 +19,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT', 'ROLE_WORKER')")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT', 'ROLE_WORKER')")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         try {
             UserResponseDTO response = userService.getUserById(id);
@@ -37,7 +37,7 @@ public class UserController {
 
 
     @PutMapping("/update/{id}")
-    @PreAuthorize("#id == authentication.principal.id or hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("@customSecurity.isOwnerOrAdmin(#id, authentication.principal)")
     public ResponseEntity<UserResponseDTO> updateUserProfile(
             @PathVariable Long id,
             @Valid @RequestBody ProfileUpdateRequestDTO profileUpdateRequestDTO) {
@@ -51,7 +51,9 @@ public class UserController {
         }
     }
 
+
         @GetMapping("/profile")
+        @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT', 'ROLE_WORKER')")
         public ResponseEntity<UserResponseDTO> getCurrentUserProfile() {
             Long userId = getCurrentUserId();
             try {

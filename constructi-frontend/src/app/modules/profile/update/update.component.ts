@@ -10,6 +10,7 @@ import {
   faLock,
 } from '@fortawesome/free-solid-svg-icons';
 import {UserService} from '../../user/user.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-update',
@@ -67,18 +68,34 @@ export class UpdateComponent implements OnInit {
       this.userService.updateCurrentUserProfile(this.user.id!, updatedUser).subscribe({
         next: (response) => {
           console.log('Profile updated successfully:', response);
-          alert('Profile updated successfully!');
+
+          Swal.fire({
+            title: 'Success!',
+            text: 'Profile updated successfully!',
+            icon: 'success',
+            confirmButtonText: 'OK',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = '/profile/card';
+            }
+          });
         },
         error: (error) => {
           console.error('Failed to update profile:', error);
-          alert('Failed to update profile. Please try again.');
+
+          Swal.fire({
+            title: 'Error!',
+            text: 'Failed to update profile. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
         },
       });
     } else {
-      // Mark all form controls as touched to trigger validation messages
       Object.keys(this.profileForm.controls).forEach((key) => {
         const control = this.profileForm.get(key);
         control?.markAsTouched();
       });
     }
-  }}
+  }
+}
