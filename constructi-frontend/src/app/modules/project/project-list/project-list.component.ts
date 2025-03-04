@@ -195,6 +195,6 @@ export class ProjectListComponent implements OnInit {
     return "#22c55e"
   }
 
-  
+
 }
 

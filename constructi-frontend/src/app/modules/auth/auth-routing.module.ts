@@ -5,13 +5,15 @@ import {LoginComponent} from './login/login.component';
 import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './reset-password/reset-password.component';
 import {AuthReverseGuard} from '../../shared/guards/auth-reverse.guard';
+import {AuthGuard} from '../../shared/guards/auth.guard';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent ,
     canActivate: [AuthReverseGuard]
   },
   { path: 'register', component: RegisterComponent ,
-    canActivate: [AuthReverseGuard]
+    canActivate: [AuthGuard],
+    data: { role: 'ADMIN' }
   },
   { path: 'forgot-password', component: ForgotPasswordComponent ,
     canActivate: [AuthReverseGuard]

@@ -43,32 +43,32 @@ public class AuthController {
     private final RoleRepository roleRepository;
 
 
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid RegistrationRequest registrationRequest) {
-        if (userService.existsByEmail(registrationRequest.getEmail())) {
-            return ResponseEntity.badRequest().body("User already exists with this email");
-        }
-
-        User user = new User();
-        user.setFname(registrationRequest.getFirstName());
-        user.setLname(registrationRequest.getLastName());
-        user.setCell(registrationRequest.getCell());
-        user.setEmail(registrationRequest.getEmail());
-
-        String hashedPassword = passwordEncoder.encode(registrationRequest.getPassword());
-        user.setPassword(hashedPassword);
-
-        user.setRateHourly(registrationRequest.getRateHourly());
-        user.setContratType(ContratType.valueOf(registrationRequest.getContratType()));
-
-        Role defaultRole = roleRepository.findByRoleType(RoleType.WORKER)
-                .orElseThrow(() -> new RuntimeException("Default role not found"));
-        user.setRole(defaultRole);
-
-        userService.save(user);
-
-        return ResponseEntity.ok("User registered successfully");
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<String> register(@RequestBody @Valid RegistrationRequest registrationRequest) {
+//        if (userService.existsByEmail(registrationRequest.getEmail())) {
+//            return ResponseEntity.badRequest().body("User already exists with this email");
+//        }
+//
+//        User user = new User();
+//        user.setFname(registrationRequest.getFirstName());
+//        user.setLname(registrationRequest.getLastName());
+//        user.setCell(registrationRequest.getCell());
+//        user.setEmail(registrationRequest.getEmail());
+//
+//        String hashedPassword = passwordEncoder.encode(registrationRequest.getPassword());
+//        user.setPassword(hashedPassword);
+//
+//        user.setRateHourly(registrationRequest.getRateHourly());
+//        user.setContratType(ContratType.valueOf(registrationRequest.getContratType()));
+//
+//        Role defaultRole = roleRepository.findByRoleType(RoleType.WORKER)
+//                .orElseThrow(() -> new RuntimeException("Default role not found"));
+//        user.setRole(defaultRole);
+//
+//        userService.save(user);
+//
+//        return ResponseEntity.ok("User registered successfully");
+//    }
 
 
 

@@ -8,9 +8,19 @@
         </h1>
       </div>
     </header>
+
     <main>
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="px-4 py-8 sm:px-0">
+          <div class="flex justify-end mb-4 px-4">
+            <button
+              (click)="router.navigate(['/auth/register'])"
+              class="flex items-center justify-center px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md"
+            >
+              <i class="fas fa-plus-circle mr-2"></i>
+              Add user
+            </button>
+          </div>
           <div class="bg-white overflow-hidden shadow rounded-lg">
             <div class="p-5">
               <div class="overflow-x-auto">
@@ -21,6 +31,7 @@
                     <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Nom</th>
                     <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Email</th>
                     <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Rôle</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Status</th>
                     <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
                   </tr>
                   </thead>
@@ -45,13 +56,29 @@
                           {{ user.role }}
                         </span>
                     </td>
+<!--status-->
+                    <td class="px-6 py-4 text-sm text-gray-900">
+                        <span class="flex items-center">
+                          <fa-icon [icon]="faCircle" [ngClass]="{'text-green-500': user.active, 'text-red-500': !user.active}" class="mr-2"></fa-icon>
+                          {{ user.active ? 'Active' : 'Inactive' }}
+                        </span>
+                    </td>
+
                     <td class="px-6 py-4 text-sm text-gray-900">
                       <a [routerLink]="['/admin/user-edit', user.id]" class="text-blue-600 hover:text-blue-900 mr-2" title="Modifier">
                         <fa-icon [icon]="faEdit"></fa-icon>
                       </a>
-                      <button (click)="deleteUser(user.id)" class="text-red-600 hover:text-red-900" title="Supprimer">
+                      <button (click)="deleteUser(user.id)" class="text-red-600 hover:text-red-900 mr-2" title="Supprimer">
                         <fa-icon [icon]="faTrash"></fa-icon>
                       </button>
+
+                      <button *ngIf="user.active" (click)="deactivateUser(user.id)" class="text-red-600 hover:text-red-900 mr-2" title="Deactivate">
+                        <fa-icon [icon]="faTimesCircle"></fa-icon>
+                      </button>
+                      <button *ngIf="!user.active" (click)="activateUser(user.id)" class="text-green-600 hover:text-green-900" title="Activate">
+                        <fa-icon [icon]="faCheckCircle"></fa-icon>
+                      </button>
+
                     </td>
                   </tr>
                   </tbody>

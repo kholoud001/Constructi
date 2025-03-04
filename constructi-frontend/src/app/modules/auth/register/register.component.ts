@@ -53,11 +53,11 @@ export class RegisterComponent {
         Swal.fire({
           icon: 'success',
           title: 'Inscription réussie!',
-          text: 'Vous serez redirigé vers la page de connexion.',
+          text: 'Vous serez redirigé vers la liste des utilisateurs.',
           timer: 3000,
           timerProgressBar: true
         }).then(() => {
-          this.router.navigate(['/auth/login']);
+          this.router.navigate(['/admin/users']);
         });
       },
       error => {

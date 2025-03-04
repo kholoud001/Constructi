@@ -12,7 +12,7 @@ import { AppStateService } from '../../shared/services/app-state.service';
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8086/auth';
+  private apiUrl = 'http://localhost:8086';
 
   constructor(private http: HttpClient,
               private router: Router,
@@ -55,7 +55,7 @@ export class AuthService {
 
       login(email: string, password: string): Observable<any> {
         this.appStateService.setAuthenticated(true);
-        return this.http.post(`${this.apiUrl}/login`, { email, password });
+        return this.http.post(`${this.apiUrl}/auth/login`, { email, password });
       }
 
 
@@ -69,12 +69,12 @@ export class AuthService {
         contratType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACTOR'| 'FREELANCE'
 
       }): Observable<any> {
-        return this.http.post(`${this.apiUrl}/register`, userData,
+        return this.http.post(`${this.apiUrl}/admin/register`, userData,
           { responseType: 'text' });
       }
 
       forgotPassword(email: string): Observable<any> {
-        return this.http.post(`${this.apiUrl}/forgot-password`, { email },
+        return this.http.post(`${this.apiUrl}/auth/forgot-password`, { email },
           { responseType: 'text' });
       }
 
@@ -84,7 +84,7 @@ export class AuthService {
           email: email,
           newPassword: newPassword
         };
-        return this.http.post(`${this.apiUrl}/reset-password`, payload,
+        return this.http.post(`${this.apiUrl}/auth/reset-password`, payload,
           { responseType: 'text' });
       }
 
