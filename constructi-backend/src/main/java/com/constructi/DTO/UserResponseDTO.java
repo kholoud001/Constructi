@@ -19,4 +19,6 @@ public class UserResponseDTO {
     private List<Long> taskIds;
     private List<Long> invoiceIds;
     private List<Long> projectIds;
+    private boolean isActive;
+
 }

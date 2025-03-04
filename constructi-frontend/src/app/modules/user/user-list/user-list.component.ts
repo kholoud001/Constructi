@@ -1,12 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../user.service';
-import { NgForOf } from '@angular/common';
+import {NgClass, NgForOf, NgIf} from '@angular/common';
 import Swal from 'sweetalert2';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faUsers, faUser, faEnvelope, faUserTag, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+  faUsers,
+  faUser,
+  faEnvelope,
+  faUserTag,
+  faEdit,
+  faTrash,
+  faCircle,
+  faTimesCircle, faCheckCircle
+} from '@fortawesome/free-solid-svg-icons';
 
 interface User {
+  active: boolean;
   id?: number;
   fname: string;
   lname: string;
@@ -22,7 +32,7 @@ interface User {
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
   standalone: true,
-  imports: [NgForOf, RouterLink, FontAwesomeModule],
+  imports: [NgForOf, RouterLink, FontAwesomeModule, NgClass, NgIf],
   styleUrls: ['./user-list.component.css']
 })
 export class UserListComponent implements OnInit {
@@ -33,11 +43,15 @@ export class UserListComponent implements OnInit {
   faUserTag = faUserTag;
   faEdit = faEdit;
   faTrash = faTrash;
+  faCircle = faCircle;
+  faTimesCircle = faTimesCircle;
+  faCheckCircle = faCheckCircle;
 
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
     this.userService.getUsers().subscribe(data => {
+      console.log('Backend Response:', data);
       this.users = data.map(user => ({
         ...user,
         role: this.getRoleName(user.roleId)
@@ -53,6 +67,7 @@ export class UserListComponent implements OnInit {
     };
     return roles[roleId] ?? 'Unknown';
   }
+
 
   deleteUser(id: number): void {
     Swal.fire({
@@ -84,4 +99,53 @@ export class UserListComponent implements OnInit {
       }
     });
   }
+
+  activateUser(id: number): void {
+    this.userService.activateUser(id).subscribe({
+      next: (response) => {
+        const user = this.users.find(u => u.id === id);
+        if (user) {
+          user.active = true;
+        }
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: response, 
+        });
+      },
+      error: (error) => {
+        console.error('Activate User Error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to activate user. Please try again.',
+        });
+      },
+    });
+  }
+
+  deactivateUser(id: number): void {
+    this.userService.deactivateUser(id).subscribe({
+      next: (response) => {
+        const user = this.users.find(u => u.id === id);
+        if (user) {
+          user.active = false;
+        }
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: response, // Plain text response
+        });
+      },
+      error: (error) => {
+        console.error('Deactivate User Error:', error); // Debugging
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to deactivate user. Please try again.',
+        });
+      },
+    });
+  }
+
 }

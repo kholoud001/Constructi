@@ -28,5 +28,7 @@ public interface UserService {
     void save(User user);
 
 
+    void activateAccount(Long userId);
 
+    void deactivateUser(Long id);
 }

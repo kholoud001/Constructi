@@ -38,4 +38,14 @@ export class UserService {
       { responseType: 'text' as 'json' });
   }
 
+  activateUser(id: number): Observable<string> {
+    return this.http.put(`${this.apiUrl}/admin/users/activate/${id}`, null, { responseType: 'text' });
+  }
+
+  deactivateUser(id: number): Observable<string> {
+    return this.http.put(`${this.apiUrl}/admin/users/deactivate/${id}`, null, { responseType: 'text' });
+  }
+
+
+
 }

@@ -7,4 +7,6 @@ export interface User {
   password?: string;
   contratType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACTOR' | 'FREELANCE';
   roleId: number;
+  active: boolean;
+
 }

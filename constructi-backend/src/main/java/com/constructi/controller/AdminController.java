@@ -20,7 +20,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import com.constructi.model.entity.Role;
+import com.constructi.util.EmailTemplateUtil;
 
+
+import java.time.LocalDateTime;
 import java.util.Random;
 
 
@@ -52,6 +55,8 @@ public class AdminController {
         String loginUrl = "http://localhost:4200/auth/login";
 
         User user = createUserFromRequest(registrationRequest, hashedPassword);
+        user.setPasswordUpdateExpiry(LocalDateTime.now().plusDays(7));
+        user.setActive(true);
         userService.save(user);
         sendCredentialsEmail(user, randomPassword, loginUrl);
 
@@ -145,6 +150,18 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("User with ID " + id + " was not found.");
         }
+    }
+
+    @PutMapping("/users/activate/{id}")
+    public ResponseEntity<String> activateUser(@PathVariable Long id) {
+        userService.activateAccount(id);
+        return ResponseEntity.ok("User activated successfully");
+    }
+
+    @PutMapping("/users/deactivate/{id}")
+    public ResponseEntity<String> deactivateUser(@PathVariable Long id) {
+        userService.deactivateUser(id);
+        return ResponseEntity.ok("User deactivated successfully");
     }
 
 

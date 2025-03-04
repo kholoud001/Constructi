@@ -123,6 +123,25 @@ public class UserServiceImpl implements UserService {
 
 
 
+    @Override
+    public void activateAccount(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(true);
+        user.setPasswordUpdateExpiry(null);
+        userRepository.save(user);
+    }
+
+
+    @Override
+    public void deactivateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        user.setActive(false);
+        userRepository.save(user);
+    }
+
+
 
 
 
