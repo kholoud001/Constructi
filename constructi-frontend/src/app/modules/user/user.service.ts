@@ -50,8 +50,12 @@ export class UserService {
     return this.http.get<User>(`${this.apiUrl}/users/profile`);
   }
 
-  updateCurrentUserProfile(user: User): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/users/update/${user.id}`, user);
+  // updateCurrentUserProfile(user: User): Observable<User> {
+  //   return this.http.put<User>(`${this.apiUrl}/users/update/${user.id}`, user);
+  // }
+
+  updateCurrentUserProfile(id: number, updatedUser: Partial<User>): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/users/update/${id}`, updatedUser);
   }
 
 

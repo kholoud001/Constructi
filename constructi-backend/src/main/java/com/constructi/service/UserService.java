@@ -1,5 +1,6 @@
 package com.constructi.service;
 
+import com.constructi.DTO.ProfileUpdateRequestDTO;
 import com.constructi.DTO.UserRequestDTO;
 import com.constructi.DTO.UserResponseDTO;
 import com.constructi.model.entity.User;
@@ -17,6 +18,9 @@ public interface UserService {
 
     @Transactional
     UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO);
+
+    @Transactional
+    UserResponseDTO updateUserProfile(Long id, ProfileUpdateRequestDTO profileUpdateRequestDTO);
 
     @Transactional
     void deleteUser(Long id);

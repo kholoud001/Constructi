@@ -1,87 +1,84 @@
-import { Component, type OnInit } from "@angular/core"
-import {FormBuilder, FormGroup, Validators} from "@angular/forms"
-import type { User } from "../../user/user.model"
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { User } from '../../user/user.model';
 import {
   faUser,
-  faEnvelope,
   faPhone,
-  faFileContract,
   faSave,
   faTimes,
   faUserEdit,
-  faDollarSign,
-} from "@fortawesome/free-solid-svg-icons"
+  faLock,
+} from '@fortawesome/free-solid-svg-icons';
 import {UserService} from '../../user/user.service';
 
 @Component({
-  selector: "app-update",
+  selector: 'app-update',
   standalone: false,
-  templateUrl: "./update.component.html",
-  styleUrls: ["./update.component.css"],
+  templateUrl: './update.component.html',
+  styleUrls: ['./update.component.css'],
 })
 export class UpdateComponent implements OnInit {
-  user: User | null = null
-  profileForm: FormGroup
+  user: User | null = null;
+  profileForm: FormGroup;
 
-  faUser = faUser
-  faEnvelope = faEnvelope
-  faPhone = faPhone
-  faFileContract = faFileContract
-  faSave = faSave
-  faTimes = faTimes
-  faUserEdit = faUserEdit
-  faDollarSign = faDollarSign
+  // Icons
+  faUser = faUser;
+  faPhone = faPhone;
+  faSave = faSave;
+  faTimes = faTimes;
+  faUserEdit = faUserEdit;
+  faLock = faLock;
 
   constructor(
     private userService: UserService,
     private fb: FormBuilder,
   ) {
     this.profileForm = this.fb.group({
-      fname: ["", Validators.required],
-      lname: ["", Validators.required],
-      cell: ["", [Validators.required, Validators.pattern("^[0-9]{10}$")]],
-      email: ["", [Validators.required, Validators.email]],
-      rateHourly: ["", [Validators.required, Validators.min(0)]],
-      contratType: ["", Validators.required],
-    })
+      fname: ['', Validators.required],
+      lname: ['', Validators.required],
+      cell: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+    });
   }
 
   ngOnInit(): void {
-    this.loadCurrentUserProfile()
+    this.loadCurrentUserProfile();
   }
 
   loadCurrentUserProfile(): void {
     this.userService.getCurrentUserProfile().subscribe({
       next: (user) => {
-        this.user = user
-        this.profileForm.patchValue(user)
+        this.user = user;
+        this.profileForm.patchValue({
+          fname: user.fname,
+          lname: user.lname,
+          cell: user.cell,
+        });
       },
       error: (error) => {
-        console.error("Failed to load user profile:", error)
+        console.error('Failed to load user profile:', error);
       },
-    })
+    });
   }
 
   onSubmit(): void {
     if (this.profileForm.valid && this.user) {
-      const updatedUser: User = { ...this.user, ...this.profileForm.value }
-      this.userService.updateCurrentUserProfile(updatedUser).subscribe({
+      const updatedUser = { ...this.profileForm.value };
+      this.userService.updateCurrentUserProfile(this.user.id!, updatedUser).subscribe({
         next: (response) => {
-          console.log("Profile updated successfully:", response)
-          alert("Profile updated successfully!")
+          console.log('Profile updated successfully:', response);
+          alert('Profile updated successfully!');
         },
         error: (error) => {
-          console.error("Failed to update profile:", error)
-          alert("Failed to update profile. Please try again.")
+          console.error('Failed to update profile:', error);
+          alert('Failed to update profile. Please try again.');
         },
-      })
+      });
     } else {
       // Mark all form controls as touched to trigger validation messages
       Object.keys(this.profileForm.controls).forEach((key) => {
-        const control = this.profileForm.get(key)
-        control?.markAsTouched()
-      })
+        const control = this.profileForm.get(key);
+        control?.markAsTouched();
+      });
     }
-  }
-}
-
+  }}

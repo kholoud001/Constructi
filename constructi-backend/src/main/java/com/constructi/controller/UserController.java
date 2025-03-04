@@ -1,5 +1,6 @@
 package com.constructi.controller;
 
+import com.constructi.DTO.ProfileUpdateRequestDTO;
 import com.constructi.DTO.UserRequestDTO;
 import com.constructi.DTO.UserResponseDTO;
 import com.constructi.service.UserService;
@@ -35,20 +36,20 @@ public class UserController {
     }
 
 
-        @PutMapping("/update/{id}")
-        @PreAuthorize("#id == authentication.principal.id or hasAuthority('ROLE_ADMIN')")
-        public ResponseEntity<UserResponseDTO> updateUserProfile(
-                @PathVariable Long id,
-                @Valid @RequestBody UserRequestDTO userRequestDTO) {
-            try {
-                UserResponseDTO response = userService.updateUser(id, userRequestDTO);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            } catch (IllegalArgumentException e) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            } catch (EntityNotFoundException e) {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }
+    @PutMapping("/update/{id}")
+    @PreAuthorize("#id == authentication.principal.id or hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<UserResponseDTO> updateUserProfile(
+            @PathVariable Long id,
+            @Valid @RequestBody ProfileUpdateRequestDTO profileUpdateRequestDTO) {
+        try {
+            UserResponseDTO response = userService.updateUserProfile(id, profileUpdateRequestDTO);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+    }
 
         @GetMapping("/profile")
         public ResponseEntity<UserResponseDTO> getCurrentUserProfile() {
