@@ -1,0 +1,24 @@
+/* Add any custom CSS here if needed */
+@media (max-width: 640px) {
+  /* Additional mobile-specific styles */
+  input,
+  select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+.text-red-500 {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

@@ -1,0 +1,152 @@
+<div class="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl p-6 sm:p-8 max-w-md mx-auto my-4 border border-gray-100 dark:border-gray-700">
+  <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+    <fa-icon [icon]="faUserEdit" class="mr-3 text-blue-600 dark:text-blue-400"></fa-icon>
+    Update Profile
+  </h2>
+
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <div class="space-y-5">
+      <!-- First Name -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">First Name</label>
+        <div class="relative rounded-md shadow-sm">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <fa-icon [icon]="faUser" class="text-gray-500 dark:text-gray-400"></fa-icon>
+          </div>
+          <input
+            type="text"
+            formControlName="fname"
+            class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            [ngClass]="{'border-red-500 dark:border-red-400': profileForm.get('fname')?.invalid && profileForm.get('fname')?.touched}"
+          />
+          <div *ngIf="profileForm.get('fname')?.invalid && profileForm.get('fname')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1">
+            First name is required
+          </div>
+        </div>
+      </div>
+
+      <!-- Last Name -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Last Name</label>
+        <div class="relative rounded-md shadow-sm">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <fa-icon [icon]="faUser" class="text-gray-500 dark:text-gray-400"></fa-icon>
+          </div>
+          <input
+            type="text"
+            formControlName="lname"
+            class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            [ngClass]="{'border-red-500 dark:border-red-400': profileForm.get('lname')?.invalid && profileForm.get('lname')?.touched}"
+          />
+          <div *ngIf="profileForm.get('lname')?.invalid && profileForm.get('lname')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1">
+            Last name is required
+          </div>
+        </div>
+      </div>
+
+      <!-- Cell Number -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Cell Number</label>
+        <div class="relative rounded-md shadow-sm">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <fa-icon [icon]="faPhone" class="text-gray-500 dark:text-gray-400"></fa-icon>
+          </div>
+          <input
+            type="text"
+            formControlName="cell"
+            class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            [ngClass]="{'border-red-500 dark:border-red-400': profileForm.get('cell')?.invalid && profileForm.get('cell')?.touched}"
+          />
+          <div *ngIf="profileForm.get('cell')?.invalid && profileForm.get('cell')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1">
+            <span *ngIf="profileForm.get('cell')?.errors?.['required']">Phone number is required</span>
+            <span *ngIf="profileForm.get('cell')?.errors?.['pattern']">Please enter a valid 10-digit phone number</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Email</label>
+        <div class="relative rounded-md shadow-sm">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <fa-icon [icon]="faEnvelope" class="text-gray-500 dark:text-gray-400"></fa-icon>
+          </div>
+          <input
+            type="email"
+            formControlName="email"
+            class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            [ngClass]="{'border-red-500 dark:border-red-400': profileForm.get('email')?.invalid && profileForm.get('email')?.touched}"
+          />
+          <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1">
+            <span *ngIf="profileForm.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="profileForm.get('email')?.errors?.['email']">Please enter a valid email address</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hourly Rate -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Hourly Rate</label>
+        <div class="relative rounded-md shadow-sm">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <fa-icon [icon]="faDollarSign" class="text-gray-500 dark:text-gray-400"></fa-icon>
+          </div>
+          <input
+            type="number"
+            formControlName="rateHourly"
+            class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            [ngClass]="{'border-red-500 dark:border-red-400': profileForm.get('rateHourly')?.invalid && profileForm.get('rateHourly')?.touched}"
+          />
+          <div *ngIf="profileForm.get('rateHourly')?.invalid && profileForm.get('rateHourly')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1">
+            <span *ngIf="profileForm.get('rateHourly')?.errors?.['required']">Hourly rate is required</span>
+            <span *ngIf="profileForm.get('rateHourly')?.errors?.['min']">Hourly rate must be greater than 0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contract Type -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Contract Type</label>
+        <div class="relative rounded-md shadow-sm">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <fa-icon [icon]="faFileContract" class="text-gray-500 dark:text-gray-400"></fa-icon>
+          </div>
+          <select
+            formControlName="contratType"
+            class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            [ngClass]="{'border-red-500 dark:border-red-400': profileForm.get('contratType')?.invalid && profileForm.get('contratType')?.touched}"
+          >
+            <option value="">Select contract type</option>
+            <option value="FULL_TIME">Full Time</option>
+            <option value="PART_TIME">Part Time</option>
+            <option value="CONTRACTOR">Contractor</option>
+            <option value="FREELANCE">Freelance</option>
+          </select>
+          <div *ngIf="profileForm.get('contratType')?.invalid && profileForm.get('contratType')?.touched" class="text-red-500 dark:text-red-400 text-xs mt-1">
+            Contract type is required
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="mt-8 space-y-3">
+      <button
+        type="submit"
+        [disabled]="profileForm.invalid"
+        class="inline-flex items-center justify-center w-full px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <fa-icon [icon]="faSave" class="mr-2"></fa-icon>
+        Save Changes
+      </button>
+
+      <a
+        routerLink="/profile/card"
+        class="inline-flex items-center justify-center w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+      >
+        <fa-icon [icon]="faTimes" class="mr-2"></fa-icon>
+        Cancel
+      </a>
+    </div>
+  </form>
+</div>

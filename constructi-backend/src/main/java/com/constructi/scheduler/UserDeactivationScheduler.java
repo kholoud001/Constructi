@@ -21,7 +21,7 @@ public class UserDeactivationScheduler {
 
     public void deactivateInactiveUsers() {
         LocalDateTime now = LocalDateTime.now();
-        List<User> users = userRepository.findByPasswordUpdateExpiryBeforeAndIsActiveTrue(now);
+        List<User> users = userRepository.findByPasswordUpdateExpiryBeforeAndActiveTrue(now);
 
         for (User user : users) {
             user.setActive(false);
