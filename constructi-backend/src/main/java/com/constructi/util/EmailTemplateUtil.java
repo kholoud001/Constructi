@@ -38,7 +38,7 @@ public class EmailTemplateUtil {
                         <p><strong>Password:</strong> %s</p>
                     </div>
                     
-                    <p>Please log in and change your password after your first login for security purposes.</p>
+                    <p>Please log in and change your password within an hour after your first login for security reasons.</p>
                     
                     <div class="btn-container">
                         <a href="%s" class="btn-login">Login to Your Account</a>

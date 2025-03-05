@@ -18,7 +18,7 @@ public class UserDeactivationScheduler {
 
 
 //    @Scheduled(cron = "0 0 0 * * ?") // Runs every day at midnight
-    @Scheduled(cron = "0 0 * * * ?") // Runs every hour 
+    @Scheduled(cron = "0 0 * * * ?") // Runs every hour
 
     public void deactivateInactiveUsers() {
         LocalDateTime now = LocalDateTime.now();

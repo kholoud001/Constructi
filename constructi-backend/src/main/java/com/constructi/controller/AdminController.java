@@ -56,7 +56,7 @@ public class AdminController {
 
         User user = createUserFromRequest(registrationRequest, hashedPassword);
 //        user.setPasswordUpdateExpiry(LocalDateTime.now().plusDays(7));
-        user.setPasswordUpdateExpiry(LocalDateTime.now().plusHours(1)); // Set expiry to 1 hour from now
+        user.setPasswordUpdateExpiry(LocalDateTime.now().plusHours(1));
 
         user.setActive(true);
         userService.save(user);
@@ -64,39 +64,6 @@ public class AdminController {
 
         return ResponseEntity.ok("User registered successfully");
     }
-
-    private User createUserFromRequest(RegistrationRequest request, String hashedPassword) {
-        Role defaultRole = roleRepository.findByRoleType(RoleType.WORKER)
-                .orElseThrow(() -> new RuntimeException("Default role not found"));
-
-        return User.builder()
-                .Fname(request.getFirstName())
-                .Lname(request.getLastName())
-                .cell(request.getCell())
-                .email(request.getEmail())
-                .password(hashedPassword)
-                .RateHourly(request.getRateHourly())
-                .contratType(ContratType.valueOf(request.getContratType()))
-                .role(defaultRole)
-                .build();
-    }
-
-    private String generateRandomPassword() {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
-        StringBuilder password = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < 12; i++) {
-            password.append(chars.charAt(random.nextInt(chars.length())));
-        }
-        return password.toString();
-    }
-
-    private void sendCredentialsEmail(User user, String password, String loginUrl) {
-        String emailContent = EmailTemplateUtil.generateCredentialsEmail(user.getFname(), user.getEmail(), password, loginUrl);
-        emailService.sendHtmlEmail(user.getEmail(), "Your Account Credentials", emailContent);
-    }
-
-
 
 
     @GetMapping("/roles")
@@ -164,6 +131,37 @@ public class AdminController {
     public ResponseEntity<String> deactivateUser(@PathVariable Long id) {
         userService.deactivateUser(id);
         return ResponseEntity.ok("User deactivated successfully");
+    }
+
+    private User createUserFromRequest(RegistrationRequest request, String hashedPassword) {
+        Role defaultRole = roleRepository.findByRoleType(RoleType.WORKER)
+                .orElseThrow(() -> new RuntimeException("Default role not found"));
+
+        return User.builder()
+                .Fname(request.getFirstName())
+                .Lname(request.getLastName())
+                .cell(request.getCell())
+                .email(request.getEmail())
+                .password(hashedPassword)
+                .RateHourly(request.getRateHourly())
+                .contratType(ContratType.valueOf(request.getContratType()))
+                .role(defaultRole)
+                .build();
+    }
+
+    private String generateRandomPassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        StringBuilder password = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 12; i++) {
+            password.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return password.toString();
+    }
+
+    private void sendCredentialsEmail(User user, String password, String loginUrl) {
+        String emailContent = EmailTemplateUtil.generateCredentialsEmail(user.getFname(), user.getEmail(), password, loginUrl);
+        emailService.sendHtmlEmail(user.getEmail(), "Your Account Credentials", emailContent);
     }
 
 
