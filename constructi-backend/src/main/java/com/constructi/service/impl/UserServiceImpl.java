@@ -9,6 +9,7 @@ import com.constructi.repository.RoleRepository;
 import com.constructi.repository.UserRepository;
 import com.constructi.mapper.UserMapper;
 import com.constructi.service.UserService;
+import com.constructi.util.EmailTemplateUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service("userService")
 @RequiredArgsConstructor
@@ -32,6 +34,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     @Lazy
     private  PasswordEncoder passwordEncoder;
+    @Autowired
+    private EmailService emailService;
 
 
     @Override
@@ -111,7 +115,11 @@ public class UserServiceImpl implements UserService {
         user.setFname(profileUpdateRequestDTO.getFname());
         user.setLname(profileUpdateRequestDTO.getLname());
         user.setCell(profileUpdateRequestDTO.getCell());
-        user.setPassword(passwordEncoder.encode(profileUpdateRequestDTO.getPassword()));
+
+        if (profileUpdateRequestDTO.getPassword() != null && !profileUpdateRequestDTO.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(profileUpdateRequestDTO.getPassword()));
+            user.setPasswordChangedAt(LocalDateTime.now());
+        }
 
         userRepository.save(user);
         return userMapper.toResponseDTO(user);
@@ -138,17 +146,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
-    @Override
-    public void activateAccount(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setActive(true);
-        user.setPasswordUpdateExpiry(null);
-        userRepository.save(user);
-    }
-
-
     @Override
     public void deactivateUser(Long id) {
         User user = userRepository.findById(id)
@@ -156,6 +153,38 @@ public class UserServiceImpl implements UserService {
         user.setActive(false);
         userRepository.save(user);
     }
+
+    @Override
+    public void activateAccount(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(true);
+        user.setPasswordUpdateExpiry(null);
+
+        String randomPassword = generateRandomPassword();
+        user.setPassword(passwordEncoder.encode(randomPassword));
+        userRepository.save(user);
+
+        String loginUrl = "http://localhost:4200/auth/login";
+        sendCredentialsEmail(user, randomPassword, loginUrl);
+    }
+
+    private String generateRandomPassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        StringBuilder password = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 12; i++) {
+            password.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return password.toString();
+    }
+
+    private void sendCredentialsEmail(User user, String password, String loginUrl) {
+        String emailContent = EmailTemplateUtil.generateCredentialsEmail(user.getFname(), user.getEmail(), password, loginUrl);
+        emailService.sendHtmlEmail(user.getEmail(), "Your Account Credentials", emailContent);
+    }
+
+
 
 
 

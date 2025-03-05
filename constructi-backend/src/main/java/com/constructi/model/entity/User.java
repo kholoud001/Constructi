@@ -67,6 +67,9 @@ public class User {
     @Column(name = "password_update_expiry")
     private LocalDateTime passwordUpdateExpiry;
 
+    @Column(name = "password_changed_at")
+    private LocalDateTime passwordChangedAt;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Task> tasks;
 
@@ -82,12 +85,9 @@ public class User {
     @JsonBackReference
     private Project project;
 
-
     @Override
     public String toString() {
         return "User{id=" + id + ", email=" + email + "}";
     }
-
-
 
 }
