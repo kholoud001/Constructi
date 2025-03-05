@@ -28,7 +28,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final ProjectRepository projectRepository;
     private final BudgetRepository budgetRepository;
     private final TaskRepository taskRepository;
-
+    private final MaterialRepository materialRepository;
 
 
     @Override
@@ -92,6 +92,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setState(InvoiceState.PAID);
         invoice.setJustificationPath(filePath);
         invoice.setTask(task);
+        invoice.setMaterial(null);
+
 
         invoice = invoiceRepository.save(invoice);
 
@@ -104,6 +106,41 @@ public class InvoiceServiceImpl implements InvoiceService {
         transaction.setTransactionType("payment");
         transaction.setProject(project);
         budgetRepository.save(transaction);
+
+        return InvoiceMapper.INSTANCE.toDto(invoice);
+    }
+
+    @Override
+    public List<InvoiceResponseDTO> getUserInvoices(Long userId) {
+        return invoiceRepository.findByUserId(userId)
+                .stream()
+                .map(InvoiceMapper.INSTANCE::toDto)
+                .collect(Collectors.toList());
+    }
+
+
+
+    @Override
+    public InvoiceResponseDTO createMaterialInvoice(Long materialId, Long userId, Double amount, MultipartFile justificationFile) {
+        Material material = materialRepository.findById(materialId)
+                .orElseThrow(() -> new RuntimeException("Material not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String filePath = saveJustificationFile(justificationFile);
+
+        Invoice invoice = new Invoice();
+        invoice.setUser(user);
+        invoice.setAmount(amount);
+        invoice.setEmissionDate(LocalDateTime.now());
+        invoice.setState(InvoiceState.PAID);
+        invoice.setJustificationPath(filePath);
+        invoice.setMaterial(material);
+        invoice.setTask(null);
+
+
+        invoice = invoiceRepository.save(invoice);
 
         return InvoiceMapper.INSTANCE.toDto(invoice);
     }
@@ -127,12 +164,5 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
 
-    @Override
-    public List<InvoiceResponseDTO> getUserInvoices(Long userId) {
-        return invoiceRepository.findByUserId(userId)
-                .stream()
-                .map(InvoiceMapper.INSTANCE::toDto)
-                .collect(Collectors.toList());
-    }
 
 }

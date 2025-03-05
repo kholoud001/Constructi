@@ -29,47 +29,6 @@
       </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <div class="bg-white rounded-xl shadow-sm p-6">
-        <div class="flex items-center gap-3">
-          <div class="p-3 bg-blue-100 rounded-lg">
-            <fa-icon [icon]="faBox" class="text-blue-600"></fa-icon>
-          </div>
-          <div>
-            <p class="text-sm text-gray-500">Total Articles</p>
-            <p class="text-xl font-bold text-gray-900">{{ materials.length }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-xl shadow-sm p-6">
-        <div class="flex items-center gap-3">
-          <div class="p-3 bg-green-100 rounded-lg">
-            <fa-icon [icon]="faCalculator" class="text-green-600"></fa-icon>
-          </div>
-          <div>
-            <p class="text-sm text-gray-500">Valeur Totale</p>
-            <p class="text-xl font-bold text-gray-900">{{ getTotalValue() | currency }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-xl shadow-sm p-6">
-        <div class="flex items-center gap-3">
-          <div class="p-3 bg-purple-100 rounded-lg">
-            <fa-icon [icon]="faCoins" class="text-purple-600"></fa-icon>
-          </div>
-          <div>
-            <p class="text-sm text-gray-500">Prix Moyen</p>
-            <p class="text-xl font-bold text-gray-900">
-              {{ materials.length ? ((getTotalValue() / materials.length) | currency) : ('0' | currency) }}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Materials Table -->
     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
@@ -101,7 +60,9 @@
                   <fa-icon [icon]="faBox" class="text-gray-600"></fa-icon>
                 </div>
                 <div>
-                  <div class="text-sm font-medium text-gray-900">{{ material.name }}</div>
+                  <div class="text-sm font-medium text-gray-900 cursor-pointer" (click)="showMaterialInvoices(material.id)">
+                    {{ material.name }}
+                  </div>
                 </div>
               </div>
             </td>
@@ -126,6 +87,10 @@
                 <button (click)="deleteMaterial(material.id)"
                         class="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-colors duration-200">
                   <fa-icon [icon]="faTrash"></fa-icon>
+                </button>
+                <button (click)="openCreateInvoicePopup(material.id)"
+                        class="text-green-600 hover:text-green-900 p-2 hover:bg-green-50 rounded-lg transition-colors duration-200">
+                  <fa-icon [icon]="faPlus"></fa-icon> Facture
                 </button>
               </div>
             </td>

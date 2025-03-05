@@ -2,10 +2,14 @@ package com.constructi.controller;
 
 import com.constructi.DTO.InvoiceResponseDTO;
 import com.constructi.model.entity.Invoice;
+import com.constructi.model.entity.User;
+import com.constructi.repository.UserRepository;
 import com.constructi.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +22,7 @@ import java.util.List;
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
+    private final UserRepository userRepository;
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT', 'ROLE_WORKER')")
     @GetMapping("/my")
@@ -44,4 +49,22 @@ public class InvoiceController {
     public ResponseEntity<List<InvoiceResponseDTO>> getUserInvoices(@PathVariable Long userId) {
         return ResponseEntity.ok(invoiceService.getUserInvoices(userId));
     }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/material/{materialId}/create")
+    public ResponseEntity<InvoiceResponseDTO> createMaterialInvoice(
+            @PathVariable Long materialId,
+            @RequestParam Double amount,
+            @RequestParam("justificationFile") MultipartFile justificationFile) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User adminUser = userRepository.findByEmail(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        InvoiceResponseDTO response = invoiceService.createMaterialInvoice(materialId, adminUser.getId(), amount, justificationFile);
+        return ResponseEntity.ok(response);
+    }
+
 }

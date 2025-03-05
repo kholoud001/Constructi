@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -41,4 +44,7 @@ public class Material {
     @JoinColumn(name = "provider_id", nullable = false)
     @NotNull(message = "Material must be associated with a provider.")
     private Provider provider;
+
+    @OneToMany(mappedBy = "material", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Invoice> invoices = new ArrayList<>();
 }
