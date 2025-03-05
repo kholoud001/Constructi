@@ -83,18 +83,30 @@ export class MaterialInvoiceHistoryComponent implements OnInit {
 
   fetchMaterialDetails(materialId: number) {
     this.loading = true;
-    this.materialService.getInvoicesByMaterialId(materialId).subscribe({
-      next: (data: any) => {
-        this.materialDetails = data;
-        this.loading = false;
+    this.materialService.getMaterialById(materialId).subscribe({
+      next: (material) => {
+        this.materialDetails = material;
+        this.fetchInvoicesByMaterialId(materialId);
       },
-      error: (err: any) => {
+      error: (err) => {
         console.error('Error fetching material details:', err);
         this.loading = false;
       },
     });
   }
 
+  fetchInvoicesByMaterialId(materialId: number) {
+    this.materialService.getInvoicesByMaterialId(materialId).subscribe({
+      next: (invoices) => {
+        this.materialDetails.invoices = invoices; // Add invoices to materialDetails
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching invoices:', err);
+        this.loading = false;
+      },
+    });
+  }
   getStatusColor(status: string): string {
     switch (status?.toLowerCase()) {
       case 'paid':

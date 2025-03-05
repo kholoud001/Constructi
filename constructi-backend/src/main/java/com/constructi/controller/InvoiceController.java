@@ -67,4 +67,11 @@ public class InvoiceController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/material/{materialId}")
+    public ResponseEntity<List<InvoiceResponseDTO>> getInvoicesByMaterialId(@PathVariable Long materialId) {
+        List<InvoiceResponseDTO> invoices = invoiceService.getInvoicesByMaterialId(materialId);
+        return ResponseEntity.ok(invoices);
+    }
+
 }

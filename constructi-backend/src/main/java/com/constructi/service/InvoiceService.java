@@ -21,4 +21,6 @@ public interface InvoiceService {
 
 
     InvoiceResponseDTO createMaterialInvoice(Long materialId, Long userId, Double amount, MultipartFile justificationFile);
+
+    List<InvoiceResponseDTO> getInvoicesByMaterialId(Long materialId);
 }

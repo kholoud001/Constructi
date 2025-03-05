@@ -29,6 +29,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final BudgetRepository budgetRepository;
     private final TaskRepository taskRepository;
     private final MaterialRepository materialRepository;
+    private final InvoiceMapper invoiceMapper;
 
 
     @Override
@@ -143,6 +144,14 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice = invoiceRepository.save(invoice);
 
         return InvoiceMapper.INSTANCE.toDto(invoice);
+    }
+
+    @Override
+    public List<InvoiceResponseDTO> getInvoicesByMaterialId(Long materialId) {
+        List<Invoice> invoices = invoiceRepository.findByMaterialId(materialId);
+        return invoices.stream()
+                .map(invoiceMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     private String saveJustificationFile(MultipartFile file) {
