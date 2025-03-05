@@ -4,6 +4,7 @@ import {MaterialListComponent} from './material-list/material-list.component';
 import {MaterialAddComponent} from './material-add/material-add.component';
 import {MaterialUpdateComponent} from './material-update/material-update.component';
 import {AuthGuard} from '../../shared/guards/auth.guard';
+import {MaterialInvoiceHistoryComponent} from './material-invoice-history/material-invoice-history.component';
 
 const routes: Routes = [
   { path: '', component: MaterialListComponent ,
@@ -15,6 +16,11 @@ const routes: Routes = [
     data: { role: 'ADMIN' }
   },
   { path: 'edit/:id', component: MaterialUpdateComponent ,
+    canActivate: [AuthGuard],
+    data: { role: 'ADMIN' }
+  },
+  {
+    path: ':id/invoices', component: MaterialInvoiceHistoryComponent,
     canActivate: [AuthGuard],
     data: { role: 'ADMIN' }
   },

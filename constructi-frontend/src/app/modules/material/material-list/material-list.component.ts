@@ -12,6 +12,7 @@ import {
   faSearch,
   faSync
 } from '@fortawesome/free-solid-svg-icons';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-material-list',
@@ -35,7 +36,10 @@ export class MaterialListComponent implements OnInit {
   faSearch = faSearch;
   faSync = faSync;
 
-  constructor(private materialService: MaterialService) {}
+  constructor(
+    private materialService: MaterialService,
+    private router:Router
+  ) {}
 
   ngOnInit(): void {
     this.loadMaterials();
@@ -110,16 +114,8 @@ export class MaterialListComponent implements OnInit {
     return 'bg-green-100 text-green-800';
   }
 
-  showMaterialInvoices(materialId: number): void {
-    this.materialService.getInvoicesByMaterialId(materialId).subscribe({
-      next: (invoices) => {
-        this.selectedMaterialInvoices = invoices;
-      },
-      error: (err) => {
-        console.error('Error fetching invoices:', err);
-        this.showErrorAlert('Erreur de chargement', 'Impossible de charger les factures.');
-      },
-    });
+  showMaterialInvoices(id: number) {
+    this.router.navigate(['/materials', id, 'invoices']);
   }
 
   openCreateInvoicePopup(materialId: number): void {
@@ -148,7 +144,7 @@ export class MaterialListComponent implements OnInit {
         const { amount, justificationFile } = result.value;
         this.materialService.createMaterialInvoice(materialId, amount, justificationFile).subscribe({
           next: (invoice) => {
-            this.showMaterialInvoices(materialId);
+            // Afficher uniquement un message de succès
             Swal.fire('Succès', 'Facture créée avec succès', 'success');
           },
           error: (err) => {
@@ -159,7 +155,6 @@ export class MaterialListComponent implements OnInit {
       }
     });
   }
-
 
 
 

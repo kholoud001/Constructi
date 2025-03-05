@@ -1,0 +1,164 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center h-64">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <div *ngIf="!loading" class="space-y-6">
+      <!-- Material Details Header -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div class="flex items-center gap-3">
+            <div class="p-3 bg-blue-100 rounded-lg">
+              <fa-icon [icon]="faCreditCard" class="text-blue-600 text-xl"></fa-icon>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-gray-900">Material Payment Details</h3>
+              <p class="text-sm text-gray-500">Material ID: #{{ materialId }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Material Description -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <fa-icon [icon]="faClipboardList" class="text-blue-600"></fa-icon>
+          <h4 class="text-xl font-semibold text-gray-800">Material Description</h4>
+        </div>
+
+        <div class="space-y-6">
+          <!-- Description -->
+          <div>
+            <p class="text-gray-600">{{ materialDetails?.description || 'No description available' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoices List -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center gap-3 mb-6">
+          <fa-icon [icon]="faFileInvoiceDollar" class="text-blue-600"></fa-icon>
+          <h4 class="text-xl font-semibold text-gray-800">Invoices History</h4>
+        </div>
+
+        <div *ngIf="materialDetails?.invoices?.length > 0; else noInvoices" class="divide-y divide-gray-200">
+          <div *ngFor="let invoice of materialDetails.invoices" class="py-4 first:pt-0 last:pb-0">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div class="flex items-center gap-3">
+                <div class="p-2 bg-gray-100 rounded-lg">
+                  <fa-icon [icon]="faFileInvoiceDollar" class="text-gray-600"></fa-icon>
+                </div>
+                <div>
+                  <p class="font-medium text-gray-900">${{ invoice.amount }}</p>
+                  <p class="text-sm text-gray-500">Invoice #{{ invoice.id }}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 text-sm text-gray-500">
+                  <fa-icon [icon]="faCalendarAlt"></fa-icon>
+                  <span>{{ invoice.emissionDate | date:'short' }}</span>
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-medium" [ngClass]="getStatusColor(invoice.state)">
+                  {{ invoice.state }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noInvoices>
+          <div class="text-center py-8 text-gray-500">
+            <fa-icon [icon]="faFileInvoiceDollar" class="text-4xl mb-3"></fa-icon>
+            <p>No invoices available</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-between gap-4">
+        <!-- Return Button -->
+        <button (click)="goBack()" class="inline-flex items-center px-6 py-3 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
+          <fa-icon [icon]="faArrowLeft" class="mr-2"></fa-icon>
+          Return to Materials
+        </button>
+
+        <!-- Process Payment Button -->
+        <div class="mt-6 flex justify-end">
+          <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50" (click)="openPaymentModal()">
+            <span>Process Payment</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div *ngIf="isPaymentModalOpen" class="fixed inset-0 bg-opacity-50 z-50 flex items-center justify-center" (click)="closePaymentModal()">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all" (click)="$event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-6 border-b">
+        <h2 class="text-xl font-semibold text-gray-900">Process Payment</h2>
+        <button (click)="closePaymentModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+          <fa-icon [icon]="faTimes" class="h-5 w-5"></fa-icon>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 space-y-4">
+        <!-- Amount Field -->
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">Amount ($)</label>
+          <input type="number" [(ngModel)]="paymentData.amount" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Enter amount">
+        </div>
+
+        <!-- File Upload Field -->
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">Justification Document</label>
+          <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md transition-colors duration-200" [ngClass]="{'drag-over': isDragging}">
+            <div class="space-y-1 text-center">
+              <fa-icon [icon]="faCloudUpload" class="mx-auto h-12 w-12 text-gray-400"></fa-icon>
+              <div class="flex text-sm text-gray-600">
+                <label for="file-upload" class="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                  <span>Upload a file</span>
+                  <input id="file-upload" type="file" accept=".pdf,.doc,.docx,image/*" class="sr-only" #fileInput (change)="handleFileInput($event)">
+                </label>
+                <p class="pl-1">or drag and drop</p>
+              </div>
+              <p class="text-xs text-gray-500">PDF, DOC, or Images up to 25MB</p>
+            </div>
+          </div>
+
+          <!-- File Preview Section -->
+          <div *ngIf="paymentData.justificationFile" class="mt-4">
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div class="flex items-center space-x-3">
+                <fa-icon [icon]="paymentData.justificationFile.type.startsWith('image/') ? faImage : faFile" class="text-blue-500 text-xl"></fa-icon>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">{{ paymentData.justificationFile.name }}</p>
+                  <p class="text-xs text-gray-500">{{ (paymentData.justificationFile.size / 1024 / 1024).toFixed(2) }} MB</p>
+                </div>
+              </div>
+              <button (click)="fileInput.value = ''; paymentData.justificationFile = null; imagePreview = null" class="text-sm text-red-600 hover:text-red-700">Remove</button>
+            </div>
+
+            <!-- Image Preview -->
+            <div *ngIf="imagePreview" class="mt-4">
+              <p class="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+              <div class="relative rounded-lg overflow-hidden border border-gray-200">
+                <img [src]="imagePreview" alt="File preview" class="max-h-48 w-full object-contain">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
+        <button (click)="closePaymentModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Cancel</button>
+        <button (click)="doPayment()" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Process Payment</button>
+      </div>
+    </div>
+  </div>
+</div>
