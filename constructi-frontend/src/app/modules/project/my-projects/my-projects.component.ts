@@ -45,6 +45,7 @@ export class MyProjectsComponent implements OnInit {
     this.loading = true;
     this.projectService.getMyProjects().subscribe({
       next: (data) => {
+        console.log("My projects ", data)
         this.projects = data;
         this.loading = false;
       },
@@ -80,5 +81,19 @@ export class MyProjectsComponent implements OnInit {
       return (project.actualBudget / project.initialBudget) * 100;
     }
     return 0;
+  }
+
+  getStatusByProgress(progress: number): string {
+    if (progress >= 100) {
+      return 'FINISHED';
+    } else if (progress >= 75) {
+      return 'Almost Done';
+    } else if (progress >= 50) {
+      return 'IN_PROGRESS';
+    } else if (progress >= 25) {
+      return 'NOT_STARTED';
+    } else {
+      return 'NOT_STARTED';
+    }
   }
 }
