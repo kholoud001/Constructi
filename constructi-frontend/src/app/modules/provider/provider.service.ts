@@ -34,14 +34,15 @@ export class ProviderService {
   }
 
   createProvider(provider: ProviderRequestDTO): Observable<ProviderResponseDTO> {
-    return this.http.post<ProviderResponseDTO>(this.apiUrl, provider);
+    return this.http.post<ProviderResponseDTO>(`${this.apiUrl}/add`, provider);
   }
 
   updateProvider(id: number, provider: ProviderRequestDTO): Observable<ProviderResponseDTO> {
-    return this.http.put<ProviderResponseDTO>(`${this.apiUrl}/${id}`, provider);
+    return this.http.put<ProviderResponseDTO>(`${this.apiUrl}/update/${id}`, provider);
   }
 
-  deleteProvider(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteProvider(id: number): Observable<string> {
+    return this.http.delete<string>(`${this.apiUrl}/delete/${id}`, { responseType: 'text' as 'json' });
   }
+
 }

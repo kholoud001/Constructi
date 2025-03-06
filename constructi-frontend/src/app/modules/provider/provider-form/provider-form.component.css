@@ -1,0 +1,11 @@
+/* You can add additional custom styles here if needed */
+.form-group {
+  @apply transition-all duration-200;
+}
+
+/* Add responsive adjustments for smaller screens */
+@media (max-width: 640px) {
+
+
+}
+
