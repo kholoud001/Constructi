@@ -83,13 +83,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       );
     }
 
-    //   if (role === 'ADMIN' || role === 'ARCHITECT') {
-    //   this.navItems.push(
-    //     {name: 'Gestion des équipes', href: '/team-management', current: false},
-    //     {name: 'Rapports', href: '/reports', current: false}
-    //   );
-    // }
-
     if (role === 'ADMIN') {
       this.navItems.push(
         {name: 'Tâches', href: '/tasks', current: false},

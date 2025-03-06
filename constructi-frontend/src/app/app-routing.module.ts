@@ -24,6 +24,8 @@ const routes: Routes = [
 
   { path: 'materials', loadChildren: () => import('./modules/material/material.module').then(m => m.MaterialModule) },
 
+  { path: 'providers', loadChildren: () => import('./modules/provider/provider.module').then(m => m.ProviderModule) },
+
 
   { path: 'unauthorized', component: UnauthorizedComponent },
 
