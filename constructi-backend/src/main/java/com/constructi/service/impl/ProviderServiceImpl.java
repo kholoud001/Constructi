@@ -46,6 +46,8 @@ public class ProviderServiceImpl implements ProviderService {
         Provider provider = providerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Provider not found with id: " + id));
         provider.setName(providerRequestDTO.getName());
+        provider.setPhone(providerRequestDTO.getPhone());
+        provider.setAddress(providerRequestDTO.getAddress());
         Provider updatedProvider = providerRepository.save(provider);
         return providerMapper.toResponseDTO(updatedProvider);
     }
