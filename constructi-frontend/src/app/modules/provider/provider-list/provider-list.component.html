@@ -1,0 +1,107 @@
+<div class="p-4 sm:p-6 max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+    <div class="flex items-center gap-4">
+      <div class="p-3 bg-gradient-to-br from-blue-500/20 to-indigo-500/10 dark:from-blue-600/30 dark:to-indigo-600/20 rounded-xl shadow-sm">
+        <fa-icon [icon]="faBuilding" class="text-blue-600 dark:text-blue-400 text-2xl"></fa-icon>
+      </div>
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Providers</h2>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Manage your service providers</p>
+      </div>
+    </div>
+
+    <button routerLink="/providers/add"
+            class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm hover:shadow transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+      <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
+      <span class="font-medium">Add Provider</span>
+    </button>
+  </div>
+
+  <!-- Main Content Card -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="flex flex-col items-center justify-center p-12">
+      <div class="w-16 h-16 relative">
+        <div class="absolute inset-0 rounded-full border-4 border-blue-200 dark:border-blue-900 opacity-25"></div>
+        <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-600 animate-spin"></div>
+        <fa-icon [icon]="faSpinner" [spin]="true" class="text-blue-600 dark:text-blue-400 text-3xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></fa-icon>
+      </div>
+      <p class="text-gray-500 dark:text-gray-400 mt-4 font-medium">Loading providers...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && providers.length === 0"
+         class="p-12 text-center bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
+      <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-6">
+        <fa-icon [icon]="faBuilding" class="text-blue-600 dark:text-blue-400 text-3xl"></fa-icon>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No providers found</h3>
+      <p class="text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
+        Start by adding your first service provider
+      </p>
+      <button routerLink="/providers/add"
+              class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm hover:shadow transition-all duration-200">
+        <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
+        <span class="font-medium">Add First Provider</span>
+      </button>
+    </div>
+
+    <!-- Providers Table -->
+    <div *ngIf="!isLoading && providers.length > 0" class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Name</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Phone</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Address</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+        </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+        <tr *ngFor="let provider of providers; let i = index"
+            class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
+          <td class="px-6 py-4">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 h-10 w-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                <fa-icon [icon]="faBuilding" class="text-blue-600 dark:text-blue-400"></fa-icon>
+              </div>
+              <div class="ml-4">
+                <a [routerLink]="['/providers', provider.id]" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
+                  {{ provider.name }}
+                </a>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="flex items-center">
+              <fa-icon [icon]="faPhone" class="text-gray-400 mr-2 text-xs"></fa-icon>
+              <span class="text-sm text-gray-900 dark:text-gray-200">{{ provider.phone }}</span>
+            </div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="flex items-center">
+              <fa-icon [icon]="faMapMarkerAlt" class="text-gray-400 mr-2 text-xs"></fa-icon>
+              <span class="text-sm text-gray-900 dark:text-gray-200 line-clamp-1">{{ provider.address }}</span>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center gap-2">
+              <button [routerLink]="['/providers/edit', provider.id]"
+                      class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 shadow-sm text-xs font-medium rounded text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800">
+                <fa-icon [icon]="faEdit" class="mr-1.5 text-xs"></fa-icon>
+                Edit
+              </button>
+              <button (click)="deleteProvider(provider.id)"
+                      class="inline-flex items-center px-2.5 py-1.5 border border-transparent shadow-sm text-xs font-medium rounded text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800">
+                <fa-icon [icon]="faTrash" class="mr-1.5 text-xs"></fa-icon>
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
