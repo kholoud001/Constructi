@@ -98,24 +98,24 @@
                 <p class="text-sm font-medium text-gray-500">Estimated End Date</p>
                 <p class="text-gray-900 font-medium">{{ task.dateEndEstimated | date:'mediumDate' }}</p>
 
-                <ng-container *ngIf="task.originalDateEndEstimated">
-                  <div class="mt-2 flex items-center">
-                    <div class="h-px flex-1 bg-gray-200"></div>
-                    <span class="px-2 text-xs text-gray-500">previously</span>
-                    <div class="h-px flex-1 bg-gray-200"></div>
-                  </div>
+<!--                <ng-container *ngIf="task.originalDateEndEstimated">-->
+<!--                  <div class="mt-2 flex items-center">-->
+<!--                    <div class="h-px flex-1 bg-gray-200"></div>-->
+<!--                    <span class="px-2 text-xs text-gray-500">previously</span>-->
+<!--                    <div class="h-px flex-1 bg-gray-200"></div>-->
+<!--                  </div>-->
 
-                  <div class="mt-1 flex items-center">
-                    <p class="text-sm text-gray-500 line-through">
-                      {{ task.originalDateEndEstimated | date:'mediumDate' }}
-                    </p>
-                    <fa-icon
-                      [icon]="faHistory"
-                      class="ml-2 text-xs text-gray-400"
-                    >
-                    </fa-icon>
-                  </div>
-                </ng-container>
+<!--                  <div class="mt-1 flex items-center">-->
+<!--                    <p class="text-sm text-gray-500 line-through">-->
+<!--                      {{ task.originalDateEndEstimated | date:'mediumDate' }}-->
+<!--                    </p>-->
+<!--                    <fa-icon-->
+<!--                      [icon]="faHistory"-->
+<!--                      class="ml-2 text-xs text-gray-400"-->
+<!--                    >-->
+<!--                    </fa-icon>-->
+<!--                  </div>-->
+<!--                </ng-container>-->
               </div>
             </div>
 

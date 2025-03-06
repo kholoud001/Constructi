@@ -34,7 +34,27 @@ public class TaskServiceImpl implements TaskService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final SubtaskRepository subtaskRepository;
-    private final SubtaskMapper subtaskMapper;
+
+
+//    @Override
+//    public TaskResponseDTO prolongTask(Long taskId, LocalDate newEndDate) {
+//        Task task = taskRepository.findById(taskId)
+//                .orElseThrow(() -> new RuntimeException("Task not found"));
+//
+//        if (newEndDate.isBefore(task.getDateEndEstimated())) {
+//            throw new IllegalArgumentException("New end date must be later than or equal to the current estimated end date.");
+//        }
+//
+//        if (task.getOriginalDateEndEstimated() == null) {
+//            task.setOriginalDateEndEstimated(task.getDateEndEstimated());
+//        }
+//
+//        task.setDateEndEstimated(newEndDate);
+//        Task updatedTask = taskRepository.save(task);
+//
+//        return taskMapper.toTaskResponseDTO(updatedTask);
+//    }
+
 
     @Override
     public TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO) {
@@ -196,25 +216,6 @@ public class TaskServiceImpl implements TaskService {
         return (double) approvedCompleted / subtasks.size() * 100;
     }
 
-
-    @Override
-    public TaskResponseDTO prolongTask(Long taskId, LocalDate newEndDate) {
-        Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
-
-        if (newEndDate.isBefore(task.getDateEndEstimated())) {
-            throw new IllegalArgumentException("New end date must be later than or equal to the current estimated end date.");
-        }
-
-        if (task.getOriginalDateEndEstimated() == null) {
-            task.setOriginalDateEndEstimated(task.getDateEndEstimated());
-        }
-
-        task.setDateEndEstimated(newEndDate);
-        Task updatedTask = taskRepository.save(task);
-
-        return taskMapper.toTaskResponseDTO(updatedTask);
-    }
 
 
 }

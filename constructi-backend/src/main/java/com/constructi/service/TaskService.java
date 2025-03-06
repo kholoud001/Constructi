@@ -31,5 +31,5 @@ public interface TaskService {
     TaskResponseDTO getTaskWithInvoices(Long taskId);
 
 
-    TaskResponseDTO prolongTask(Long taskId, LocalDate newEndDate);
+//    TaskResponseDTO prolongTask(Long taskId, LocalDate newEndDate);
 }

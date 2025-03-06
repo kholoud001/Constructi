@@ -3,6 +3,7 @@ package com.constructi.service;
 import com.constructi.DTO.SubtaskRequestDTO;
 import com.constructi.DTO.SubtaskResponseDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface SubtaskService {
@@ -20,4 +21,5 @@ public interface SubtaskService {
 
     SubtaskResponseDTO approveSubtask(Long subtaskId);
 
+    SubtaskResponseDTO prolongSubtask(Long subtaskId, LocalDate newEndDate);
 }

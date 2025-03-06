@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -67,6 +68,15 @@ public class SubtaskController {
     public ResponseEntity<SubtaskResponseDTO> approveSubtask(@PathVariable Long subtaskId) {
         SubtaskResponseDTO subtaskResponseDTO = subtaskService.approveSubtask(subtaskId);
         return new ResponseEntity<>(subtaskResponseDTO, HttpStatus.OK);
+    }
+
+    @PostMapping("/prolong/{subtaskId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<SubtaskResponseDTO> prolongSubtask(
+            @PathVariable Long subtaskId,
+            @RequestParam LocalDate newEndDate) {
+        SubtaskResponseDTO response = subtaskService.prolongSubtask(subtaskId, newEndDate);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }
