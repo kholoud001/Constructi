@@ -1,0 +1,31 @@
+/* Add any custom CSS here if needed */
+@media (max-width: 640px) {
+  /* Additional mobile-specific styles */
+  .subtask-detail h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Animation for status badges */
+span.rounded-full {
+  transition: all 0.3s ease;
+}
+
+span.rounded-full:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+

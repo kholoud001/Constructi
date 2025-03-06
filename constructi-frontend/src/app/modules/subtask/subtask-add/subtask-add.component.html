@@ -1,51 +1,171 @@
-<div class="subtask-add p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-md">
-  <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ isEditMode ? 'Edit Subtask' : 'Add Subtask' }}</h2>
-  <form (ngSubmit)="onSubmit()" class="space-y-6">
+<div class="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl p-6 sm:p-8 max-w-3xl mx-auto my-4 border border-gray-100 dark:border-gray-700">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="absolute inset-0 bg-white/80 dark:bg-gray-800/80 flex justify-center items-center z-10 rounded-xl">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+
+  <!-- Header -->
+  <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-4 mb-6">
+    <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
+      <fa-icon [icon]="isEditMode ? faEdit : faPlus" class="mr-3 text-blue-600 dark:text-blue-400"></fa-icon>
+      {{ isEditMode ? 'Edit Subtask' : 'Add Subtask' }}
+    </h2>
+    <span
+      *ngIf="isEditMode && subtask.status"
+      class="px-3 py-1 rounded-full text-sm font-medium"
+      [ngClass]="{
+        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': subtask.status === 'NOT_STARTED',
+        'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': subtask.status === 'IN_PROGRESS',
+        'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': subtask.status === 'FINISHED'
+      }"
+    >
+      <fa-icon [icon]="getStatusIcon(subtask.status)" class="mr-1"></fa-icon>
+      {{ getStatusLabel(subtask.status) }}
+    </span>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" #subtaskForm="ngForm" class="space-y-5">
     <!-- Description -->
     <div>
-      <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-      <input id="description" [(ngModel)]="subtask.description" name="description" required
-             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+      <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Description</label>
+      <div class="relative rounded-md shadow-sm">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <fa-icon [icon]="faFileAlt" class="text-gray-500 dark:text-gray-400"></fa-icon>
+        </div>
+        <input
+          id="description"
+          [(ngModel)]="subtask.description"
+          name="description"
+          required
+          #description="ngModel"
+          class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          [ngClass]="{'border-red-500 dark:border-red-400': description.invalid && (description.dirty || description.touched)}"
+        >
+        <div *ngIf="description.invalid && (description.dirty || description.touched)" class="text-red-500 dark:text-red-400 text-xs mt-1">
+          Description is required
+        </div>
+      </div>
     </div>
 
     <!-- Status -->
     <div>
-      <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-      <select id="status" [(ngModel)]="subtask.status" name="status" required
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
-        <option value="IN_PROGRESS">In Progress</option>
-        <option value="FINISHED">Finished</option>
-        <option value="NOT_STARTED">Not Started</option>
-
-      </select>
+      <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Status</label>
+      <div class="relative rounded-md shadow-sm">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <fa-icon [icon]="faFlag" class="text-gray-500 dark:text-gray-400"></fa-icon>
+        </div>
+        <select
+          id="status"
+          [(ngModel)]="subtask.status"
+          name="status"
+          required
+          #status="ngModel"
+          class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          [ngClass]="{'border-red-500 dark:border-red-400': status.invalid && (status.dirty || status.touched)}"
+        >
+          <option value="NOT_STARTED">Not Started</option>
+          <option value="IN_PROGRESS">In Progress</option>
+          <option value="FINISHED">Finished</option>
+        </select>
+        <div *ngIf="status.invalid && (status.dirty || status.touched)" class="text-red-500 dark:text-red-400 text-xs mt-1">
+          Status is required
+        </div>
+      </div>
     </div>
 
-    <!-- Begin Date -->
-    <div>
-      <label for="beginDate" class="block text-sm font-medium text-gray-700">Begin Date</label>
-      <input type="date" id="beginDate" [(ngModel)]="subtask.beginDate" name="beginDate" required
-             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
-    </div>
+    <!-- Date Fields -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <!-- Begin Date -->
+      <div>
+        <label for="beginDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Begin Date</label>
+        <div class="relative rounded-md shadow-sm">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <fa-icon [icon]="faCalendarDay" class="text-gray-500 dark:text-gray-400"></fa-icon>
+          </div>
+          <input
+            type="date"
+            id="beginDate"
+            [(ngModel)]="subtask.beginDate"
+            name="beginDate"
+            required
+            #beginDate="ngModel"
+            class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            [ngClass]="{'border-red-500 dark:border-red-400': beginDate.invalid && (beginDate.dirty || beginDate.touched)}"
+          >
+          <div *ngIf="beginDate.invalid && (beginDate.dirty || beginDate.touched)" class="text-red-500 dark:text-red-400 text-xs mt-1">
+            Begin date is required
+          </div>
+        </div>
+      </div>
 
-    <!-- Estimated End Date -->
-    <div>
-      <label for="dateEndEstimated" class="block text-sm font-medium text-gray-700">Estimated End Date</label>
-      <input type="date" id="dateEndEstimated" [(ngModel)]="subtask.dateEndEstimated" name="dateEndEstimated" required
-             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+      <!-- Estimated End Date -->
+      <div>
+        <label for="dateEndEstimated" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Estimated End Date</label>
+        <div class="relative rounded-md shadow-sm">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <fa-icon [icon]="faCalendarCheck" class="text-gray-500 dark:text-gray-400"></fa-icon>
+          </div>
+          <input
+            type="date"
+            id="dateEndEstimated"
+            [(ngModel)]="subtask.dateEndEstimated"
+            name="dateEndEstimated"
+            required
+            #dateEndEstimated="ngModel"
+            class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            [ngClass]="{'border-red-500 dark:border-red-400': dateEndEstimated.invalid && (dateEndEstimated.dirty || dateEndEstimated.touched)}"
+          >
+          <div *ngIf="dateEndEstimated.invalid && (dateEndEstimated.dirty || dateEndEstimated.touched)" class="text-red-500 dark:text-red-400 text-xs mt-1">
+            Estimated end date is required
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Effective Time -->
     <div>
-      <label for="effectiveTime" class="block text-sm font-medium text-gray-700">Effective Time (hours)</label>
-      <input type="number" id="effectiveTime" [(ngModel)]="subtask.effectiveTime" name="effectiveTime" required
-             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+      <label for="effectiveTime" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Effective Time (hours)</label>
+      <div class="relative rounded-md shadow-sm">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <fa-icon [icon]="faClock" class="text-gray-500 dark:text-gray-400"></fa-icon>
+        </div>
+        <input
+          type="number"
+          id="effectiveTime"
+          [(ngModel)]="subtask.effectiveTime"
+          name="effectiveTime"
+          required
+          min="0"
+          step="0.5"
+          #effectiveTime="ngModel"
+          class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          [ngClass]="{'border-red-500 dark:border-red-400': effectiveTime.invalid && (effectiveTime.dirty || effectiveTime.touched)}"
+        >
+        <div *ngIf="effectiveTime.invalid && (effectiveTime.dirty || effectiveTime.touched)" class="text-red-500 dark:text-red-400 text-xs mt-1">
+          <span *ngIf="effectiveTime.errors?.['required']">Effective time is required</span>
+          <span *ngIf="effectiveTime.errors?.['min']">Effective time must be greater than or equal to 0</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Submit Button -->
-    <div>
-      <button type="submit" [disabled]="isSubmitting"
-              class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-        {{ isSubmitting ? 'Saving...' : (isEditMode ? 'Update' : 'Add') }}
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700 mt-6">
+      <button
+        type="submit"
+        [disabled]="subtaskForm.invalid || isSubmitting"
+        class="inline-flex items-center justify-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <fa-icon [icon]="isEditMode ? faSave : faPlus" class="mr-2"></fa-icon>
+        {{ isSubmitting ? 'Saving...' : (isEditMode ? 'Update Subtask' : 'Add Subtask') }}
+      </button>
+
+      <button
+        type="button"
+        (click)="cancel()"
+        class="inline-flex items-center justify-center px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+      >
+        <fa-icon [icon]="faTimes" class="mr-2"></fa-icon>
+        Cancel
       </button>
     </div>
   </form>

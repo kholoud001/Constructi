@@ -39,6 +39,10 @@
               </div>
             </div>
             <div class="flex gap-2">
+              <button (click)="viewSubtasks(task.id)"
+                      class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
+                <fa-icon [icon]="faListCheck" title="View Subtasks"></fa-icon>
+              </button>
               <button (click)="editTask(task.id)"
                       class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
                 <fa-icon [icon]="faEdit"></fa-icon>
@@ -97,25 +101,6 @@
               <div class="w-full">
                 <p class="text-sm font-medium text-gray-500">Estimated End Date</p>
                 <p class="text-gray-900 font-medium">{{ task.dateEndEstimated | date:'mediumDate' }}</p>
-
-<!--                <ng-container *ngIf="task.originalDateEndEstimated">-->
-<!--                  <div class="mt-2 flex items-center">-->
-<!--                    <div class="h-px flex-1 bg-gray-200"></div>-->
-<!--                    <span class="px-2 text-xs text-gray-500">previously</span>-->
-<!--                    <div class="h-px flex-1 bg-gray-200"></div>-->
-<!--                  </div>-->
-
-<!--                  <div class="mt-1 flex items-center">-->
-<!--                    <p class="text-sm text-gray-500 line-through">-->
-<!--                      {{ task.originalDateEndEstimated | date:'mediumDate' }}-->
-<!--                    </p>-->
-<!--                    <fa-icon-->
-<!--                      [icon]="faHistory"-->
-<!--                      class="ml-2 text-xs text-gray-400"-->
-<!--                    >-->
-<!--                    </fa-icon>-->
-<!--                  </div>-->
-<!--                </ng-container>-->
               </div>
             </div>
 
@@ -156,31 +141,29 @@
             </div>
           </div>
 
-<!--          &lt;!&ndash; Invoices Section &ndash;&gt;-->
-<!--          <div *ngIf="task.invoices && task.invoices.length > 0" class="mt-8">-->
-<!--            <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">-->
-<!--              <fa-icon [icon]="faFileInvoiceDollar" class="mr-2 text-gray-500"></fa-icon>-->
-<!--              Invoices-->
-<!--            </h2>-->
-<!--            <div class="overflow-x-auto">-->
-<!--              <table class="min-w-full divide-y divide-gray-200">-->
-<!--                <thead class="bg-gray-50">-->
-<!--                <tr>-->
-<!--                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>-->
-<!--                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>-->
-<!--                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody class="bg-white divide-y divide-gray-200">-->
-<!--                <tr *ngFor="let invoice of task.invoices">-->
-<!--                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">#{{ invoice.id }}</td>-->
-<!--                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ invoice.amount | currency }}</td>-->
-<!--                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ invoice.date | date:'mediumDate' }}</td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--              </table>-->
-<!--            </div>-->
-<!--          </div>-->
+          <!-- Invoices Section -->
+          <div *ngIf="task.invoices && task.invoices.length > 0" class="mt-8">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <fa-icon [icon]="faFileInvoiceDollar" class="mr-2 text-gray-500"></fa-icon>
+              Invoices
+            </h2>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr *ngFor="let invoice of task.invoices">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ invoice.amount | currency }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ invoice.emissionDate | date:'mediumDate' }}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
