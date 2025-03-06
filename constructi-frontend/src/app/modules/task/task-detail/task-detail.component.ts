@@ -17,7 +17,7 @@ import {
   faProjectDiagram,
   faHourglassHalf,
   faFileInvoiceDollar,
-  faHistory
+  faHistory, faListCheck
 } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 
@@ -147,4 +147,10 @@ export class TaskDetailComponent implements OnInit {
       }
     });
   }
+
+  viewSubtasks(taskId: number): void {
+    this.router.navigate(["/subtasks/parent", taskId])
+  }
+
+  protected readonly faListCheck = faListCheck;
 }

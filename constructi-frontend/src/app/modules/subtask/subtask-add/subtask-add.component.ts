@@ -1,7 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
 import { SubtaskService } from '../subtask.service';
+import {
+  faPlus,
+  faEdit,
+  faSave,
+  faTimes,
+  faFileAlt,
+  faFlag,
+  faCalendarDay,
+  faCalendarCheck,
+  faClock,
+  faHourglass,
+  faCheck,
+  faBan,
+  faExclamationTriangle,
+  faPlayCircle
+} from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
+
+// Define a type for the subtask
+interface Subtask {
+  id?: number;
+  description: string;
+  status: 'NOT_STARTED' | 'IN_PROGRESS' | 'FINISHED';
+  beginDate: string;
+  dateEndEstimated: string;
+  effectiveTime: number | null;
+  parentTaskId: number | null;
+}
 
 @Component({
   selector: 'app-subtask-add',
@@ -10,7 +38,9 @@ import Swal from 'sweetalert2';
   standalone: false,
 })
 export class SubtaskAddComponent implements OnInit {
-  subtask: any = {
+  @ViewChild('subtaskForm') subtaskForm!: NgForm;
+
+  subtask: Subtask = {
     description: '',
     status: 'IN_PROGRESS',
     beginDate: '',
@@ -18,8 +48,26 @@ export class SubtaskAddComponent implements OnInit {
     effectiveTime: null,
     parentTaskId: null,
   };
+
   isEditMode = false;
   isSubmitting = false;
+  isLoading = false;
+
+  // Icons
+  faPlus = faPlus;
+  faEdit = faEdit;
+  faSave = faSave;
+  faTimes = faTimes;
+  faFileAlt = faFileAlt;
+  faFlag = faFlag;
+  faCalendarDay = faCalendarDay;
+  faCalendarCheck = faCalendarCheck;
+  faClock = faClock;
+  faHourglass = faHourglass;
+  faCheck = faCheck;
+  faBan = faBan;
+  faExclamationTriangle = faExclamationTriangle;
+  faPlayCircle = faPlayCircle;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,15 +77,30 @@ export class SubtaskAddComponent implements OnInit {
 
   ngOnInit(): void {
     const subtaskId = this.route.snapshot.params['id'];
-    this.subtask.parentTaskId = +this.route.snapshot.params['parentTaskId'];
+    const parentTaskId = this.route.snapshot.params['parentTaskId'];
+
+    if (parentTaskId) {
+      this.subtask.parentTaskId = +parentTaskId;
+    }
 
     if (subtaskId) {
       this.isEditMode = true;
       this.loadSubtask(subtaskId);
+    } else {
+      // Set default dates for new subtasks
+      const today = new Date();
+      this.subtask.beginDate = today.toISOString().split('T')[0];
+
+      // Set default end date to 7 days from now
+      const endDate = new Date();
+      endDate.setDate(today.getDate() + 7);
+      this.subtask.dateEndEstimated = endDate.toISOString().split('T')[0];
     }
   }
 
   loadSubtask(subtaskId: number): void {
+    this.isLoading = true;
+
     this.subtaskService.getSubtaskById(subtaskId).subscribe({
       next: (data) => {
         this.subtask = {
@@ -45,27 +108,69 @@ export class SubtaskAddComponent implements OnInit {
           beginDate: data.beginDate ? new Date(data.beginDate).toISOString().split('T')[0] : null,
           dateEndEstimated: data.dateEndEstimated ? new Date(data.dateEndEstimated).toISOString().split('T')[0] : null,
         };
+        this.isLoading = false;
       },
       error: (error) => {
+        this.isLoading = false;
         console.error('Error loading subtask:', error);
-        Swal.fire('Error', 'Failed to load subtask details.', 'error');
+        this.handleError(error, 'Failed to load subtask details.');
       },
     });
   }
 
   onSubmit(): void {
-    if (this.isSubmitting) return;
+    if (this.subtaskForm.invalid) {
+      // Mark all form controls as touched to trigger validation messages
+      Object.keys(this.subtaskForm.controls).forEach(key => {
+        const control = this.subtaskForm.controls[key];
+        control.markAsTouched();
+      });
+
+      Swal.fire({
+        title: 'Form Invalid',
+        text: 'Please fill in all required fields correctly.',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+
+      return;
+    }
+
+    if (this.isSubmitting || this.isLoading) return;
+
+    // Validate dates
+    if (new Date(this.subtask.dateEndEstimated) < new Date(this.subtask.beginDate)) {
+      Swal.fire({
+        title: 'Invalid Dates',
+        text: 'Estimated end date cannot be before the begin date.',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
 
     this.isSubmitting = true;
+
+    const loadingSwal = Swal.fire({
+      title: this.isEditMode ? 'Updating...' : 'Creating...',
+      text: 'Please wait while we save your subtask.',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
     const operation = this.isEditMode
-      ? this.subtaskService.updateSubtask(this.subtask.id, this.subtask)
+      ? this.subtaskService.updateSubtask(this.subtask.id!, this.subtask)
       : this.subtaskService.createSubtask(this.subtask);
 
     operation.subscribe({
       next: () => {
+        Swal.close();
+
         Swal.fire({
           title: 'Success!',
-          text: 'Subtask saved successfully.',
+          text: `Subtask ${this.isEditMode ? 'updated' : 'created'} successfully.`,
           icon: 'success',
           timer: 2000,
           showConfirmButton: false,
@@ -74,14 +179,49 @@ export class SubtaskAddComponent implements OnInit {
         });
       },
       error: (error) => {
+        Swal.close();
         this.isSubmitting = false;
         this.handleError(error);
       },
     });
   }
 
-  private handleError(error: any): void {
-    let errorMessage = 'An unexpected error occurred. Please try again.';
+  cancel(): void {
+    if (this.subtask.parentTaskId) {
+      this.router.navigate(['/subtasks/parent', this.subtask.parentTaskId]);
+    } else {
+      this.router.navigate(['/subtasks']);
+    }
+  }
+
+  getStatusIcon(status: string): any {
+    switch (status) {
+      case 'NOT_STARTED':
+        return faClock;
+      case 'IN_PROGRESS':
+        return faHourglass;
+      case 'FINISHED':
+        return faCheck;
+      default:
+        return faClock;
+    }
+  }
+
+  getStatusLabel(status: string): string {
+    switch (status) {
+      case 'NOT_STARTED':
+        return 'Not Started';
+      case 'IN_PROGRESS':
+        return 'In Progress';
+      case 'FINISHED':
+        return 'Finished';
+      default:
+        return status;
+    }
+  }
+
+  private handleError(error: any, defaultMessage: string = 'An unexpected error occurred. Please try again.'): void {
+    let errorMessage = defaultMessage;
 
     if (error.error) {
       if (typeof error.error === 'string') {
@@ -106,5 +246,4 @@ export class SubtaskAddComponent implements OnInit {
 
     console.error('Error:', error);
   }
-
 }

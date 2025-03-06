@@ -11,8 +11,17 @@ import {
   faTrash,
   faCheckCircle,
   faArrowLeft,
-  faClipboardList
+  faClipboardList,
+  faTimesCircle
 } from '@fortawesome/free-solid-svg-icons';
+
+interface Subtask {
+  id: number;
+  description: string;
+  status: string;
+  approved: boolean;
+  parentTaskId: number;
+}
 
 @Component({
   selector: 'app-subtask-list',
@@ -31,8 +40,9 @@ export class SubtaskListComponent implements OnInit {
   faCheckCircle = faCheckCircle;
   faArrowLeft = faArrowLeft;
   faClipboardList = faClipboardList;
+  faTimesCircle = faTimesCircle;
 
-  subtasks: any[] = [];
+  subtasks: Subtask[] = [];
   parentTaskId: number | undefined = undefined;
   isLoading = true;
 
@@ -81,7 +91,7 @@ export class SubtaskListComponent implements OnInit {
     this.router.navigate(['/subtasks/edit', subtaskId]);
   }
 
-  confirmDelete(subtask: any): void {
+  confirmDelete(subtask: Subtask): void {
     Swal.fire({
       title: 'Delete Subtask?',
       text: 'Are you sure you want to delete this subtask? This action cannot be undone.',
@@ -109,17 +119,19 @@ export class SubtaskListComponent implements OnInit {
 
     this.subtaskService.deleteSubtask(subtaskId).subscribe({
       next: () => {
+        Swal.close();
         this.showSuccessAlert('Subtask deleted successfully');
         this.loadSubtasks();
       },
       error: (error) => {
+        Swal.close();
         console.error('Error deleting subtask:', error);
         this.showErrorAlert('Failed to delete subtask', 'Please try again later.');
       }
     });
   }
 
-  confirmApprove(subtask: any): void {
+  confirmApprove(subtask: Subtask): void {
     Swal.fire({
       title: 'Approve Subtask?',
       text: 'Are you sure you want to approve this subtask?',
@@ -147,10 +159,12 @@ export class SubtaskListComponent implements OnInit {
 
     this.subtaskService.approveSubtask(subtaskId).subscribe({
       next: () => {
+        Swal.close();
         this.showSuccessAlert('Subtask approved successfully');
         this.loadSubtasks();
       },
       error: (error) => {
+        Swal.close();
         console.error('Error approving subtask:', error);
         this.showErrorAlert('Failed to approve subtask', 'Please try again later.');
       }

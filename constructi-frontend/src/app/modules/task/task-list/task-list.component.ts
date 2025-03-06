@@ -12,10 +12,37 @@ import {
   faTrash,
   faChevronDown,
   faChevronUp,
-  faCheckCircle, faCalendarPlus, faUserCheck
+  faCheckCircle,
+  faCalendarPlus,
+  faUserCheck,
+  faTimesCircle,
+  faCalendarDay,
+  faFilter,
+  faSort,
+  faSearch
 } from '@fortawesome/free-solid-svg-icons';
-import {SubtaskService} from '../../subtask/subtask.service';
-import {UserService} from '../../user/user.service';
+import { SubtaskService } from '../../subtask/subtask.service';
+import { UserService } from '../../user/user.service';
+
+interface Task {
+  id: number;
+  description: string;
+  status: string;
+  progress: number;
+  dateEndEstimated: string;
+  assignedTo?: string;
+  showSubtasks: boolean;
+  subtasks: Subtask[];
+  subtasksLoading: boolean;
+}
+
+interface Subtask {
+  id: number;
+  description: string;
+  status: string;
+  approved: boolean;
+  parentTaskId: number;
+}
 
 @Component({
   selector: 'app-task-list',
@@ -24,6 +51,7 @@ import {UserService} from '../../user/user.service';
   standalone: false,
 })
 export class TaskListComponent implements OnInit {
+  // Icons
   faListCheck = faListCheck;
   faPlus = faPlus;
   faSpinner = faSpinner;
@@ -36,14 +64,19 @@ export class TaskListComponent implements OnInit {
   faCheckCircle = faCheckCircle;
   faCalendarPlus = faCalendarPlus;
   faUserCheck = faUserCheck;
+  faTimesCircle = faTimesCircle;
+  faCalendarDay = faCalendarDay;
+  faFilter = faFilter;
+  faSort = faSort;
+  faSearch = faSearch;
 
-  tasks: any[] = [];
+  tasks: Task[] = [];
   isLoading = true;
 
   constructor(
     private taskService: TaskService,
     private subtaskService: SubtaskService,
-    private userService:UserService,
+    private userService: UserService,
     private router: Router
   ) {}
 
@@ -71,14 +104,14 @@ export class TaskListComponent implements OnInit {
     });
   }
 
-  toggleSubtasks(task: any): void {
+  toggleSubtasks(task: Task): void {
     task.showSubtasks = !task.showSubtasks;
     if (task.showSubtasks && task.subtasks.length === 0) {
       this.loadSubtasks(task);
     }
   }
 
-  loadSubtasks(task: any): void {
+  loadSubtasks(task: Task): void {
     task.subtasksLoading = true;
     this.subtaskService.getSubtasksByParentTaskId(task.id).subscribe({
       next: (data) => {
@@ -97,7 +130,7 @@ export class TaskListComponent implements OnInit {
     this.router.navigate(['/subtasks/add', parentTaskId]);
   }
 
-  confirmDeleteSubtask(subtask: any): void {
+  confirmDeleteSubtask(subtask: Subtask): void {
     Swal.fire({
       title: 'Delete Subtask?',
       text: 'Are you sure you want to delete this subtask? This action cannot be undone.',
@@ -120,20 +153,28 @@ export class TaskListComponent implements OnInit {
     });
   }
 
-  deleteSubtask(subtask: any): void {
+  deleteSubtask(subtask: Subtask): void {
+    const loadingAlert = this.showLoadingAlert('Deleting subtask...');
+
     this.subtaskService.deleteSubtask(subtask.id).subscribe({
       next: () => {
+        Swal.close();
         this.showSuccessAlert('Subtask deleted successfully');
-        this.loadSubtasks(subtask.parentTaskId);
+        // Reload the subtasks for the parent task
+        const parentTask = this.tasks.find(t => t.id === subtask.parentTaskId);
+        if (parentTask) {
+          this.loadSubtasks(parentTask);
+        }
       },
       error: (error) => {
+        Swal.close();
         console.error('Error deleting subtask:', error);
         this.showErrorAlert('Failed to delete subtask', 'Please try again later.');
       }
     });
   }
 
-  confirmApproveSubtask(subtask: any): void {
+  confirmApproveSubtask(subtask: Subtask): void {
     Swal.fire({
       title: 'Approve Subtask?',
       text: 'Are you sure you want to approve this subtask?',
@@ -156,13 +197,21 @@ export class TaskListComponent implements OnInit {
     });
   }
 
-  approveSubtask(subtask: any): void {
+  approveSubtask(subtask: Subtask): void {
+    const loadingAlert = this.showLoadingAlert('Approving subtask...');
+
     this.subtaskService.approveSubtask(subtask.id).subscribe({
       next: () => {
+        Swal.close();
         this.showSuccessAlert('Subtask approved successfully');
-        this.loadSubtasks(subtask.parentTaskId);
+        // Reload the subtasks for the parent task
+        const parentTask = this.tasks.find(t => t.id === subtask.parentTaskId);
+        if (parentTask) {
+          this.loadSubtasks(parentTask);
+        }
       },
       error: (error) => {
+        Swal.close();
         console.error('Error approving subtask:', error);
         this.showErrorAlert('Failed to approve subtask', 'Please try again later.');
       }
@@ -177,8 +226,6 @@ export class TaskListComponent implements OnInit {
     this.router.navigate(['/subtasks/edit', subtaskId]);
   }
 
-
-
   viewTask(taskId: number): void {
     this.router.navigate(['/tasks/detail', taskId]);
   }
@@ -187,10 +234,10 @@ export class TaskListComponent implements OnInit {
     this.router.navigate(['/tasks/edit', taskId]);
   }
 
-  confirmDelete(task: any): void {
+  confirmDelete(task: Task): void {
     Swal.fire({
       title: 'Delete Task?',
-      text: 'Are you sure you want to delete this task? This action cannot be undone.',
+      text: 'Are you sure you want to delete this task and all its subtasks? This action cannot be undone.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it',
@@ -215,10 +262,12 @@ export class TaskListComponent implements OnInit {
 
     this.taskService.deleteTask(taskId).subscribe({
       next: () => {
+        Swal.close();
         this.showSuccessAlert('Task deleted successfully');
         this.loadTasks();
       },
       error: (error) => {
+        Swal.close();
         console.error('Error deleting task:', error);
         this.showErrorAlert('Failed to delete task', 'Please try again later.');
       }
@@ -228,7 +277,6 @@ export class TaskListComponent implements OnInit {
   addTask(): void {
     this.router.navigate(['/tasks/add']);
   }
-
 
   prolongSubtask(subtaskId: number): void {
     Swal.fire({
@@ -252,12 +300,22 @@ export class TaskListComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const newEndDate = result.value;
+        const loadingAlert = this.showLoadingAlert('Prolonging subtask...');
+
         this.subtaskService.prolongSubtask(subtaskId, newEndDate).subscribe({
           next: () => {
+            Swal.close();
             this.showSuccessAlert('Subtask prolonged successfully');
-            this.loadSubtasks(subtaskId);
+            // Find and reload the parent task's subtasks
+            for (const task of this.tasks) {
+              if (task.subtasks.some(s => s.id === subtaskId)) {
+                this.loadSubtasks(task);
+                break;
+              }
+            }
           },
           error: (error) => {
+            Swal.close();
             let errorMessage = 'Failed to prolong subtask. Please try again later.';
 
             if (error.error) {
@@ -274,13 +332,13 @@ export class TaskListComponent implements OnInit {
       }
     });
   }
+
   assignTaskToWorker(taskId: number): void {
     this.userService.getUsers().subscribe({
       next: (users) => {
         const userOptions = users.reduce((acc, user) => {
           if (user.id !== undefined) {
             acc[user.id] = `${user.fname} ${user.lname}`;
-            // (${user.email});
           }
           return acc;
         }, {} as { [key: number]: string });
@@ -307,12 +365,16 @@ export class TaskListComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
             const workerId = result.value;
+            const loadingAlert = this.showLoadingAlert('Assigning task...');
+
             this.taskService.assignTaskToWorker(taskId, workerId).subscribe({
               next: () => {
+                Swal.close();
                 this.showSuccessAlert('Task assigned successfully');
                 this.loadTasks();
               },
               error: (error) => {
+                Swal.close();
                 console.error('Error assigning task:', error);
                 this.showErrorAlert('Failed to assign task', 'Please try again later.');
               }
@@ -369,6 +431,4 @@ export class TaskListComponent implements OnInit {
       }
     });
   }
-
-
 }
