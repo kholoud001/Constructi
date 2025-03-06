@@ -6,13 +6,11 @@ import com.constructi.exception.SubtaskNotFoundException;
 import com.constructi.mapper.SubtaskMapper;
 import com.constructi.model.entity.Subtask;
 import com.constructi.model.entity.Task;
-import com.constructi.model.entity.User;
 import com.constructi.repository.SubtaskRepository;
 import com.constructi.repository.TaskRepository;
 import com.constructi.repository.UserRepository;
 import com.constructi.service.SubtaskService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -109,6 +107,32 @@ public class SubtaskServiceImpl implements SubtaskService {
         subtask.setApproved(true);
         Subtask approvedSubtask = subtaskRepository.save(subtask);
         return subtaskMapper.toSubtaskResponseDTO(approvedSubtask);
+    }
+
+
+    @Override
+    public SubtaskResponseDTO prolongSubtask(Long subtaskId, LocalDate newEndDate) {
+        Subtask subtask = subtaskRepository.findById(subtaskId)
+                .orElseThrow(() -> new SubtaskNotFoundException("Subtask not found"));
+
+        Task parentTask = subtask.getParentTask();
+
+        if (newEndDate.isBefore(subtask.getDateEndEstimated())) {
+            throw new IllegalArgumentException("New end date must be later than or equal to the current estimated end date.");
+        }
+
+        if (newEndDate.isAfter(parentTask.getDateEndEstimated())) {
+            throw new IllegalArgumentException("New end date cannot exceed the parent task's end date.");
+        }
+
+        if (subtask.getOriginalDateEndEstimated() == null) {
+            subtask.setOriginalDateEndEstimated(subtask.getDateEndEstimated());
+        }
+
+        subtask.setDateEndEstimated(newEndDate);
+        Subtask updatedSubtask = subtaskRepository.save(subtask);
+
+        return subtaskMapper.toSubtaskResponseDTO(updatedSubtask);
     }
 
 

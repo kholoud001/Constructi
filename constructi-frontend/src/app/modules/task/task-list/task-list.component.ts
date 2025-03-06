@@ -230,9 +230,9 @@ export class TaskListComponent implements OnInit {
   }
 
 
-  prolongTask(taskId: number): void {
+  prolongSubtask(subtaskId: number): void {
     Swal.fire({
-      title: 'Prolong Task',
+      title: 'Prolong Subtask',
       input: 'date',
       inputLabel: 'New End Date',
       inputAttributes: {
@@ -252,13 +252,13 @@ export class TaskListComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const newEndDate = result.value;
-        this.taskService.prolongTask(taskId, newEndDate).subscribe({
+        this.subtaskService.prolongSubtask(subtaskId, newEndDate).subscribe({
           next: () => {
-            this.showSuccessAlert('Task prolonged successfully');
-            this.loadTasks();
+            this.showSuccessAlert('Subtask prolonged successfully');
+            this.loadSubtasks(subtaskId);
           },
           error: (error) => {
-            let errorMessage = 'Failed to prolong task. Please try again later.';
+            let errorMessage = 'Failed to prolong subtask. Please try again later.';
 
             if (error.error) {
               if (typeof error.error === 'string') {
@@ -274,7 +274,6 @@ export class TaskListComponent implements OnInit {
       }
     });
   }
-
   assignTaskToWorker(taskId: number): void {
     this.userService.getUsers().subscribe({
       next: (users) => {

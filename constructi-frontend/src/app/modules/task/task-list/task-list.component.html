@@ -117,11 +117,6 @@
                         title="Delete Task">
                   <fa-icon [icon]="faTrash" class="text-sm"></fa-icon>
                 </button>
-                <button (click)="prolongTask(task.id)"
-                        class="p-1.5 text-gray-500 hover:text-purple-500 hover:bg-purple-50 rounded-md transition-all duration-200"
-                        title="Prolong Task">
-                  <fa-icon [icon]="faCalendarPlus" class="text-sm"></fa-icon>
-                </button>
                 <button (click)="assignTaskToWorker(task.id)"
                         class="p-1.5 text-gray-500 hover:text-orange-500 hover:bg-orange-50 rounded-md transition-all duration-200"
                         title="Assign Task to Worker">
@@ -226,6 +221,12 @@
                                   class="p-1.5 text-gray-500 hover:text-green-500 hover:bg-green-50 rounded-md transition-all duration-200"
                                   title="Approve Subtask">
                             <fa-icon [icon]="faCheckCircle" class="text-sm"></fa-icon>
+                          </button>
+
+                          <button (click)="prolongSubtask(subtask.id)"
+                                  class="p-1.5 text-gray-500 hover:text-purple-500 hover:bg-purple-50 rounded-md transition-all duration-200"
+                                  title="Prolong Task">
+                            <fa-icon [icon]="faCalendarPlus" class="text-sm"></fa-icon>
                           </button>
                         </div>
                       </td>

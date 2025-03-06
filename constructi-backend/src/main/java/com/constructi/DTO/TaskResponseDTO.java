@@ -13,7 +13,6 @@ public class TaskResponseDTO {
     private StatusTask status;
     private LocalDate beginDate;
     private LocalDate dateEndEstimated;
-    private LocalDate originalDateEndEstimated;
     private Double effectiveTime;
     private Double budgetLimit;
     private Double totalPaid;

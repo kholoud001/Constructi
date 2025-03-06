@@ -24,6 +24,15 @@ import java.util.List;
 public class TaskController {
     private final TaskService taskService;
 
+//    @PostMapping("/prolong/{taskId}")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    public ResponseEntity<TaskResponseDTO> prolongTask(
+//            @PathVariable Long taskId,
+//            @RequestParam LocalDate newEndDate) {
+//        TaskResponseDTO response = taskService.prolongTask(taskId, newEndDate);
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//    }
+
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<TaskResponseDTO> createTask(@Valid @RequestBody TaskRequestDTO taskRequestDTO) {
@@ -84,13 +93,6 @@ public class TaskController {
         return ResponseEntity.ok(taskResponseDTO);
     }
 
-    @PostMapping("/prolong/{taskId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<TaskResponseDTO> prolongTask(
-            @PathVariable Long taskId,
-            @RequestParam LocalDate newEndDate) {
-        TaskResponseDTO response = taskService.prolongTask(taskId, newEndDate);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+
 
 }

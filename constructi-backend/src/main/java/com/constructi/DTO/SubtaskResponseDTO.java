@@ -12,6 +12,7 @@ public class SubtaskResponseDTO {
     private StatusTask status;
     private LocalDate beginDate;
     private LocalDate dateEndEstimated;
+    private LocalDate originalDateEndEstimated;
     private Double effectiveTime;
     private Long parentTaskId;
     private boolean approved;

@@ -42,9 +42,9 @@ export class TaskService {
     return this.http.get<any>(`${this.apiUrl}/invoice/${taskId}`);
   }
 
-  prolongTask(taskId: number, newEndDate: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/prolong/${taskId}`, null, {
-      params: { newEndDate }
-    });
-  }
+  // prolongTask(taskId: number, newEndDate: string): Observable<any> {
+  //   return this.http.post<any>(`${this.apiUrl}/prolong/${taskId}`, null, {
+  //     params: { newEndDate }
+  //   });
+  // }
 }

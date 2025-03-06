@@ -26,6 +26,12 @@ export class SubtaskService {
     return this.http.put<any>(`${this.apiUrl}/update/${subtaskId}`, subtask);
   }
 
+  prolongSubtask(taskId: number, newEndDate: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/prolong/${taskId}`, null, {
+      params: { newEndDate }
+    });
+  }
+
   deleteSubtask(subtaskId: number): Observable<string> {
     return this.http.delete(`${this.apiUrl}/delete/${subtaskId}`, { responseType: 'text' });
   }
