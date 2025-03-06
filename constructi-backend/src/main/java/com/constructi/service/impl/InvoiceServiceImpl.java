@@ -129,6 +129,17 @@ public class InvoiceServiceImpl implements InvoiceService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        Double totalMaterialValue = material.getPriceUnit() * material.getQuantity();
+
+        Double totalPaid = invoiceRepository.sumAmountByMaterialId(materialId);
+        if (totalPaid == null) {
+            totalPaid = 0.0;
+        }
+
+        if (totalPaid + amount > totalMaterialValue) {
+            throw new RuntimeException("Le montant du paiement dépasse la valeur totale restante du matériau (" + (totalMaterialValue - totalPaid) + ")");
+        }
+
         String filePath = saveJustificationFile(justificationFile);
 
         Invoice invoice = new Invoice();
@@ -139,7 +150,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setJustificationPath(filePath);
         invoice.setMaterial(material);
         invoice.setTask(null);
-
 
         invoice = invoiceRepository.save(invoice);
 

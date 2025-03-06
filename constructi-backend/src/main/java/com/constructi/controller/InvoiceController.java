@@ -24,6 +24,24 @@ public class InvoiceController {
     private final InvoiceService invoiceService;
     private final UserRepository userRepository;
 
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/material/{materialId}/create")
+    public ResponseEntity<InvoiceResponseDTO> createMaterialInvoice(
+            @PathVariable Long materialId,
+            @RequestParam Double amount,
+            @RequestParam("justificationFile") MultipartFile justificationFile) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User adminUser = userRepository.findByEmail(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        InvoiceResponseDTO response = invoiceService.createMaterialInvoice(materialId, adminUser.getId(), amount, justificationFile);
+        return ResponseEntity.ok(response);
+    }
+
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT', 'ROLE_WORKER')")
     @GetMapping("/my")
     public ResponseEntity<List<InvoiceResponseDTO>> getMyInvoices(@RequestParam Long userId) {
@@ -50,22 +68,7 @@ public class InvoiceController {
         return ResponseEntity.ok(invoiceService.getUserInvoices(userId));
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping("/material/{materialId}/create")
-    public ResponseEntity<InvoiceResponseDTO> createMaterialInvoice(
-            @PathVariable Long materialId,
-            @RequestParam Double amount,
-            @RequestParam("justificationFile") MultipartFile justificationFile) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        User adminUser = userRepository.findByEmail(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        InvoiceResponseDTO response = invoiceService.createMaterialInvoice(materialId, adminUser.getId(), amount, justificationFile);
-        return ResponseEntity.ok(response);
-    }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/material/{materialId}")

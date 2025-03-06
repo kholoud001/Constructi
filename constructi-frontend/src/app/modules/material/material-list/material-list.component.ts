@@ -90,22 +90,9 @@ export class MaterialListComponent implements OnInit {
     });
   }
 
-  showErrorAlert(title: string, message: string): void {
-    Swal.fire({
-      icon: 'error',
-      title: title,
-      text: message,
-      confirmButtonText: 'OK'
-    });
-  }
 
   refreshList(): void {
     this.loadMaterials();
-  }
-
-  getTotalValue(): number {
-    return this.materials.reduce((total, material) =>
-      total + (material.priceUnit * material.quantity), 0);
   }
 
   getStockStatus(quantity: number): string {
@@ -118,10 +105,11 @@ export class MaterialListComponent implements OnInit {
     this.router.navigate(['/materials', id, 'invoices']);
   }
 
-  openCreateInvoicePopup(materialId: number): void {
+  openCreateInvoicePopup(materialId: number, materialName: string, totalValue: number): void {
     Swal.fire({
-      title: 'Créer une facture',
+      title: 'Créer une facture pour ' + materialName,
       html:
+        `<p>Valeur totale du matériau : ${totalValue.toFixed(2)}</p>` +
         `<input id="amount" type="number" class="swal2-input" placeholder="Montant">` +
         `<input id="justificationFile" type="file" class="swal2-file" accept=".pdf,.doc,.docx,.jpg,.png">`,
       focusConfirm: false,
@@ -144,15 +132,23 @@ export class MaterialListComponent implements OnInit {
         const { amount, justificationFile } = result.value;
         this.materialService.createMaterialInvoice(materialId, amount, justificationFile).subscribe({
           next: (invoice) => {
-            // Afficher uniquement un message de succès
             Swal.fire('Succès', 'Facture créée avec succès', 'success');
           },
           error: (err) => {
             console.error('Error creating invoice:', err);
-            this.showErrorAlert('Erreur de création', 'Impossible de créer la facture.');
+            this.showErrorAlert('Erreur de création', err.error || 'Impossible de créer la facture.');
           },
         });
       }
+    });
+  }
+
+  showErrorAlert(title: string, message: string): void {
+    Swal.fire({
+      icon: 'error',
+      title: title,
+      text: message,
+      confirmButtonText: 'OK'
     });
   }
 

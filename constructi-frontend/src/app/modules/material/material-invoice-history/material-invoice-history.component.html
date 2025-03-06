@@ -21,17 +21,65 @@
         </div>
       </div>
 
-      <!-- Material Description -->
+      <!-- Material Provider -->
       <div class="bg-white rounded-xl shadow-sm p-6">
         <div class="flex items-center gap-3 mb-4">
-          <fa-icon [icon]="faClipboardList" class="text-blue-600"></fa-icon>
-          <h4 class="text-xl font-semibold text-gray-800">Material Description</h4>
+          <fa-icon [icon]="faUser" class="text-blue-600"></fa-icon>
+          <h4 class="text-xl font-semibold text-gray-800">Material Provider</h4>
         </div>
 
         <div class="space-y-6">
-          <!-- Description -->
+          <!-- provider -->
           <div>
-            <p class="text-gray-600">{{ materialDetails?.description || 'No description available' }}</p>
+            <p class="text-gray-600">{{ materialDetails?.providerName || 'No provider available' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Budget and Payment Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Valeur Totale -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-green-100 rounded-lg">
+                <fa-icon [icon]="faMoneyBillWave" class="text-green-600"></fa-icon>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Valeur Totale</p>
+                <p class="text-xl font-bold text-gray-900">{{ totalMaterialValue | currency }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Montant Payé -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-blue-100 rounded-lg">
+                <fa-icon [icon]="faFileInvoiceDollar" class="text-blue-600"></fa-icon>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Montant Payé</p>
+                <p class="text-xl font-bold text-gray-900">{{ totalPaid | currency }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reste à Payer -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-purple-100 rounded-lg">
+                <fa-icon [icon]="faChartLine" class="text-purple-600"></fa-icon>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Reste à Payer</p>
+                <p class="text-xl font-bold text-gray-900">{{ remainingBudget | currency }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -61,19 +109,13 @@
                   <span>{{ invoice.emissionDate | date:'short' }}</span>
                 </div>
                 <span class="px-3 py-1 rounded-full text-xs font-medium" [ngClass]="getStatusColor(invoice.state)">
-          {{ invoice.state }}
-        </span>
+                  {{ invoice.state }}
+                </span>
               </div>
             </div>
           </div>
         </div>
 
-        <ng-template #noInvoices>
-          <div class="text-center py-8 text-gray-500">
-            <fa-icon [icon]="faFileInvoiceDollar" class="text-4xl mb-3"></fa-icon>
-            <p>No invoices available</p>
-          </div>
-        </ng-template>
         <ng-template #noInvoices>
           <div class="text-center py-8 text-gray-500">
             <fa-icon [icon]="faFileInvoiceDollar" class="text-4xl mb-3"></fa-icon>
@@ -92,79 +134,15 @@
 
         <!-- Process Payment Button -->
         <div class="mt-6 flex justify-end">
-          <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50" (click)="openPaymentModal()">
-            <span>Process Payment</span>
+          <button
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+            (click)="openCreateInvoicePopup(materialDetails.id, materialDetails.name, totalMaterialValue)">
+            <span *ngIf="!paymentProcessing">Process Payment</span>
+            <span *ngIf="paymentProcessing">Processing...</span>
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Payment Modal -->
-  <div *ngIf="isPaymentModalOpen" class="fixed inset-0 bg-opacity-50 z-50 flex items-center justify-center" (click)="closePaymentModal()">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform transition-all" (click)="$event.stopPropagation()">
-      <!-- Modal Header -->
-      <div class="flex items-center justify-between p-6 border-b">
-        <h2 class="text-xl font-semibold text-gray-900">Process Payment</h2>
-        <button (click)="closePaymentModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
-          <fa-icon [icon]="faTimes" class="h-5 w-5"></fa-icon>
-        </button>
-      </div>
-
-      <!-- Modal Body -->
-      <div class="p-6 space-y-4">
-        <!-- Amount Field -->
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">Amount ($)</label>
-          <input type="number" [(ngModel)]="paymentData.amount" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Enter amount">
-        </div>
-
-        <!-- File Upload Field -->
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">Justification Document</label>
-          <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md transition-colors duration-200" [ngClass]="{'drag-over': isDragging}">
-            <div class="space-y-1 text-center">
-              <fa-icon [icon]="faCloudUpload" class="mx-auto h-12 w-12 text-gray-400"></fa-icon>
-              <div class="flex text-sm text-gray-600">
-                <label for="file-upload" class="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                  <span>Upload a file</span>
-                  <input id="file-upload" type="file" accept=".pdf,.doc,.docx,image/*" class="sr-only" #fileInput (change)="handleFileInput($event)">
-                </label>
-                <p class="pl-1">or drag and drop</p>
-              </div>
-              <p class="text-xs text-gray-500">PDF, DOC, or Images up to 25MB</p>
-            </div>
-          </div>
-
-          <!-- File Preview Section -->
-          <div *ngIf="paymentData.justificationFile" class="mt-4">
-            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div class="flex items-center space-x-3">
-                <fa-icon [icon]="paymentData.justificationFile.type.startsWith('image/') ? faImage : faFile" class="text-blue-500 text-xl"></fa-icon>
-                <div>
-                  <p class="text-sm font-medium text-gray-900">{{ paymentData.justificationFile.name }}</p>
-                  <p class="text-xs text-gray-500">{{ (paymentData.justificationFile.size / 1024 / 1024).toFixed(2) }} MB</p>
-                </div>
-              </div>
-              <button (click)="fileInput.value = ''; paymentData.justificationFile = null; imagePreview = null" class="text-sm text-red-600 hover:text-red-700">Remove</button>
-            </div>
-
-            <!-- Image Preview -->
-            <div *ngIf="imagePreview" class="mt-4">
-              <p class="text-sm font-medium text-gray-700 mb-2">Preview:</p>
-              <div class="relative rounded-lg overflow-hidden border border-gray-200">
-                <img [src]="imagePreview" alt="File preview" class="max-h-48 w-full object-contain">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="px-6 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
-        <button (click)="closePaymentModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Cancel</button>
-        <button (click)="doPayment()" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Process Payment</button>
-      </div>
-    </div>
-  </div>
 </div>

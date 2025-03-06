@@ -36,11 +36,10 @@ export class MaterialInvoiceHistoryComponent implements OnInit {
   materialDetails: any = null;
   loading: boolean = true;
   paymentProcessing: boolean = false;
-  isPaymentModalOpen = false;
-  isDragging = false;
-  imagePreview: string | null = null;
+  totalMaterialValue: number = 0;
+  totalPaid: number = 0;
+  remainingBudget: number = 0;
 
-  // Icons
   faClipboardList = faClipboardList;
   faCheckCircle = faCheckCircle;
   faTimesCircle = faTimesCircle;
@@ -55,24 +54,14 @@ export class MaterialInvoiceHistoryComponent implements OnInit {
   faChartLine = faChartLine;
   faMoneyBillWave = faMoneyBillWave;
   faArrowLeft = faArrowLeft;
-  faImage = faImage;
-  faFile = faFile;
-  faTimes = faTimes;
-  faCloudUpload = faCloudUpload;
 
-  paymentData = {
-    userId: 0,
-    amount: 0,
-    justificationFile: null as File | null,
-    materialId: 0,
-  };
 
   constructor(
     private route: ActivatedRoute,
     private materialService: MaterialService,
     private router: Router,
-    private invoiceService: InvoiceService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.materialId = this.route.snapshot.paramMap.get('id');
@@ -85,7 +74,12 @@ export class MaterialInvoiceHistoryComponent implements OnInit {
     this.loading = true;
     this.materialService.getMaterialById(materialId).subscribe({
       next: (material) => {
+        console.log('Material received:', material);
         this.materialDetails = material;
+        console.log("material details " +material)
+
+        this.totalMaterialValue = material.priceUnit * material.quantity;
+
         this.fetchInvoicesByMaterialId(materialId);
       },
       error: (err) => {
@@ -98,7 +92,14 @@ export class MaterialInvoiceHistoryComponent implements OnInit {
   fetchInvoicesByMaterialId(materialId: number) {
     this.materialService.getInvoicesByMaterialId(materialId).subscribe({
       next: (invoices) => {
-        this.materialDetails.invoices = invoices; // Add invoices to materialDetails
+        this.materialDetails.invoices = invoices;
+
+        // Calculer le montant total payé
+        this.totalPaid = invoices.reduce((sum, invoice) => sum + invoice.amount, 0);
+
+        // Calculer le reste à payer
+        this.remainingBudget = this.totalMaterialValue - this.totalPaid;
+
         this.loading = false;
       },
       error: (err) => {
@@ -107,6 +108,8 @@ export class MaterialInvoiceHistoryComponent implements OnInit {
       },
     });
   }
+
+
   getStatusColor(status: string): string {
     switch (status?.toLowerCase()) {
       case 'paid':
@@ -137,73 +140,62 @@ export class MaterialInvoiceHistoryComponent implements OnInit {
     this.router.navigate(['/materials']);
   }
 
-  openPaymentModal() {
-    this.isPaymentModalOpen = true;
-    this.paymentData = {
-      userId: this.materialDetails?.userId || 0, // Replace with the correct property
-      amount: 0,
-      justificationFile: null,
-      materialId: this.materialDetails?.id || 0,
-    };
-  }
+  openCreateInvoicePopup(materialId: number, materialName: string, totalValue: number): void {
+    Swal.fire({
+      title: 'Créer une facture pour ' + materialName,
+      html:
+        `<p>Valeur totale du matériau : ${totalValue.toFixed(2)}</p>` +
+        `<input id="amount" type="number" class="swal2-input" placeholder="Montant">` +
+        `<input id="justificationFile" type="file" class="swal2-file" accept=".pdf,.doc,.docx,.jpg,.png">`,
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: 'Créer',
+      cancelButtonText: 'Annuler',
+      preConfirm: () => {
+        const amount = (document.getElementById('amount') as HTMLInputElement).value;
+        const justificationFile = (document.getElementById('justificationFile') as HTMLInputElement).files?.[0];
 
-  closePaymentModal() {
-    this.isPaymentModalOpen = false;
-    this.resetPaymentData();
-  }
+        if (!amount || !justificationFile) {
+          Swal.showValidationMessage('Veuillez remplir tous les champs');
+          return false;
+        }
 
-  handleFileInput(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.paymentData.justificationFile = file;
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.imagePreview = reader.result as string;
-        };
-        reader.readAsDataURL(file);
-      } else {
-        this.imagePreview = null;
+        return { amount: parseFloat(amount), justificationFile };
+      },
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        const { amount, justificationFile } = result.value;
+
+        if (amount > this.remainingBudget) {
+          Swal.fire('Erreur', `Le montant du paiement ne doit pas dépasser le reste à payer (${this.remainingBudget.toFixed(2)})`, 'error');
+          return;
+        }
+
+        this.paymentProcessing = true;
+        this.materialService.createMaterialInvoice(materialId, amount, justificationFile).subscribe({
+          next: (invoice) => {
+            Swal.fire('Succès', 'Facture créée avec succès', 'success');
+            this.fetchMaterialDetails(materialId);
+          },
+          error: (err) => {
+            console.error('Error creating invoice:', err);
+            this.showErrorAlert('Erreur de création', err.error || 'Impossible de créer la facture.');
+          },
+          complete: () => {
+            this.paymentProcessing = false;
+          },
+        });
       }
-    }
+    });
   }
 
-  resetPaymentData() {
-    this.paymentData = {
-      userId: 0,
-      amount: 0,
-      justificationFile: null,
-      materialId: 0,
-    };
-    this.imagePreview = null;
+  showErrorAlert(title: string, message: string): void {
+    Swal.fire({
+      icon: 'error',
+      title: title,
+      text: message,
+      confirmButtonText: 'OK'
+    });
   }
 
-  doPayment() {
-    if (!this.paymentData.justificationFile || this.paymentData.amount <= 0) {
-      Swal.fire('Error', 'Please fill all required fields.', 'error');
-      return;
-    }
-
-    this.paymentProcessing = true;
-    this.materialService
-      .createMaterialInvoice(
-        this.paymentData.materialId,
-        this.paymentData.amount,
-        this.paymentData.justificationFile
-      )
-      .subscribe({
-        next: () => {
-          Swal.fire('Success', 'Payment processed successfully!', 'success');
-          this.closePaymentModal();
-          this.fetchMaterialDetails(Number(this.materialId)); // Refresh material details
-        },
-        error: (err) => {
-          console.error('Error processing payment:', err);
-          Swal.fire('Error', 'Failed to process payment.', 'error');
-        },
-        complete: () => {
-          this.paymentProcessing = false;
-        },
-      });
-  }
 }

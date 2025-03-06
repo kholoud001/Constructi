@@ -21,4 +21,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
 
     Collection<Invoice> findByMaterial(Material material);
+
+    @Query("SELECT COALESCE(SUM(i.amount), 0) FROM Invoice i WHERE i.material.id = :materialId")
+    Double sumAmountByMaterialId(@Param("materialId") Long materialId);
 }

@@ -11,4 +11,6 @@ public class MaterialResponseDTO {
     private Double priceUnit;
     private Long projectId;
     private Long providerId;
+    private String providerName;
+
 }

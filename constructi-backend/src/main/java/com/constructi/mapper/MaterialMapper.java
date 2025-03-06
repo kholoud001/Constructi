@@ -13,6 +13,8 @@ public interface MaterialMapper {
 
     @Mapping(source = "project.id", target = "projectId")
     @Mapping(source = "provider.id", target = "providerId")
+    @Mapping(source = "provider.name", target = "providerName")
+
     MaterialResponseDTO toResponseDTO(Material material);
 
     @Mapping(source = "projectId", target = "project.id")
