@@ -13,11 +13,14 @@ public interface InvoiceService {
 
     List<InvoiceResponseDTO> getMyInvoices(Long userId);
 
-//    InvoiceResponseDTO paySomeone(Long userId, Double amount, MultipartFile justificationFile);
 
-//    InvoiceResponseDTO paySomeone(Long userId, Double amount, MultipartFile justificationFile, Long projectId);
 
     InvoiceResponseDTO paySomeone(Long userId, Double amount, MultipartFile justificationFile, Long projectId, Long taskId);
 
     List<InvoiceResponseDTO> getUserInvoices(Long userId);
+
+
+    InvoiceResponseDTO createMaterialInvoice(Long materialId, Long userId, Double amount, MultipartFile justificationFile);
+
+    List<InvoiceResponseDTO> getInvoicesByMaterialId(Long materialId);
 }

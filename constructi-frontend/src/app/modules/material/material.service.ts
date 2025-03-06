@@ -24,12 +24,25 @@ export interface ProviderResponseDTO {
   name: string;
 }
 
+export interface InvoiceResponseDTO {
+  id: number;
+  amount: number;
+  emissionDate: string;
+  state: string;
+  justificationPath: string;
+  userId: number;
+  taskId: number;
+  materialId: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class MaterialService {
   private apiUrl = 'http://localhost:8086/materials';
   private ProviderapiUrl = 'http://localhost:8086/providers';
+  private invoiceApiUrl = 'http://localhost:8086/invoices';
+
 
 
   constructor(private http: HttpClient) {}
@@ -62,5 +75,18 @@ export class MaterialService {
     return this.http.get<ProviderResponseDTO[]>(this.ProviderapiUrl);
   }
 
+
+  getInvoicesByMaterialId(materialId: number): Observable<InvoiceResponseDTO[]> {
+    return this.http.get<InvoiceResponseDTO[]>(`${this.invoiceApiUrl}/material/${materialId}`);
+  }
+
+
+  createMaterialInvoice(materialId: number, amount: number, justificationFile: File): Observable<InvoiceResponseDTO> {
+    const formData = new FormData();
+    formData.append('amount', amount.toString());
+    formData.append('justificationFile', justificationFile);
+
+    return this.http.post<InvoiceResponseDTO>(`${this.invoiceApiUrl}/material/${materialId}/create`, formData);
+  }
 
 }

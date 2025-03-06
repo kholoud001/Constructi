@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MaterialResponseDTO, MaterialService } from '../material.service';
+import {InvoiceResponseDTO, MaterialResponseDTO, MaterialService} from '../material.service';
 import Swal from 'sweetalert2';
 import {
   faPlus,
@@ -12,6 +12,7 @@ import {
   faSearch,
   faSync
 } from '@fortawesome/free-solid-svg-icons';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-material-list',
@@ -23,6 +24,7 @@ export class MaterialListComponent implements OnInit {
   materials: MaterialResponseDTO[] = [];
   loading = false;
   searchTerm = '';
+  selectedMaterialInvoices: InvoiceResponseDTO[] = [];
 
   faPlus = faPlus;
   faEdit = faEdit;
@@ -34,7 +36,10 @@ export class MaterialListComponent implements OnInit {
   faSearch = faSearch;
   faSync = faSync;
 
-  constructor(private materialService: MaterialService) {}
+  constructor(
+    private materialService: MaterialService,
+    private router:Router
+  ) {}
 
   ngOnInit(): void {
     this.loadMaterials();
@@ -85,6 +90,59 @@ export class MaterialListComponent implements OnInit {
     });
   }
 
+
+  refreshList(): void {
+    this.loadMaterials();
+  }
+
+  getStockStatus(quantity: number): string {
+    if (quantity <= 0) return 'bg-red-100 text-red-800';
+    if (quantity <= 10) return 'bg-yellow-100 text-yellow-800';
+    return 'bg-green-100 text-green-800';
+  }
+
+  showMaterialInvoices(id: number) {
+    this.router.navigate(['/materials', id, 'invoices']);
+  }
+
+  openCreateInvoicePopup(materialId: number, materialName: string, totalValue: number): void {
+    Swal.fire({
+      title: 'Créer une facture pour ' + materialName,
+      html:
+        `<p>Valeur totale du matériau : ${totalValue.toFixed(2)}</p>` +
+        `<input id="amount" type="number" class="swal2-input" placeholder="Montant">` +
+        `<input id="justificationFile" type="file" class="swal2-file" accept=".pdf,.doc,.docx,.jpg,.png">`,
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: 'Créer',
+      cancelButtonText: 'Annuler',
+      preConfirm: () => {
+        const amount = (document.getElementById('amount') as HTMLInputElement).value;
+        const justificationFile = (document.getElementById('justificationFile') as HTMLInputElement).files?.[0];
+
+        if (!amount || !justificationFile) {
+          Swal.showValidationMessage('Veuillez remplir tous les champs');
+          return false;
+        }
+
+        return { amount: parseFloat(amount), justificationFile };
+      },
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        const { amount, justificationFile } = result.value;
+        this.materialService.createMaterialInvoice(materialId, amount, justificationFile).subscribe({
+          next: (invoice) => {
+            Swal.fire('Succès', 'Facture créée avec succès', 'success');
+          },
+          error: (err) => {
+            console.error('Error creating invoice:', err);
+            this.showErrorAlert('Erreur de création', err.error || 'Impossible de créer la facture.');
+          },
+        });
+      }
+    });
+  }
+
   showErrorAlert(title: string, message: string): void {
     Swal.fire({
       icon: 'error',
@@ -94,18 +152,7 @@ export class MaterialListComponent implements OnInit {
     });
   }
 
-  refreshList(): void {
-    this.loadMaterials();
-  }
 
-  getTotalValue(): number {
-    return this.materials.reduce((total, material) =>
-      total + (material.priceUnit * material.quantity), 0);
-  }
 
-  getStockStatus(quantity: number): string {
-    if (quantity <= 0) return 'bg-red-100 text-red-800';
-    if (quantity <= 10) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-green-100 text-green-800';
-  }
+
 }

@@ -14,5 +14,6 @@ public class InvoiceResponseDTO {
     private String justificationPath;
     private Long userId;
     private Long projectId;
-    private Long taskId;  
+    private Long taskId;
+    private Long materialId;
 }

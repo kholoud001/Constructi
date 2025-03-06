@@ -1,5 +1,6 @@
 package com.constructi.service;
 
+import com.constructi.DTO.InvoiceResponseDTO;
 import com.constructi.DTO.MaterialRequestDTO;
 import com.constructi.DTO.MaterialResponseDTO;
 
@@ -15,6 +16,8 @@ public interface MaterialService {
     MaterialResponseDTO updateMaterial(Long id, MaterialRequestDTO materialRequestDTO);
 
     void deleteMaterial(Long id);
+
+    List<InvoiceResponseDTO> getInvoicesByMaterialId(Long materialId);
 
     void purchaseMaterial(Long projectId, Double materialCost);
 }

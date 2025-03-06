@@ -1,0 +1,148 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center h-64">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <div *ngIf="!loading" class="space-y-6">
+      <!-- Material Details Header -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div class="flex items-center gap-3">
+            <div class="p-3 bg-blue-100 rounded-lg">
+              <fa-icon [icon]="faCreditCard" class="text-blue-600 text-xl"></fa-icon>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-gray-900">Material Payment Details</h3>
+              <p class="text-sm text-gray-500">Material ID: #{{ materialId }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Material Provider -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <fa-icon [icon]="faUser" class="text-blue-600"></fa-icon>
+          <h4 class="text-xl font-semibold text-gray-800">Material Provider</h4>
+        </div>
+
+        <div class="space-y-6">
+          <!-- provider -->
+          <div>
+            <p class="text-gray-600">{{ materialDetails?.providerName || 'No provider available' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Budget and Payment Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Valeur Totale -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-green-100 rounded-lg">
+                <fa-icon [icon]="faMoneyBillWave" class="text-green-600"></fa-icon>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Valeur Totale</p>
+                <p class="text-xl font-bold text-gray-900">{{ totalMaterialValue | currency }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Montant Payé -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-blue-100 rounded-lg">
+                <fa-icon [icon]="faFileInvoiceDollar" class="text-blue-600"></fa-icon>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Montant Payé</p>
+                <p class="text-xl font-bold text-gray-900">{{ totalPaid | currency }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reste à Payer -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-purple-100 rounded-lg">
+                <fa-icon [icon]="faChartLine" class="text-purple-600"></fa-icon>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Reste à Payer</p>
+                <p class="text-xl font-bold text-gray-900">{{ remainingBudget | currency }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoices List -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex items-center gap-3 mb-6">
+          <fa-icon [icon]="faFileInvoiceDollar" class="text-blue-600"></fa-icon>
+          <h4 class="text-xl font-semibold text-gray-800">Invoices History</h4>
+        </div>
+
+        <div *ngIf="materialDetails?.invoices?.length > 0; else noInvoices" class="divide-y divide-gray-200">
+          <div *ngFor="let invoice of materialDetails.invoices" class="py-4 first:pt-0 last:pb-0">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div class="flex items-center gap-3">
+                <div class="p-2 bg-gray-100 rounded-lg">
+                  <fa-icon [icon]="faFileInvoiceDollar" class="text-gray-600"></fa-icon>
+                </div>
+                <div>
+                  <p class="font-medium text-gray-900">${{ invoice.amount }}</p>
+                  <p class="text-sm text-gray-500">Invoice #{{ invoice.id }}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 text-sm text-gray-500">
+                  <fa-icon [icon]="faCalendarAlt"></fa-icon>
+                  <span>{{ invoice.emissionDate | date:'short' }}</span>
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-medium" [ngClass]="getStatusColor(invoice.state)">
+                  {{ invoice.state }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noInvoices>
+          <div class="text-center py-8 text-gray-500">
+            <fa-icon [icon]="faFileInvoiceDollar" class="text-4xl mb-3"></fa-icon>
+            <p>No invoices available</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-between gap-4">
+        <!-- Return Button -->
+        <button (click)="goBack()" class="inline-flex items-center px-6 py-3 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
+          <fa-icon [icon]="faArrowLeft" class="mr-2"></fa-icon>
+          Return to Materials
+        </button>
+
+        <!-- Process Payment Button -->
+        <div class="mt-6 flex justify-end">
+          <button
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+            (click)="openCreateInvoicePopup(materialDetails.id, materialDetails.name, totalMaterialValue)">
+            <span *ngIf="!paymentProcessing">Process Payment</span>
+            <span *ngIf="paymentProcessing">Processing...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

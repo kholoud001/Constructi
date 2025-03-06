@@ -1,17 +1,16 @@
 package com.constructi.service.impl;
 
+import com.constructi.DTO.InvoiceResponseDTO;
 import com.constructi.DTO.MaterialRequestDTO;
 import com.constructi.DTO.MaterialResponseDTO;
 import com.constructi.exception.ResourceNotFoundException;
+import com.constructi.mapper.InvoiceMapper;
 import com.constructi.mapper.MaterialMapper;
 import com.constructi.model.entity.Budget;
 import com.constructi.model.entity.Material;
 import com.constructi.model.entity.Project;
 import com.constructi.model.entity.Provider;
-import com.constructi.repository.BudgetRepository;
-import com.constructi.repository.MaterialRepository;
-import com.constructi.repository.ProjectRepository;
-import com.constructi.repository.ProviderRepository;
+import com.constructi.repository.*;
 import com.constructi.service.MaterialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +28,7 @@ public class MaterialServiceImpl implements MaterialService {
     private final ProviderRepository providerRepository;
     private final MaterialMapper materialMapper;
     private final BudgetRepository budgetRepository;
+    private final InvoiceRepository invoiceRepository;
 
 
     @Override
@@ -64,6 +64,7 @@ public class MaterialServiceImpl implements MaterialService {
 
         return materialMapper.toResponseDTO(savedMaterial);
     }
+
     @Override
     public MaterialResponseDTO getMaterialById(Long id) {
         Material material = materialRepository.findById(id)
@@ -110,6 +111,16 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
 
+    @Override
+    public List<InvoiceResponseDTO> getInvoicesByMaterialId(Long materialId) {
+        Material material = materialRepository.findById(materialId)
+                .orElseThrow(() -> new ResourceNotFoundException("Material not found with id: " + materialId));
+
+        return invoiceRepository.findByMaterial(material).stream()
+                .map(InvoiceMapper.INSTANCE::toDto)
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public void purchaseMaterial(Long projectId, Double materialCost) {
@@ -128,5 +139,8 @@ public class MaterialServiceImpl implements MaterialService {
 
         projectRepository.save(project);
     }
+
+
+
 
 }
