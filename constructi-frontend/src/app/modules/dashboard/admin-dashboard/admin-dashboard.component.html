@@ -1,5 +1,4 @@
 <div class="min-h-screen bg-gray-100">
-
   <!-- Page Content -->
   <div class="py-10">
     <header>
@@ -11,9 +10,8 @@
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <!-- Dashboard content -->
         <div class="px-4 py-8 sm:px-0">
-
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <!-- Dashboard cards -->
+            <!-- Projects Card -->
             <div class="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-2xl transition duration-300">
               <div class="p-5">
                 <div class="flex items-center">
@@ -23,7 +21,7 @@
                   <div class="ml-5 w-0 flex-1">
                     <dl>
                       <dt class="text-sm font-medium text-gray-500 truncate">Projets actifs</dt>
-                      <dd class="text-3xl font-semibold text-gray-900">12</dd>
+                      <dd class="text-3xl font-semibold text-gray-900">{{ totalProjects }}</dd>
                     </dl>
                   </div>
                 </div>
@@ -35,6 +33,7 @@
               </div>
             </div>
 
+            <!-- Tasks Card -->
             <div class="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-2xl transition duration-300">
               <div class="p-5">
                 <div class="flex items-center">
@@ -44,7 +43,7 @@
                   <div class="ml-5 w-0 flex-1">
                     <dl>
                       <dt class="text-sm font-medium text-gray-500 truncate">Tâches à assigner</dt>
-                      <dd class="text-3xl font-semibold text-gray-900">34</dd>
+                      <dd class="text-3xl font-semibold text-gray-900">{{ totalTasks }}</dd>
                     </dl>
                   </div>
                 </div>
@@ -76,11 +75,15 @@
                 </div>
               </div>
             </div>
+
           </div>
+
+
+
 
           <!-- Project Progress Section -->
           <div class="mt-8">
-            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Progression des projets</h2>
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Progression des projets (4 sur {{ totalProjects }})</h2>
             <table class="min-w-full bg-white border border-gray-300 shadow rounded-lg">
               <thead>
               <tr>
@@ -127,29 +130,41 @@
             </table>
           </div>
 
-          <!-- Resource Management Section -->
+          <!-- Tasks Section -->
           <div class="mt-8">
-            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Gestion des ressources</h2>
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Tâches récentes (4 sur {{ totalTasks }})</h2>
             <table class="min-w-full bg-white border border-gray-300 shadow rounded-lg">
               <thead>
               <tr>
-                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Nom</th>
-                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Type</th>
-                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Quantité</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Tâche</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Description</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Statut</th>
                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
               </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let material of materials">
-                <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ material.name }}</td>
-                <td class="px-6 py-4 text-sm text-gray-500">{{ material.type }}</td>
-                <td class="px-6 py-4 text-sm text-gray-500">{{ material.quantity }}</td>
+              <tr *ngFor="let task of tasks">
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ task.name }}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">{{ task.description }}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                          [ngClass]="{
+                            'bg-green-100 text-green-800': task.status === 'En cours',
+                            'bg-yellow-100 text-yellow-800': task.status === 'En attente',
+                            'bg-red-100 text-red-800': task.status === 'Retardé'
+                          }">
+                      {{ task.status }}
+                    </span>
+                </td>
                 <td class="px-6 py-4 text-sm text-gray-500">
                   <div class="flex space-x-2">
-                    <button class="text-indigo-600 hover:text-indigo-900" (click)="editMaterial(material.id)">
+                    <button class="text-blue-600 hover:text-blue-900" (click)="viewTask(task.id)">
+                      <fa-icon [icon]="faEye"></fa-icon>
+                    </button>
+                    <button class="text-indigo-600 hover:text-indigo-900" (click)="editTask(task.id)">
                       <fa-icon [icon]="faEdit"></fa-icon>
                     </button>
-                    <button class="text-red-600 hover:text-red-900" (click)="deleteMaterial(material.id)">
+                    <button class="text-red-600 hover:text-red-900" (click)="deleteTask(task.id)">
                       <fa-icon [icon]="faTrash"></fa-icon>
                     </button>
                   </div>
@@ -158,32 +173,8 @@
               </tbody>
             </table>
           </div>
-
-          <!-- Financial Reports Section -->
-          <div class="mt-8">
-            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Rapports financiers</h2>
-            <ul class="space-y-4">
-              <li class="flex justify-between items-center">
-                <div class="text-sm text-gray-500">Factures des travailleurs (Mois courant)</div>
-                <button class="text-sm text-blue-600 hover:text-blue-800" (click)="viewWorkerInvoices()">Voir</button>
-              </li>
-              <li class="flex justify-between items-center">
-                <div class="text-sm text-gray-500">Factures des fournisseurs (Mois courant)</div>
-                <button class="text-sm text-blue-600 hover:text-blue-800" (click)="viewProviderInvoices()">Voir</button>
-              </li>
-              <li class="flex justify-between items-center">
-                <div class="text-sm text-gray-500">Budget total des projets actifs</div>
-                <button class="text-sm text-blue-600 hover:text-blue-800" (click)="viewProjectBudgets()">Voir</button>
-              </li>
-              <li class="flex justify-between items-center">
-                <div class="text-sm text-gray-500">Analyse des dépenses par catégorie</div>
-                <button class="text-sm text-blue-600 hover:text-blue-800" (click)="viewExpenseAnalysis()">Voir</button>
-              </li>
-            </ul>
-          </div>
         </div>
       </div>
     </main>
   </div>
 </div>
-

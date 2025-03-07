@@ -1,4 +1,4 @@
-import { Component } from "@angular/core"
+import { Component, OnInit } from "@angular/core";
 import {
   faProjectDiagram,
   faTasks,
@@ -10,120 +10,131 @@ import {
   faEye,
   faEdit,
   faTrash,
-} from "@fortawesome/free-solid-svg-icons"
+} from "@fortawesome/free-solid-svg-icons";
+import {ProjectService} from '../../project/project.service';
+import {MaterialService} from '../../material/material.service';
+import {UserService} from '../../user/user.service';
+import {TaskService} from '../../task/task.service';
+import {ProviderService} from '../../provider/provider.service';
+import {InvoiceService} from '../../invoice/invoice.service';
+
 
 @Component({
   selector: "app-admin-dashboard",
   templateUrl: "./admin-dashboard.component.html",
   styleUrls: ["./admin-dashboard.component.css"],
-  standalone:false,
+  standalone: false,
 })
-export class AdminDashboardComponent {
-  // Icons
-  faProjectDiagram = faProjectDiagram
-  faTasks = faTasks
-  faUsers = faUsers
-  faPlus = faPlus
-  faUserPlus = faUserPlus
-  faBoxes = faBoxes
-  faTruck = faTruck
-  faEye = faEye
-  faEdit = faEdit
-  faTrash = faTrash
+export class AdminDashboardComponent implements OnInit {
+  faProjectDiagram = faProjectDiagram;
+  faTasks = faTasks;
+  faUsers = faUsers;
+  faPlus = faPlus;
+  faUserPlus = faUserPlus;
+  faBoxes = faBoxes;
+  faTruck = faTruck;
+  faEye = faEye;
+  faEdit = faEdit;
+  faTrash = faTrash;
 
-  // Recent projects with progress
-  recentProjects = [
-    {
-      id: 1,
-      name: "Résidence Les Oliviers",
-      progress: 75,
-      status: "En cours",
-    },
-    {
-      id: 2,
-      name: "Centre Commercial Atlantis",
-      progress: 30,
-      status: "En cours",
-    },
-    {
-      id: 3,
-      name: "Rénovation Hôtel de Ville",
-      progress: 10,
-      status: "En attente",
-    },
-  ]
+  // Data
+  recentProjects: any[] = [];
+  materials: any[] = [];
+  users: any[] = [];
+  tasks: any[] = [];
+  providers: any[] = [];
+  invoices: any[] = [];
+  totalProjects: number = 0;
+  totalTasks: number = 0;
 
-  // Materials
-  materials = [
-    { id: 1, name: "Béton armé", type: "Matériel", quantity: 500 },
-    { id: 2, name: "Acier de construction", type: "Matériel", quantity: 1200 },
-    { id: 3, name: "Équipe Alpha", type: "Main-d'œuvre", quantity: 8 },
-  ]
+  constructor(
+    private projectService: ProjectService,
+    private materialService: MaterialService,
+    private userService: UserService,
+    private taskService: TaskService,
+    private providerService: ProviderService,
+    private invoiceService: InvoiceService
+  ) {}
 
-  // Admin actions
-  openCreateProjectModal(): void {
-    console.log("Opening create project modal")
-    // Implement modal opening logic
+  ngOnInit(): void {
+    this.loadData();
   }
 
-  openAddUserModal(): void {
-    console.log("Opening add user modal")
-    // Implement modal opening logic
+  loadData(): void {
+    this.projectService.getProjects().subscribe((projects) => {
+      this.totalProjects = projects.length; // Store total number of projects
+      this.recentProjects = projects.slice(0, 4); // Display only 4 projects
+    });
+
+    this.taskService.getAllTasks().subscribe((tasks) => {
+      this.totalTasks = tasks.length; // Store total number of tasks
+      this.tasks = tasks.slice(0, 4); // Display only 4 tasks
+    });
+
+    this.materialService.getAllMaterials().subscribe((materials) => {
+      this.materials = materials;
+    });
+
+    this.userService.getUsers().subscribe((users) => {
+      this.users = users;
+    });
+
+    this.taskService.getAllTasks().subscribe((tasks) => {
+      this.tasks = tasks;
+    });
+
+    this.providerService.getAllProviders().subscribe((providers) => {
+      this.providers = providers;
+    });
+
+    this.invoiceService.getMyInvoices(1).subscribe((invoices) => { // Replace 1 with the actual user ID
+      this.invoices = invoices;
+    });
   }
 
-  openAddMaterialModal(): void {
-    console.log("Opening add material modal")
-    // Implement modal opening logic
-  }
-
-  openAddProviderModal(): void {
-    console.log("Opening add provider modal")
-    // Implement modal opening logic
-  }
 
   viewProject(id: number): void {
-    console.log(`Viewing project with ID: ${id}`)
+    console.log(`Viewing project with ID: ${id}`);
     // Implement navigation logic
   }
 
   editProject(id: number): void {
-    console.log(`Editing project with ID: ${id}`)
+    console.log(`Editing project with ID: ${id}`);
     // Implement edit logic
   }
 
   deleteProject(id: number): void {
-    console.log(`Deleting project with ID: ${id}`)
+    console.log(`Deleting project with ID: ${id}`);
     // Implement delete logic with confirmation
   }
 
   editMaterial(id: number): void {
-    console.log(`Editing material with ID: ${id}`)
+    console.log(`Editing material with ID: ${id}`);
     // Implement edit logic
   }
 
   deleteMaterial(id: number): void {
-    console.log(`Deleting material with ID: ${id}`)
+    console.log(`Deleting material with ID: ${id}`);
     // Implement delete logic with confirmation
   }
 
   viewWorkerInvoices(): void {
-    console.log("Viewing worker invoices")
+    console.log("Viewing worker invoices");
     // Implement navigation logic
   }
 
   viewProviderInvoices(): void {
-    console.log("Viewing provider invoices")
+    console.log("Viewing provider invoices");
     // Implement navigation logic
   }
 
   viewProjectBudgets(): void {
-    console.log("Viewing project budgets")
+    console.log("Viewing project budgets");
     // Implement navigation logic
   }
 
   viewExpenseAnalysis(): void {
-    console.log("Viewing expense analysis")
+    console.log("Viewing expense analysis");
     // Implement navigation logic
   }
 }
-
