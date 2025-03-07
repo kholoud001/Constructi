@@ -9,14 +9,14 @@ import {NavigationEnd, Router} from '@angular/router';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
-  showNavbar = false;
+  showNavbar = true;
 
   constructor(private router: Router) {}
 
   ngOnInit() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.showNavbar = !['/login', '/register'].some(path => event.url.includes(path));
+        this.showNavbar = !['/login'].some(path => event.url.includes(path));
       }
     });
   }

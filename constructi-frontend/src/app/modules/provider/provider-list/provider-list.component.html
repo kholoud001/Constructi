@@ -11,11 +11,35 @@
       </div>
     </div>
 
-    <button routerLink="/providers/add"
-            class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm hover:shadow transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
-      <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
-      <span class="font-medium">Add Provider</span>
-    </button>
+    <div class="flex items-center gap-3">
+<!--      <div class="relative">-->
+<!--        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">-->
+<!--          <fa-icon [icon]="faSearch" class="text-gray-400 dark:text-gray-500"></fa-icon>-->
+<!--        </div>-->
+<!--        <input-->
+<!--          type="text"-->
+<!--          [(ngModel)]="searchTerm"-->
+<!--          placeholder="Search providers..."-->
+<!--          class="pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white text-sm w-full sm:w-64"-->
+<!--        >-->
+<!--      </div>-->
+
+      <button
+        (click)="refreshList()"
+        class="p-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        title="Refresh list"
+      >
+        <fa-icon [icon]="faSync"></fa-icon>
+      </button>
+
+      <button
+        routerLink="/providers/add"
+        class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm hover:shadow transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+      >
+        <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
+        <span class="font-medium">Add Provider</span>
+      </button>
+    </div>
   </div>
 
   <!-- Main Content Card -->
@@ -25,13 +49,12 @@
       <div class="w-16 h-16 relative">
         <div class="absolute inset-0 rounded-full border-4 border-blue-200 dark:border-blue-900 opacity-25"></div>
         <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-600 animate-spin"></div>
-        <fa-icon [icon]="faSpinner" [spin]="true" class="text-blue-600 dark:text-blue-400 text-3xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></fa-icon>
       </div>
       <p class="text-gray-500 dark:text-gray-400 mt-4 font-medium">Loading providers...</p>
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!isLoading && providers.length === 0"
+    <div *ngIf="!isLoading && filteredProviders.length === 0 && providers.length === 0"
          class="p-12 text-center bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
       <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-6">
         <fa-icon [icon]="faBuilding" class="text-blue-600 dark:text-blue-400 text-3xl"></fa-icon>
@@ -40,15 +63,36 @@
       <p class="text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
         Start by adding your first service provider
       </p>
-      <button routerLink="/providers/add"
-              class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm hover:shadow transition-all duration-200">
+      <button
+        routerLink="/providers/add"
+        class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm hover:shadow transition-all duration-200"
+      >
         <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
         <span class="font-medium">Add First Provider</span>
       </button>
     </div>
 
+    <!-- No Search Results -->
+    <div *ngIf="!isLoading && filteredProviders.length === 0 && providers.length > 0"
+         class="p-12 text-center bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
+      <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow-100 dark:bg-yellow-900/30 mb-6">
+        <fa-icon [icon]="faSearch" class="text-yellow-600 dark:text-yellow-400 text-3xl"></fa-icon>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No matching providers</h3>
+      <p class="text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
+        No providers match your search criteria
+      </p>
+      <button
+        (click)="searchTerm = ''"
+        class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm hover:shadow transition-all duration-200"
+      >
+        <fa-icon [icon]="faSync" class="text-sm"></fa-icon>
+        <span class="font-medium">Clear Search</span>
+      </button>
+    </div>
+
     <!-- Providers Table -->
-    <div *ngIf="!isLoading && providers.length > 0" class="overflow-x-auto">
+    <div *ngIf="!isLoading && filteredProviders.length > 0" class="overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead>
         <tr class="bg-gray-50 dark:bg-gray-900/50">
@@ -59,7 +103,7 @@
         </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
-        <tr *ngFor="let provider of providers; let i = index"
+        <tr *ngFor="let provider of filteredProviders; let i = index"
             class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
           <td class="px-6 py-4">
             <div class="flex items-center">
@@ -87,15 +131,13 @@
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
             <div class="flex items-center gap-2">
-              <button [routerLink]="['/providers/edit', provider.id]"
-                      class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 shadow-sm text-xs font-medium rounded text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800">
-                <fa-icon [icon]="faEdit" class="mr-1.5 text-xs"></fa-icon>
-                Edit
-              </button>
+              <a [routerLink]="['/providers/edit', provider.id]"
+                 title="Modifier"  class="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-lg transition-colors duration-200">
+                <fa-icon [icon]="faEdit"></fa-icon>
+              </a>
               <button (click)="deleteProvider(provider.id)"
-                      class="inline-flex items-center px-2.5 py-1.5 border border-transparent shadow-sm text-xs font-medium rounded text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800">
-                <fa-icon [icon]="faTrash" class="mr-1.5 text-xs"></fa-icon>
-                Delete
+                      title="Supprimer"     class="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-colors duration-200">
+                <fa-icon [icon]="faTrash"></fa-icon>
               </button>
             </div>
           </td>

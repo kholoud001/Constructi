@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener, AfterViewInit } from '@angular/core';
-import { faBars, faUser, faSignOutAlt, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUser, faSignOutAlt, faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../modules/auth/auth.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { AppStateService } from '../../services/app-state.service';
@@ -15,13 +15,14 @@ interface NavItem {
   selector: 'app-navbar',
   standalone: false,
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit, AfterViewInit {
   faBars = faBars;
   faUser = faUser;
   faSignOutAlt = faSignOutAlt;
   faChevronDown = faChevronDown;
+  faTimes = faTimes; // Add close icon
   isMobileMenuOpen = false;
   isProfileDropdownOpen = false;
   isProjectsDropdownOpen = false;
@@ -104,7 +105,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     });
   }
 
-
   setUserInfo() {
     this.userName = this.authService.getUserName();
     this.userRole = this.authService.getUserRole();
@@ -112,6 +112,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    console.log('Mobile Menu Open:', this.isMobileMenuOpen);
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false; // Close mobile menu
   }
 
   toggleProfileDropdown() {
@@ -140,11 +145,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
   }
 
-
   toggleMobileProjectsDropdown() {
     this.isMobileProjectsDropdownOpen = !this.isMobileProjectsDropdownOpen;
   }
-
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
