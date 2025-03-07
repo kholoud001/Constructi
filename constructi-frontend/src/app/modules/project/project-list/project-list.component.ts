@@ -33,6 +33,7 @@ export class ProjectListComponent implements OnInit {
     this.loading = true
     this.projectService.getProjects().subscribe({
       next: (data) => {
+        console.log("projects ",data)
         this.projects = data
         this.totalPages = Math.ceil(this.projects.length / this.itemsPerPage)
         this.updatePaginatedProjects()
@@ -193,6 +194,21 @@ export class ProjectListComponent implements OnInit {
     if (progress < 50) return "#f97316"
     if (progress < 75) return "#eab308"
     return "#22c55e"
+  }
+
+
+  getStatusByProgress(progress: number): string {
+    if (progress >= 100) {
+      return 'FINISHED';
+    } else if (progress >= 75) {
+      return 'Almost Done';
+    } else if (progress >= 50) {
+      return 'IN_PROGRESS';
+    } else if (progress >= 25) {
+      return 'NOT_STARTED';
+    } else {
+      return 'NOT_STARTED';
+    }
   }
 
 

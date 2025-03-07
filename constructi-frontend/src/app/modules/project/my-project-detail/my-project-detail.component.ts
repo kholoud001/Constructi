@@ -39,6 +39,7 @@ export class MyProjectDetailComponent implements OnInit {
     this.loading = true;
     this.projectService.getMyProjectTasks(this.projectId).subscribe({
       next: (data) => {
+        console.log("my project detail " , data)
         this.project = data;
         this.loading = false;
       },

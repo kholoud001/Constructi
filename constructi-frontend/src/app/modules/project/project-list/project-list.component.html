@@ -43,15 +43,14 @@
       <div class="p-5 border-b border-gray-100">
         <div class="flex justify-between items-start mb-2">
           <h3 class="text-xl font-bold text-gray-900 line-clamp-1">{{ project.name }}</h3>
-          <span [ngClass]="getStatusClass(project.state)" class="px-2.5 py-1 rounded-full text-xs font-medium">
-            {{ project.state }}
+          <span [ngClass]="getStatusClass(getStatusByProgress(project.progress))" class="px-2.5 py-1 rounded-full text-xs font-medium">
+            {{ getStatusByProgress(project.progress) }}
           </span>
         </div>
         <p class="px-2.5 py-1 rounded-full text-xs font-medium">
           <fa-icon [icon]="faCalendar" class="text-gray-500 mr-1"></fa-icon>
           End date: {{ project.endDate }}
         </p>
-
       </div>
 
       <!-- Progress Section -->
