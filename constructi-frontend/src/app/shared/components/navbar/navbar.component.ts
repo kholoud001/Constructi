@@ -85,7 +85,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     if (role === 'ADMIN') {
       this.navItems.push(
-        {name: 'Tâches', href: '/tasks', current: false},
+        {name: 'Gestion des Tâches', href: '/tasks', current: false},
         {name: 'Gestion des projets', href: '#', current: false, isDropdown: true},
         {name: 'Gestion des ressources', href: '#', current: false, isDropdown: true},
       );
@@ -94,7 +94,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   get isGestionProjetsAvailable(): boolean {
     return this.navItems.some(item => item.name === 'Gestion des projets');
-  }
+}
 
 
   setUserInfo() {
