@@ -5,7 +5,7 @@ import { ProviderRoutingModule } from './provider-routing.module';
 import { ProviderListComponent } from './provider-list/provider-list.component';
 import { ProviderDetailComponent } from './provider-detail/provider-detail.component';
 import { ProviderFormComponent } from './provider-form/provider-form.component';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 
 
@@ -15,11 +15,12 @@ import {FaIconComponent} from '@fortawesome/angular-fontawesome';
     ProviderDetailComponent,
     ProviderFormComponent
   ],
-  imports: [
-    CommonModule,
-    ProviderRoutingModule,
-    ReactiveFormsModule,
-    FaIconComponent
-  ]
+    imports: [
+        CommonModule,
+        ProviderRoutingModule,
+        ReactiveFormsModule,
+        FaIconComponent,
+        FormsModule
+    ]
 })
 export class ProviderModule { }

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ProviderResponseDTO, ProviderService } from '../provider.service';
-import type { ActivatedRoute } from "@angular/router"
 import Swal from 'sweetalert2';
 
 import {
@@ -13,7 +12,8 @@ import {
   faMapMarkerAlt,
   faSearch,
   faFilter,
-  faSort
+  faSort,
+  faSync
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -24,7 +24,9 @@ import {
 })
 export class ProviderListComponent implements OnInit {
   providers: ProviderResponseDTO[] = [];
+  filteredProviders: ProviderResponseDTO[] = [];
   isLoading = true;
+  searchTerm = '';
 
   faBuilding = faBuilding;
   faPlus = faPlus;
@@ -33,7 +35,10 @@ export class ProviderListComponent implements OnInit {
   faTrash = faTrash;
   faPhone = faPhone;
   faMapMarkerAlt = faMapMarkerAlt;
-
+  faSearch = faSearch;
+  faFilter = faFilter;
+  faSort = faSort;
+  faSync = faSync;
 
   constructor(private providerService: ProviderService) {}
 
@@ -45,8 +50,8 @@ export class ProviderListComponent implements OnInit {
     this.isLoading = true;
     this.providerService.getAllProviders().subscribe({
       next: (data) => {
-        console.log("Providers:", data);
         this.providers = data;
+        this.applyFilter();
         this.isLoading = false;
       },
       error: (error) => {
@@ -57,82 +62,67 @@ export class ProviderListComponent implements OnInit {
     });
   }
 
+  refreshList(): void {
+    this.loadProviders();
+  }
+
+  // Apply search filter
+  applyFilter(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredProviders = [...this.providers];
+      return;
+    }
+
+    const searchTermLower = this.searchTerm.toLowerCase().trim();
+    this.filteredProviders = this.providers.filter(provider =>
+      provider.name.toLowerCase().includes(searchTermLower) ||
+      provider.phone.toLowerCase().includes(searchTermLower) ||
+      provider.address.toLowerCase().includes(searchTermLower)
+    );
+  }
+
+  // Watch for changes to searchTerm
+  ngDoCheck() {
+    this.applyFilter();
+  }
+
   deleteProvider(id: number): void {
     Swal.fire({
-      title: 'Delete Provider?',
-      text: 'Are you sure you want to delete this provider? This action cannot be undone.',
+      title: 'Êtes-vous sûr ?',
+      text: 'Cette action est irréversible !',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#dc2626',
-      cancelButtonColor: '#6b7280',
-      heightAuto: false,
-      customClass: {
-        popup: 'rounded-xl',
-        confirmButton: 'px-4 py-2 text-sm font-medium text-white rounded-lg',
-        cancelButton: 'px-4 py-2 text-sm font-medium rounded-lg'
-      }
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, supprimer',
+      cancelButtonText: 'Annuler'
     }).then((result) => {
       if (result.isConfirmed) {
-        const loadingAlert = this.showLoadingAlert('Deleting provider...');
-
         this.providerService.deleteProvider(id).subscribe({
           next: () => {
-            Swal.close();
-            this.showSuccessAlert('Provider deleted successfully');
-            this.loadProviders(); // Refresh the list
+            this.providers = this.providers.filter((provider) => provider.id !== id);
+            this.applyFilter();
+            Swal.fire(
+              'Supprimé !',
+              'Le fournisseur a été supprimé avec succès.',
+              'success'
+            );
           },
-          error: (error) => {
-            Swal.close();
-            console.error('Error deleting provider:', error);
-            this.showErrorAlert('Failed to delete provider', 'Please try again later.');
+          error: (err) => {
+            console.error('Error deleting provider:', err);
+            this.showErrorAlert('Erreur de suppression', 'Impossible de supprimer le fournisseur.');
           },
         });
       }
     });
   }
 
-  private showLoadingAlert(message: string) {
-    return Swal.fire({
-      title: message,
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      heightAuto: false,
-      customClass: {
-        popup: 'rounded-xl'
-      }
-    });
-  }
-
-  private showSuccessAlert(message: string) {
-    Swal.fire({
-      icon: 'success',
-      title: 'Success',
-      text: message,
-      timer: 2000,
-      showConfirmButton: false,
-      heightAuto: false,
-      customClass: {
-        popup: 'rounded-xl'
-      }
-    });
-  }
-
-  private showErrorAlert(title: string, message: string) {
+  private showErrorAlert(title: string, message: string): void {
     Swal.fire({
       icon: 'error',
       title: title,
       text: message,
-      confirmButtonText: 'OK',
-      confirmButtonColor: '#dc2626',
-      heightAuto: false,
-      customClass: {
-        popup: 'rounded-xl',
-        confirmButton: 'px-4 py-2 text-sm font-medium text-white rounded-lg'
-      }
+      confirmButtonText: 'OK'
     });
   }
 }

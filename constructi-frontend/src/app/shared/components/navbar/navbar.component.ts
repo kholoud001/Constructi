@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener, AfterViewInit } from '@angular/core';
-import { faBars, faUser, faSignOutAlt, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUser, faSignOutAlt, faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../modules/auth/auth.service';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { AppStateService } from '../../services/app-state.service';
 
 interface NavItem {
@@ -15,15 +15,14 @@ interface NavItem {
   selector: 'app-navbar',
   standalone: false,
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrls: ['./navbar.component.css']
 })
-
-
 export class NavbarComponent implements OnInit, AfterViewInit {
   faBars = faBars;
   faUser = faUser;
   faSignOutAlt = faSignOutAlt;
   faChevronDown = faChevronDown;
+  faTimes = faTimes; // Add close icon
   isMobileMenuOpen = false;
   isProfileDropdownOpen = false;
   isProjectsDropdownOpen = false;
@@ -53,9 +52,16 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         if (isAuth) {
           this.setNavItems();
           this.setUserInfo();
+          this.updateCurrentNavItem();
         }
       }
     );
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.updateCurrentNavItem();
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -73,29 +79,31 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     this.navItems = [
-      {name: 'Tableau de bord', href: `/dashboard/${role.toLowerCase()}`, current: true},
+      { name: 'Tableau de bord', href: `/dashboard/${role.toLowerCase()}`, current: false },
     ];
 
-    if (role === 'WORKER' || role === 'ARCHITECT'){
+    if (role === 'WORKER' || role === 'ARCHITECT') {
       this.navItems.push(
-        {name: 'Mes Projets', href: '/projects/my-projects', current: false},
-        {name: 'Mes Tâches', href: '/tasks', current: false},
+        { name: 'Mes Projets', href: '/projects/my-projects', current: false },
+        { name: 'Mes Tâches', href: '/tasks', current: false },
       );
     }
 
     if (role === 'ADMIN') {
       this.navItems.push(
-        {name: 'Gestion des Tâches', href: '/tasks', current: false},
-        {name: 'Gestion des projets', href: '#', current: false, isDropdown: true},
-        {name: 'Gestion des ressources', href: '#', current: false, isDropdown: true},
+        { name: 'Gestion des Tâches', href: '/tasks', current: false },
+        { name: 'Gestion des projets', href: '#', current: false, isDropdown: true },
+        { name: 'Gestion des ressources', href: '#', current: false, isDropdown: true },
       );
     }
   }
 
-  get isGestionProjetsAvailable(): boolean {
-    return this.navItems.some(item => item.name === 'Gestion des projets');
-}
-
+  updateCurrentNavItem() {
+    const currentRoute = this.router.url;
+    this.navItems.forEach(item => {
+      item.current = currentRoute.startsWith(item.href);
+    });
+  }
 
   setUserInfo() {
     this.userName = this.authService.getUserName();
@@ -104,6 +112,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    console.log('Mobile Menu Open:', this.isMobileMenuOpen);
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false; // Close mobile menu
   }
 
   toggleProfileDropdown() {
@@ -132,11 +145,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
   }
 
-
   toggleMobileProjectsDropdown() {
     this.isMobileProjectsDropdownOpen = !this.isMobileProjectsDropdownOpen;
   }
-
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
