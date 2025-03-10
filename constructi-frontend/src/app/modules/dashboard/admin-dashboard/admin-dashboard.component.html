@@ -1,5 +1,4 @@
 <div class="min-h-screen bg-gray-100">
-
   <!-- Page Content -->
   <div class="py-10">
     <header>
@@ -12,37 +11,46 @@
         <!-- Dashboard content -->
         <div class="px-4 py-8 sm:px-0">
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <!-- Dashboard cards -->
+            <!-- Projects Card -->
             <div class="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-2xl transition duration-300">
               <div class="p-5">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
-                    <!-- FontAwesome icon for Active Projects -->
                     <fa-icon [icon]="faProjectDiagram" class="text-white text-2xl"></fa-icon>
                   </div>
                   <div class="ml-5 w-0 flex-1">
                     <dl>
                       <dt class="text-sm font-medium text-gray-500 truncate">Projets actifs</dt>
-                      <dd class="text-3xl font-semibold text-gray-900">12</dd>
+                      <dd class="text-3xl font-semibold text-gray-900">{{ totalProjects }}</dd>
                     </dl>
                   </div>
+                </div>
+                <div class="mt-4">
+                  <a routerLink="/projects" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+                    Voir tous les projets
+                  </a>
                 </div>
               </div>
             </div>
 
+            <!-- Tasks Card -->
             <div class="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-2xl transition duration-300">
               <div class="p-5">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
-                    <!-- FontAwesome icon for Active Tasks -->
                     <fa-icon [icon]="faTasks" class="text-white text-2xl"></fa-icon>
                   </div>
                   <div class="ml-5 w-0 flex-1">
                     <dl>
-                      <dt class="text-sm font-medium text-gray-500 truncate">Tâches en cours</dt>
-                      <dd class="text-3xl font-semibold text-gray-900">34</dd>
+                      <dt class="text-sm font-medium text-gray-500 truncate">Tâches Terminées</dt>
+                      <dd class="text-3xl font-semibold text-gray-900">{{ totalFinishedTasks }}</dd>
                     </dl>
                   </div>
+                </div>
+                <div class="mt-4">
+                  <a routerLink="/tasks" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+                    Consulter les tâches
+                  </a>
                 </div>
               </div>
             </div>
@@ -51,60 +59,128 @@
               <div class="p-5">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
-                    <!-- FontAwesome icon for Active Teams -->
                     <fa-icon [icon]="faUsers" class="text-white text-2xl"></fa-icon>
                   </div>
                   <div class="ml-5 w-0 flex-1">
                     <dl>
-                      <dt class="text-sm font-medium text-gray-500 truncate">Équipes actives</dt>
-                      <dd class="text-3xl font-semibold text-gray-900">5</dd>
+                      <dt class="text-sm font-medium text-gray-500 truncate">Utilisateurs actifs</dt>
+                      <dd class="text-3xl font-semibold text-gray-900">{{totalUsers}}</dd>
                     </dl>
                   </div>
                 </div>
+                <div class="mt-4">
+                  <a routerLink="/admin/users" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+                    Gérer les utilisateurs
+                  </a>
+                </div>
               </div>
             </div>
+
           </div>
 
-          <!-- Additional admin-specific sections -->
+
+          <!-- Project Progress Section -->
           <div class="mt-8">
-            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Gestion des ressources</h2>
-            <!-- Example table for resources -->
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Progression des projets (4 sur {{ totalProjects }})</h2>
             <table class="min-w-full bg-white border border-gray-300 shadow rounded-lg">
               <thead>
               <tr>
-                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Nom</th>
-                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Type</th>
-                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Quantité</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Projet</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Progression</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Statut</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
               </tr>
               </thead>
               <tbody>
-              <tr>
-                <td class="px-6 py-4 text-sm font-medium text-gray-900">Ressource A</td>
-                <td class="px-6 py-4 text-sm text-gray-500">Matériel</td>
-                <td class="px-6 py-4 text-sm text-gray-500">100</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 text-sm font-medium text-gray-900">Ressource B</td>
-                <td class="px-6 py-4 text-sm text-gray-500">Main-d'œuvre</td>
-                <td class="px-6 py-4 text-sm text-gray-500">5</td>
+              <tr *ngFor="let project of recentProjects">
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ project.name }}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">
+                  <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-blue-600 h-2.5 rounded-full" [style.width]="project.progress + '%'"></div>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1">{{ project.progress }}% complété</div>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-500">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                          [ngClass]="{
+                            'bg-green-100 text-green-800': project.state === 'FINISHED',
+                            'bg-yellow-100 text-yellow-800': project.state === 'IN_PROGRESS',
+                            'bg-red-100 text-red-800': project.state === 'NOT_STARTED'
+                          }">
+                      {{ project.state }}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-500">
+                  <div class="flex space-x-2">
+                    <button class="text-blue-600 hover:text-blue-900" (click)="viewProject(project.id)">
+                      <fa-icon [icon]="faEye"></fa-icon>
+                    </button>
+                    <button class="text-indigo-600 hover:text-indigo-900" (click)="editProject(project.id)">
+                      <fa-icon [icon]="faEdit"></fa-icon>
+                    </button>
+                    <button class="text-red-600 hover:text-red-900" (click)="deleteProject(project.id)">
+                      <fa-icon [icon]="faTrash"></fa-icon>
+                    </button>
+                  </div>
+                </td>
               </tr>
               </tbody>
             </table>
           </div>
 
+          <!-- Tasks Section -->
+          <!-- Tasks Section -->
           <div class="mt-8">
-            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Rapports récents</h2>
-            <!-- Example report list -->
-            <ul class="space-y-4">
-              <li class="flex justify-between items-center">
-                <div class="text-sm text-gray-500">Rapport sur les projets de la semaine</div>
-                <div class="text-sm text-blue-600">Voir</div>
-              </li>
-              <li class="flex justify-between items-center">
-                <div class="text-sm text-gray-500">Analyse des performances de l'équipe</div>
-                <div class="text-sm text-blue-600">Voir</div>
-              </li>
-            </ul>
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Tâches récentes (4 sur {{ totalTasks }})</h2>
+            <table class="min-w-full bg-white border border-gray-300 shadow rounded-lg">
+              <thead>
+              <tr>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Tâche</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Description</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Statut</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let task of tasks">
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ task.id }}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">{{ task.description }}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">
+          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                [ngClass]="{
+                  'bg-green-100 text-green-800': task.status === 'FINISHED',
+                  'bg-yellow-100 text-yellow-800': task.status === 'IN_PROGRESS' ,
+                  'bg-red-100 text-red-800': task.status === 'NOT_STARTED'
+                }">
+            {{ task.status }}
+          </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-500">
+                  <div class="flex space-x-2">
+                    <!-- View Task Button -->
+                    <button class="text-blue-600 hover:text-blue-900" (click)="viewTask(task.id)" title="View Task">
+                      <fa-icon [icon]="faEye"></fa-icon>
+                    </button>
+
+                    <!-- Edit Task Button -->
+                    <button class="text-indigo-600 hover:text-indigo-900" (click)="editTask(task.id)" title="Edit Task">
+                      <fa-icon [icon]="faEdit"></fa-icon>
+                    </button>
+
+                    <!-- Delete Task Button -->
+                    <button class="text-red-600 hover:text-red-900" (click)="deleteTask(task.id)" title="Delete Task">
+                      <fa-icon [icon]="faTrash"></fa-icon>
+                    </button>
+
+                    <!-- View Invoices Button -->
+                    <button class="text-green-600 hover:text-green-900" (click)="viewTaskInvoices(task.id)" title="View Invoices">
+                      <fa-icon [icon]="faFileInvoice"></fa-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

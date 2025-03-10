@@ -12,17 +12,12 @@ import {
   faCalendarAlt,
   faClock,
   faCalendarCheck,
-  faPhone,
   faEnvelope,
   faUser,
   faArrowLeft,
-  faTimes,
-  faImage,
-  faFile,
-  faCloudUpload,
+
 } from '@fortawesome/free-solid-svg-icons';
 import { MaterialService } from '../material.service';
-import { InvoiceService } from '../../invoice/invoice.service';
 import Swal from 'sweetalert2';
 
 @Component({

@@ -31,8 +31,6 @@ interface User {
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
-  standalone: true,
-  imports: [NgForOf, RouterLink, FontAwesomeModule, NgClass, NgIf],
   styleUrls: ['./user-list.component.css']
 })
 export class UserListComponent implements OnInit {

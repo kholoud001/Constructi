@@ -136,7 +136,8 @@
         <div class="mt-6 flex justify-end">
           <button
             class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
-            (click)="openCreateInvoicePopup(materialDetails.id, materialDetails.name, totalMaterialValue)">
+            (click)="openCreateInvoicePopup(materialDetails.id, materialDetails.name, totalMaterialValue)"
+            [disabled]="totalPaid === totalMaterialValue || paymentProcessing">
             <span *ngIf="!paymentProcessing">Process Payment</span>
             <span *ngIf="paymentProcessing">Processing...</span>
           </button>
