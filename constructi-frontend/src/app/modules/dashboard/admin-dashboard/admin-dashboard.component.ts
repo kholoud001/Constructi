@@ -9,7 +9,7 @@ import {
   faTruck,
   faEye,
   faEdit,
-  faTrash,
+  faTrash, faFileInvoice,
 } from "@fortawesome/free-solid-svg-icons";
 import {ProjectService} from '../../project/project.service';
 import {MaterialService} from '../../material/material.service';
@@ -17,6 +17,8 @@ import {UserService} from '../../user/user.service';
 import {TaskService} from '../../task/task.service';
 import {ProviderService} from '../../provider/provider.service';
 import {InvoiceService} from '../../invoice/invoice.service';
+import {Router} from '@angular/router';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -36,6 +38,8 @@ export class AdminDashboardComponent implements OnInit {
   faEye = faEye;
   faEdit = faEdit;
   faTrash = faTrash;
+  protected readonly faFileInvoice = faFileInvoice;
+
 
 
   recentProjects: any[] = [];
@@ -47,6 +51,7 @@ export class AdminDashboardComponent implements OnInit {
   totalProjects: number = 0;
   totalTasks: number = 0;
   totalUsers:number=0;
+  totalFinishedTasks: number=0;
 
   constructor(
     private projectService: ProjectService,
@@ -54,7 +59,8 @@ export class AdminDashboardComponent implements OnInit {
     private userService: UserService,
     private taskService: TaskService,
     private providerService: ProviderService,
-    private invoiceService: InvoiceService
+    private invoiceService: InvoiceService,
+    private router:Router
   ) {}
 
   ngOnInit(): void {
@@ -64,13 +70,29 @@ export class AdminDashboardComponent implements OnInit {
   loadData(): void {
     this.projectService.getProjects().subscribe((projects) => {
       this.totalProjects = projects.length;
-      this.recentProjects = projects.slice(0, 4);
+
+      this.recentProjects = projects.map(project => {
+        let state = 'NOT_STARTED';
+
+        if (project.progress > 0 && project.progress < 100) {
+          state = 'IN_PROGRESS';
+        } else if (project.progress === 100) {
+          state = 'FINISHED';
+        }
+
+        return { ...project, state };
+      }).slice(0, 4);
     });
+
 
     this.taskService.getAllTasks().subscribe((tasks) => {
       this.totalTasks = tasks.length;
-      this.tasks = tasks.slice(0, 4);
+      this.tasks = tasks.filter(task => task.status === "FINISHED");
+        this.totalFinishedTasks = this.tasks.length;
+         this.tasks = tasks.slice(0, 4);
+
     });
+
 
     this.materialService.getAllMaterials().subscribe((materials) => {
       this.materials = materials;
@@ -94,63 +116,79 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-
   viewProject(id: number): void {
-    console.log(`Viewing project with ID: ${id}`);
-    // Implement navigation logic
+    this.router.navigate(['/projects', id, 'details']);
   }
 
   editProject(id: number): void {
-    console.log(`Editing project with ID: ${id}`);
-    // Implement edit logic
+    this.router.navigate(['/projects', id, 'edit']);
   }
 
   deleteProject(id: number): void {
-    console.log(`Deleting project with ID: ${id}`);
-    // Implement delete logic with confirmation
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.projectService.deleteProject(id).subscribe({
+          next: () => {
+            this.recentProjects = this.recentProjects.filter(project => project.id !== id);
+            this.totalProjects--;
+            Swal.fire('Deleted!', 'The project has been deleted.', 'success');
+          },
+          error: (err) => {
+            console.error('Error deleting project:', err);
+            Swal.fire('Error!', 'Failed to delete the project.', 'error');
+          },
+        });
+      }
+    });
   }
 
-  editMaterial(id: number): void {
-    console.log(`Editing material with ID: ${id}`);
-    // Implement edit logic
+  viewTask(id: number): void {
+    this.router.navigate(['/tasks', 'detail', id]);
   }
 
-  deleteMaterial(id: number): void {
-    console.log(`Deleting material with ID: ${id}`);
-    // Implement delete logic with confirmation
+  editTask(id: number): void {
+    this.router.navigate(['/tasks', 'edit', id]);
   }
 
-  viewWorkerInvoices(): void {
-    console.log("Viewing worker invoices");
-    // Implement navigation logic
-  }
-
-  viewProviderInvoices(): void {
-    console.log("Viewing provider invoices");
-    // Implement navigation logic
-  }
-
-  viewProjectBudgets(): void {
-    console.log("Viewing project budgets");
-    // Implement navigation logic
-  }
-
-  viewExpenseAnalysis(): void {
-    console.log("Viewing expense analysis");
-    // Implement navigation logic
-  }
-
-  viewTask(id: number) {
-
-  }
-
-  editTask(id: number) {
-
-  }
-
-  deleteTask(id: number) {
-
+  deleteTask(id: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.taskService.deleteTask(id).subscribe({
+          next: () => {
+            this.tasks = this.tasks.filter(task => task.id !== id);
+            this.totalTasks--;
+            Swal.fire('Deleted!', 'The task has been deleted.', 'success');
+          },
+          error: (err) => {
+            console.error('Error deleting task:', err);
+            Swal.fire('Error!', 'Failed to delete the task.', 'error');
+          },
+        });
+      }
+    });
   }
 
 
+
+  viewTaskInvoices(taskId: number): void {
+    this.router.navigate(['/tasks', 'task-payment-details', taskId]);
+  }
 }
