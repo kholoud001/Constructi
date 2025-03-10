@@ -21,15 +21,22 @@ interface Task {
 interface Project {
   id: number;
   name: string;
-  client: string;
 }
 
 interface Invoice {
   id: number;
-  project: Project;
-  date: Date;
   amount: number;
-  status: 'Paid' | 'Pending' | 'Overdue';
+  emissionDate: string;
+  justificationPath: string;
+  materialId: number | null;
+  projectId: number | null;
+  state: 'PAID' | 'PENDING' | 'OVERDUE';
+  taskId: number | null;
+  userId: number | null;
+  task?: {
+    id: number;
+    title: string;
+  };
 }
 
 @Component({
@@ -115,11 +122,11 @@ export class ArchitectDashboardComponent implements OnInit {
           console.log("profile ",user)
           this.architect = user;
           this.initProfileForm();
-          resolve(); // Resolve the promise once the profile is fetched
+          resolve();
         },
         (error) => {
           console.error('Error fetching architect profile:', error);
-          reject(error); // Reject the promise if there's an error
+          reject(error);
         }
       );
     });
@@ -138,19 +145,32 @@ export class ArchitectDashboardComponent implements OnInit {
 
     // Combine all invoice observables into a single observable
     forkJoin(invoiceObservables).subscribe(
-      (taskInvoicesArray: any[][]) => {
-        // Flatten the array of arrays into a single array of invoices
-        this.invoices = taskInvoicesArray.flat().map(taskInvoices => ({
-          id: taskInvoices.id,
-          project: {
-            id: taskInvoices.project.id,
-            name: taskInvoices.project.name,
-            client: taskInvoices.project.client
-          },
-          date: new Date(taskInvoices.date),
-          amount: taskInvoices.amount,
-          status: taskInvoices.status
-        }));
+      (taskInvoicesArray: any[]) => {
+        console.log('Task Invoices Array:', taskInvoicesArray);
+
+        // Flatten the array of task objects into a single array of invoices
+        this.invoices = taskInvoicesArray.flatMap((taskWithInvoices: any) => {
+          if (Array.isArray(taskWithInvoices.invoices)) {
+            return taskWithInvoices.invoices.map((invoice: any) => ({
+              id: invoice.id,
+              amount: invoice.amount,
+              emissionDate: new Date(invoice.emissionDate), // Convert to Date
+              justificationPath: invoice.justificationPath,
+              materialId: invoice.materialId,
+              projectId: invoice.projectId,
+              state: invoice.state,
+              taskId: taskWithInvoices.id, // Set taskId to the parent task's id
+              userId: invoice.userId,
+              task: {
+                id: taskWithInvoices.id, // Use the parent task's id
+                title: taskWithInvoices.description || 'No Title' // Use the task's description as the title
+              }
+            }));
+          } else {
+            console.warn('Expected an array of invoices, but got:', taskWithInvoices.invoices);
+            return [];
+          }
+        });
 
         console.log("Invoices fetched for tasks:", this.invoices);
       },
@@ -159,6 +179,8 @@ export class ArchitectDashboardComponent implements OnInit {
       }
     );
   }
+
+
   fetchTasks(): void {
     this.taskService.getAssignedTasks().subscribe(
       (tasks: any[]) => {
@@ -191,9 +213,6 @@ export class ArchitectDashboardComponent implements OnInit {
   }
 
 
-
-
-
   updateProfile(): void {
     if (this.profileForm.valid) {
       const updatedUser: Partial<User> = {
@@ -224,7 +243,7 @@ export class ArchitectDashboardComponent implements OnInit {
   viewTaskInvoices(taskId: number): void {
     this.taskService.getTaskWithInvoices(taskId).subscribe(
       (taskWithInvoices: any) => {
-        console.log('Task Invoices:', taskWithInvoices);
+        // console.log('Task Invoices:', taskWithInvoices);
         // You can implement further logic to display the invoices
       },
       (error) => {

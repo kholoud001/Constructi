@@ -112,34 +112,32 @@
               </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-
               <tr *ngFor="let task of tasks">
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ task.description | slice: 0:50 }}{{ task.description.length > 50 ? '...' : '' }}</div>
+                  <div class="text-sm text-gray-500">{{ task?.description | slice: 0:50 }}{{ task?.description?.length > 50 ? '...' : '' }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ task.project.name }}</div>
+                  <div class="text-sm text-gray-900">{{ task?.project?.name || 'No Project' }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ task.deadline | date: 'mediumDate' }}</div>
+                  <div class="text-sm text-gray-900">{{ task?.deadline | date: 'mediumDate' }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <span
-                      [ngClass]="{
-                        'bg-green-100 text-green-800': task.status === 'FINISHED',
-                        'bg-yellow-100 text-yellow-800': task.status === 'IN_PROGRESS',
-                        'bg-red-100 text-red-800': task.status === 'PENDING'
-                      }"
-                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                    >
-                      {{ task.status }}
-                    </span>
+              <span
+                [ngClass]="{
+                  'bg-green-100 text-green-800': task?.status === 'FINISHED',
+                  'bg-yellow-100 text-yellow-800': task?.status === 'IN_PROGRESS',
+                  'bg-red-100 text-red-800': task?.status === 'PENDING'
+                }"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+              >
+                {{ task?.status || 'Unknown' }}
+              </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <button class="text-blue-600 hover:text-blue-900 mr-3" (click)="viewTaskInvoices(task.id)">View Invoices</button>
+                  <button class="text-blue-600 hover:text-blue-900 mr-3" (click)="viewTaskInvoices(task?.id)">View Invoices</button>
                 </td>
               </tr>
-
               <tr *ngIf="tasks.length === 0">
                 <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">No tasks assigned</td>
               </tr>
@@ -148,7 +146,7 @@
           </div>
         </div>
       </div>
-
+      <!-- Invoices Tab -->
       <!-- Invoices Tab -->
       <div *ngSwitchCase="'invoices'" class="bg-white rounded-lg shadow">
         <div class="p-4 border-b border-gray-200">
@@ -160,7 +158,7 @@
               <thead class="bg-gray-50">
               <tr>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice #</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -170,25 +168,28 @@
               <tbody class="bg-white divide-y divide-gray-200">
               <tr *ngFor="let invoice of invoices">
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">INV-{{invoice.id}}</div>
+                  <div class="text-sm font-medium text-gray-900">INV-{{ invoice?.id }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{invoice.project.name}}</div>
+                  <div class="text-sm text-gray-900">{{ invoice?.task?.title || 'No Task' }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{invoice.date | date:'mediumDate'}}</div>
+                  <div class="text-sm text-gray-900">{{ invoice?.emissionDate | date: 'mediumDate' }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">${{invoice.amount}}</div>
+                  <div class="text-sm text-gray-900">${{ invoice?.amount || '0.00' }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <span [ngClass]="{
-                      'bg-green-100 text-green-800': invoice.status === 'Paid',
-                      'bg-yellow-100 text-yellow-800': invoice.status === 'Pending',
-                      'bg-red-100 text-red-800': invoice.status === 'Overdue'
-                    }" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-                      {{invoice.status}}
-                    </span>
+              <span
+                [ngClass]="{
+                  'bg-green-100 text-green-800': invoice?.state === 'PAID',
+                  'bg-yellow-100 text-yellow-800': invoice?.state === 'PENDING',
+                  'bg-red-100 text-red-800': invoice?.state === 'OVERDUE'
+                }"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+              >
+                {{ invoice?.state || 'Unknown' }}
+              </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <button class="text-blue-600 hover:text-blue-900">Download</button>
@@ -201,9 +202,7 @@
             </table>
           </div>
         </div>
-      </div>
-
-      <!-- Profile Tab -->
+      </div>      <!-- Profile Tab -->
       <div *ngSwitchCase="'profile'" class="bg-white rounded-lg shadow">
         <div class="p-4 border-b border-gray-200">
           <h2 class="text-lg font-semibold">My Profile</h2>
