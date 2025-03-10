@@ -1,0 +1,40 @@
+/* Add any custom styles here if needed */
+/* Most styling is handled by Tailwind CSS */
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Add smooth transitions */
+.inline-block {
+  transition: all 0.3s ease;
+}
+
+/* Improve form field focus states */
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Custom scrollbar for tables */
+.overflow-x-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #e5e7eb #f9fafb;
+}
+
+.overflow-x-auto::-webkit-scrollbar {
+  height: 8px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: #f9fafb;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background-color: #e5e7eb;
+  border-radius: 4px;
+}

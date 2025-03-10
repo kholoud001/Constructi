@@ -5,6 +5,7 @@ import { ArchitectDashboardComponent } from './architect-dashboard/architect-das
 import { WorkerDashboardComponent } from './worker-dashboard/worker-dashboard.component';
 import {DashboardRoutingModule} from './dashboard-routing.module';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {ReactiveFormsModule} from "@angular/forms";
 
 
 
@@ -17,7 +18,8 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
     imports: [
         CommonModule,
         DashboardRoutingModule,
-        FaIconComponent
+        FaIconComponent,
+        ReactiveFormsModule
     ]
 })
 export class DashboardModule { }

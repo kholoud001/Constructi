@@ -77,10 +77,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/subtasks/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/subtasks/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/subtasks/**").hasAuthority("ROLE_ADMIN")
-
-                        .requestMatchers("/resources/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers("/reports/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT")
-                        .requestMatchers("/discussion/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT", "ROLE_WORKER")
                         .requestMatchers("/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ARCHITECT", "ROLE_WORKER")
 
                         .anyRequest().authenticated()
