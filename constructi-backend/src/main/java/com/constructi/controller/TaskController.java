@@ -80,7 +80,7 @@ public class TaskController {
     }
 
     @GetMapping("/mytasks")
-    @PreAuthorize("hasAuthority('ROLE_WORKER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT', 'ROLE_WORKER')")
     public ResponseEntity<List<TaskResponseDTO>> getAssignedTasks() {
         List<TaskResponseDTO> tasks = taskService.getTasksAssignedToWorker();
         return new ResponseEntity<>(tasks, HttpStatus.OK);

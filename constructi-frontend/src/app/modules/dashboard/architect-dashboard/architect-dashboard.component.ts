@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import {User} from '../../user/user.model';
+import {InvoiceService} from '../../invoice/invoice.service';
+import {TaskService} from '../../task/task.service';
+import {UserService} from '../../user/user.service';
+import {ProjectService} from '../../project/project.service';
 
 interface Task {
   id: number;
@@ -26,14 +31,6 @@ interface Invoice {
   status: 'Paid' | 'Pending' | 'Overdue';
 }
 
-interface Architect {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-}
-
 @Component({
   selector: 'app-architect-dashboard',
   standalone: false,
@@ -44,128 +41,161 @@ export class ArchitectDashboardComponent implements OnInit {
   activeTab: 'tasks' | 'invoices' | 'profile' = 'tasks';
   profileForm!: FormGroup;
 
-  architect: Architect = {
-    id: 1,
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
-    phone: '(123) 456-7890'
+  architect: User = {
+    id: 0,
+    fname: '',
+    lname: '',
+    cell: '',
+    email: '',
+    contratType: 'FULL_TIME',
+    roleId: 2,
+    active: true
   };
 
-  tasks: Task[] = [
-    {
-      id: 1,
-      title: 'Design Floor Plan',
-      description: 'Create detailed floor plans for the new office building',
-      deadline: new Date('2025-04-15'),
-      status: 'In Progress',
-      project: { id: 1, name: 'Office Tower', client: 'ABC Corp' }
-    },
-    {
-      id: 2,
-      title: 'Facade Design Review',
-      description: 'Review and approve facade design proposals',
-      deadline: new Date('2025-04-20'),
-      status: 'Pending',
-      project: { id: 1, name: 'Office Tower', client: 'ABC Corp' }
-    },
-    {
-      id: 3,
-      title: 'Interior Layout',
-      description: 'Design interior layout for residential units',
-      deadline: new Date('2025-04-10'),
-      status: 'Completed',
-      project: { id: 2, name: 'Riverside Residences', client: 'XYZ Developers' }
-    },
-    {
-      id: 4,
-      title: 'Material Selection',
-      description: 'Select materials for lobby and common areas',
-      deadline: new Date('2025-04-25'),
-      status: 'Pending',
-      project: { id: 2, name: 'Riverside Residences', client: 'XYZ Developers' }
-    }
-  ];
+  tasks: {
+    project: any;
+    description: any; id: any; title: any; deadline: Date; projectId: any; status: any }[] = [];
+  invoices: Invoice[] = [];
 
-  invoices: Invoice[] = [
-    {
-      id: 101,
-      project: { id: 1, name: 'Office Tower', client: 'ABC Corp' },
-      date: new Date('2025-03-15'),
-      amount: 5000,
-      status: 'Paid'
-    },
-    {
-      id: 102,
-      project: { id: 2, name: 'Riverside Residences', client: 'XYZ Developers' },
-      date: new Date('2025-03-28'),
-      amount: 7500,
-      status: 'Pending'
-    },
-    {
-      id: 103,
-      project: { id: 1, name: 'Office Tower', client: 'ABC Corp' },
-      date: new Date('2025-02-15'),
-      amount: 3000,
-      status: 'Paid'
-    }
-  ];
-
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private invoiceService: InvoiceService,
+    private taskService: TaskService,
+    private userService: UserService,
+    private projectService: ProjectService
+  ) {}
 
   ngOnInit(): void {
     this.initProfileForm();
+    this.fetchArchitectProfile();
+    this.fetchTasks();
+    this.fetchInvoices();
   }
 
   get activeTasks(): Task[] {
-    return this.tasks.filter(task => task.status !== 'Completed');
+    return this.tasks.filter(task => task.status !== 'FINISHED');
   }
 
   get completedTasks(): Task[] {
-    return this.tasks.filter(task => task.status === 'Completed');
+    return this.tasks.filter(task => task.status === 'FINISHED');
   }
 
-  get projects(): Project[] {
-    // Get unique projects
-    const projectIds = new Set(this.tasks.map(task => task.project.id));
-    return Array.from(projectIds).map(id => {
-      const task = this.tasks.find(t => t.project.id === id);
-      return task ? task.project : { id: 0, name: '', client: '' };
-    });
-  }
 
   initProfileForm(): void {
     this.profileForm = this.fb.group({
-      firstName: [this.architect.firstName, Validators.required],
-      lastName: [this.architect.lastName, Validators.required],
+      fname: [this.architect.fname, Validators.required],
+      lname: [this.architect.lname, Validators.required],
       email: [this.architect.email, [Validators.required, Validators.email]],
-      phone: [this.architect.phone],
+      cell: [this.architect.cell],
       currentPassword: [''],
       newPassword: ['', [Validators.minLength(8)]]
     });
   }
 
+  fetchArchitectProfile(): void {
+    this.userService.getCurrentUserProfile().subscribe(
+      (user: User) => {
+        this.architect = user;
+        this.initProfileForm();
+      },
+      (error) => {
+        console.error('Error fetching architect profile:', error);
+      }
+    );
+  }
+
+  fetchTasks(): void {
+    this.taskService.getAssignedTasks().subscribe(
+      (tasks: any[]) => {
+        // console.log("tasks =>", tasks);
+        this.tasks = tasks.map(task => ({
+          id: task.id,
+          title: task.description,
+          description: task.description,
+          deadline: new Date(task.dateEndEstimated),
+          status: task.status,
+          projectId: task.projectId,
+          project: { id: task.projectId, name: 'Loading...', client: 'Loading...' }
+        }));
+
+        this.tasks.forEach(task => {
+          this.projectService.getMyProjectTasks(task.projectId).subscribe(
+            (project: any) => {
+              task.project = project;
+            },
+            (error) => {
+              console.error('Error fetching project details:', error);
+            }
+          );
+        });
+      },
+      (error) => {
+        console.error('Error fetching tasks:', error);
+      }
+    );
+  }
+
+
+  fetchInvoices(): void {
+      this.invoiceService.getMyInvoices(this.architect.id).subscribe(
+        (invoices: any[]) => {
+          console.log("invoices =>", invoices);
+
+          this.invoices = invoices.map(invoice => ({
+            id: invoice.id,
+            project: {
+              id: invoice.project.id,
+              name: invoice.project.name,
+              client: invoice.project.client
+            },
+            date: new Date(invoice.date),
+            amount: invoice.amount,
+            status: invoice.status
+          }));
+        },
+        (error) => {
+          console.error('Error fetching invoices:', error);
+        }
+      );
+
+  }
+
   updateProfile(): void {
     if (this.profileForm.valid) {
-      // In a real app, you would call a service to update the profile
-      console.log('Profile updated:', this.profileForm.value);
-
-      // Update local architect object
-      this.architect = {
-        ...this.architect,
-        firstName: this.profileForm.value.firstName,
-        lastName: this.profileForm.value.lastName,
-        phone: this.profileForm.value.phone
+      const updatedUser: Partial<User> = {
+        fname: this.profileForm.value.fname,
+        lname: this.profileForm.value.lname,
+        cell: this.profileForm.value.cell,
+        email: this.profileForm.value.email
       };
 
-      // Reset password fields
-      this.profileForm.patchValue({
-        currentPassword: '',
-        newPassword: ''
-      });
-
-      // Show success message (in a real app)
-      alert('Profile updated successfully!');
+      if (this.architect.id != null) {
+        this.userService.updateCurrentUserProfile(this.architect.id, updatedUser).subscribe(
+          (user: User) => {
+            this.architect = user;
+            this.profileForm.patchValue({
+              currentPassword: '',
+              newPassword: ''
+            });
+            alert('Profile updated successfully!');
+          },
+          (error) => {
+            console.error('Error updating profile:', error);
+          }
+        );
+      }
     }
+  }
+
+  viewTaskInvoices(taskId: number): void {
+    this.taskService.getTaskWithInvoices(taskId).subscribe(
+      (taskWithInvoices: any) => {
+        console.log('Task Invoices:', taskWithInvoices);
+        // You can implement further logic to display the invoices
+      },
+      (error) => {
+        console.error('Error fetching task invoices:', error);
+      }
+    );
   }
 }
