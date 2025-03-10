@@ -142,7 +142,6 @@ export class MaterialListComponent implements OnInit {
       }
     });
   }
-
   showErrorAlert(title: string, message: string): void {
     Swal.fire({
       icon: 'error',
