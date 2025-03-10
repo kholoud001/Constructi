@@ -37,7 +37,7 @@ export class AdminDashboardComponent implements OnInit {
   faEdit = faEdit;
   faTrash = faTrash;
 
-  // Data
+
   recentProjects: any[] = [];
   materials: any[] = [];
   users: any[] = [];
@@ -46,6 +46,7 @@ export class AdminDashboardComponent implements OnInit {
   invoices: any[] = [];
   totalProjects: number = 0;
   totalTasks: number = 0;
+  totalUsers:number=0;
 
   constructor(
     private projectService: ProjectService,
@@ -62,13 +63,13 @@ export class AdminDashboardComponent implements OnInit {
 
   loadData(): void {
     this.projectService.getProjects().subscribe((projects) => {
-      this.totalProjects = projects.length; // Store total number of projects
-      this.recentProjects = projects.slice(0, 4); // Display only 4 projects
+      this.totalProjects = projects.length;
+      this.recentProjects = projects.slice(0, 4);
     });
 
     this.taskService.getAllTasks().subscribe((tasks) => {
-      this.totalTasks = tasks.length; // Store total number of tasks
-      this.tasks = tasks.slice(0, 4); // Display only 4 tasks
+      this.totalTasks = tasks.length;
+      this.tasks = tasks.slice(0, 4);
     });
 
     this.materialService.getAllMaterials().subscribe((materials) => {
@@ -76,8 +77,9 @@ export class AdminDashboardComponent implements OnInit {
     });
 
     this.userService.getUsers().subscribe((users) => {
-      this.users = users;
+      this.totalUsers = users.filter(user => user.active).length;
     });
+
 
     this.taskService.getAllTasks().subscribe((tasks) => {
       this.tasks = tasks;
@@ -137,4 +139,18 @@ export class AdminDashboardComponent implements OnInit {
     console.log("Viewing expense analysis");
     // Implement navigation logic
   }
+
+  viewTask(id: number) {
+
+  }
+
+  editTask(id: number) {
+
+  }
+
+  deleteTask(id: number) {
+
+  }
+
+
 }

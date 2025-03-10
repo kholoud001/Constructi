@@ -12,7 +12,8 @@ import {FormsModule} from '@angular/forms';
 @NgModule({
   declarations: [
     UserDetailComponent,
-    UserEditComponent
+    UserEditComponent,
+    UserListComponent
   ],
   imports: [
     CommonModule,
