@@ -8,6 +8,7 @@ import {TaskService} from '../../task/task.service';
 import {UserService} from '../../user/user.service';
 import {ProjectService} from '../../project/project.service';
 import {forkJoin} from 'rxjs';
+import Swal from 'sweetalert2';
 
 interface Task {
   id: number;
@@ -67,7 +68,6 @@ export class ArchitectDashboardComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private invoiceService: InvoiceService,
     private taskService: TaskService,
     private userService: UserService,
     private projectService: ProjectService
@@ -108,10 +108,8 @@ export class ArchitectDashboardComponent implements OnInit {
     this.profileForm = this.fb.group({
       fname: [this.architect.fname, Validators.required],
       lname: [this.architect.lname, Validators.required],
-      email: [this.architect.email, [Validators.required, Validators.email]],
       cell: [this.architect.cell],
-      currentPassword: [''],
-      newPassword: ['', [Validators.minLength(8)]]
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
@@ -219,7 +217,7 @@ export class ArchitectDashboardComponent implements OnInit {
         fname: this.profileForm.value.fname,
         lname: this.profileForm.value.lname,
         cell: this.profileForm.value.cell,
-        email: this.profileForm.value.email
+        password: this.profileForm.value.password // Include password
       };
 
       if (this.architect.id != null) {
@@ -227,18 +225,31 @@ export class ArchitectDashboardComponent implements OnInit {
           (user: User) => {
             this.architect = user;
             this.profileForm.patchValue({
-              currentPassword: '',
-              newPassword: ''
+              password: '' // Clear the password field after successful update
             });
-            alert('Profile updated successfully!');
+            // Show success message using SweetAlert2
+            Swal.fire({
+              icon: 'success',
+              title: 'Profile Updated!',
+              text: 'Your profile has been updated successfully.',
+              confirmButtonColor: '#3b82f6', // Blue color
+            });
           },
           (error) => {
             console.error('Error updating profile:', error);
+            // Show error message using SweetAlert2
+            Swal.fire({
+              icon: 'error',
+              title: 'Update Failed',
+              text: error.error?.message || 'An error occurred while updating your profile.',
+              confirmButtonColor: '#ef4444', // Red color
+            });
           }
         );
       }
     }
   }
+
 
   viewTaskInvoices(taskId: number): void {
     this.taskService.getTaskWithInvoices(taskId).subscribe(

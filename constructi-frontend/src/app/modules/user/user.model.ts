@@ -9,5 +9,7 @@ export interface User {
   roleId: number;
   active: boolean;
   taskIds?: number[];
+  currentPassword?: string;
+  newPassword?: string;
 
 }
