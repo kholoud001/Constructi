@@ -7,6 +7,7 @@ import {InvoiceService} from '../../invoice/invoice.service';
 import {TaskService} from '../../task/task.service';
 import {UserService} from '../../user/user.service';
 import {ProjectService} from '../../project/project.service';
+import {forkJoin} from 'rxjs';
 
 interface Task {
   id: number;
@@ -65,12 +66,20 @@ export class ArchitectDashboardComponent implements OnInit {
     private projectService: ProjectService
   ) {}
 
+
   ngOnInit(): void {
     this.initProfileForm();
-    this.fetchArchitectProfile();
-    this.fetchTasks();
-    this.fetchInvoices();
+
+    this.fetchArchitectProfile()
+      .then(() => {
+        this.fetchTasks();
+        this.fetchInvoices();
+      })
+      .catch((error) => {
+        console.error('Error fetching architect profile:', error);
+      });
   }
+
 
   get activeTasks(): Task[] {
     return this.tasks.filter(task => task.status !== 'FINISHED');
@@ -80,6 +89,13 @@ export class ArchitectDashboardComponent implements OnInit {
     return this.tasks.filter(task => task.status === 'FINISHED');
   }
 
+  get projects(): Project[] {
+    const projectIds = new Set(this.tasks.map(task => task.project.id));
+    return Array.from(projectIds).map(id => {
+      const task = this.tasks.find(t => t.project.id === id);
+      return task ? task.project : { id: 0, name: '', client: '' };
+    });
+  }
 
   initProfileForm(): void {
     this.profileForm = this.fb.group({
@@ -92,18 +108,57 @@ export class ArchitectDashboardComponent implements OnInit {
     });
   }
 
-  fetchArchitectProfile(): void {
-    this.userService.getCurrentUserProfile().subscribe(
-      (user: User) => {
-        this.architect = user;
-        this.initProfileForm();
+  fetchArchitectProfile(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.userService.getCurrentUserProfile().subscribe(
+        (user: User) => {
+          console.log("profile ",user)
+          this.architect = user;
+          this.initProfileForm();
+          resolve(); // Resolve the promise once the profile is fetched
+        },
+        (error) => {
+          console.error('Error fetching architect profile:', error);
+          reject(error); // Reject the promise if there's an error
+        }
+      );
+    });
+  }
+
+  fetchInvoices(): void {
+    if (!this.architect.taskIds || this.architect.taskIds.length === 0) {
+      console.log('No tasks assigned to the architect. Skipping invoice fetch.');
+      return;
+    }
+
+    // Fetch invoices for each task assigned to the architect
+    const invoiceObservables = this.architect.taskIds.map(taskId =>
+      this.taskService.getTaskWithInvoices(taskId)
+    );
+
+    // Combine all invoice observables into a single observable
+    forkJoin(invoiceObservables).subscribe(
+      (taskInvoicesArray: any[][]) => {
+        // Flatten the array of arrays into a single array of invoices
+        this.invoices = taskInvoicesArray.flat().map(taskInvoices => ({
+          id: taskInvoices.id,
+          project: {
+            id: taskInvoices.project.id,
+            name: taskInvoices.project.name,
+            client: taskInvoices.project.client
+          },
+          date: new Date(taskInvoices.date),
+          amount: taskInvoices.amount,
+          status: taskInvoices.status
+        }));
+
+        console.log("Invoices fetched for tasks:", this.invoices);
       },
       (error) => {
-        console.error('Error fetching architect profile:', error);
+        console.error('Error fetching invoices for tasks:', error);
       }
     );
   }
-
   fetchTasks(): void {
     this.taskService.getAssignedTasks().subscribe(
       (tasks: any[]) => {
@@ -136,29 +191,8 @@ export class ArchitectDashboardComponent implements OnInit {
   }
 
 
-  fetchInvoices(): void {
-      this.invoiceService.getMyInvoices(this.architect.id).subscribe(
-        (invoices: any[]) => {
-          console.log("invoices =>", invoices);
 
-          this.invoices = invoices.map(invoice => ({
-            id: invoice.id,
-            project: {
-              id: invoice.project.id,
-              name: invoice.project.name,
-              client: invoice.project.client
-            },
-            date: new Date(invoice.date),
-            amount: invoice.amount,
-            status: invoice.status
-          }));
-        },
-        (error) => {
-          console.error('Error fetching invoices:', error);
-        }
-      );
 
-  }
 
   updateProfile(): void {
     if (this.profileForm.valid) {

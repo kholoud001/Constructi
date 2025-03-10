@@ -1,5 +1,5 @@
 export interface User {
-  id?: number;
+  id: number;
   fname: string;
   lname: string;
   cell: string;
@@ -8,5 +8,6 @@ export interface User {
   contratType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACTOR' | 'FREELANCE';
   roleId: number;
   active: boolean;
+  taskIds?: number[];
 
 }

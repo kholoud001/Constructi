@@ -87,7 +87,7 @@ public class TaskController {
     }
 
     @GetMapping("/invoice/{taskId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT', 'ROLE_WORKER')")
     public ResponseEntity<TaskResponseDTO> getTaskWithInvoices(@PathVariable Long taskId) {
         TaskResponseDTO taskResponseDTO = taskService.getTaskWithInvoices(taskId);
         return ResponseEntity.ok(taskResponseDTO);
