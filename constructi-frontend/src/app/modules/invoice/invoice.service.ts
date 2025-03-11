@@ -37,6 +37,16 @@ export class InvoiceService {
   getUserInvoices(userId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/user/${userId}`);
   }
+  /**
+   * Download an invoice by ID
+   */
+  downloadInvoice1(invoiceId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/download/${invoiceId}`, { responseType: 'blob' });
+  }
+  downloadInvoice(invoiceId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${invoiceId}`, { responseType: 'json' });
+  }
+
 
 
 }

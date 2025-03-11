@@ -85,7 +85,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     if (role === 'WORKER' || role === 'ARCHITECT') {
       this.navItems.push(
         { name: 'Mes Projets', href: '/projects/my-projects', current: false },
-        { name: 'Mes Tâches', href: '/tasks', current: false },
+        // { name: 'Mes Tâches', href: '/tasks', current: false },
       );
     }
 

@@ -1,6 +1,7 @@
 package com.constructi.service.impl;
 
 import com.constructi.DTO.InvoiceResponseDTO;
+import com.constructi.exception.ResourceNotFoundException;
 import com.constructi.mapper.InvoiceMapper;
 import com.constructi.model.entity.*;
 import com.constructi.model.enums.InvoiceState;
@@ -8,6 +9,7 @@ import com.constructi.repository.*;
 import com.constructi.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -182,6 +184,14 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public InvoiceResponseDTO getInvoiceById(Long invoiceId) {
+        Invoice invoice = invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice not found with ID: " + invoiceId));
+
+        return InvoiceMapper.INSTANCE.toDto(invoice);
+    }
 
 
 }
