@@ -1,0 +1,23 @@
+/* Add any custom styles here */
+.custom-swal-popup {
+  max-width: 42rem;
+}
+
+.custom-swal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.custom-swal-html {
+  overflow: hidden;
+}
+
+.custom-swal-confirm-button {
+  background-color: #4f46e5;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.custom-swal-confirm-button:hover {
+  background-color: #4338ca;
+}
