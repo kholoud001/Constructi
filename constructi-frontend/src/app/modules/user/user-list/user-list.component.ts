@@ -17,7 +17,7 @@ import {
 
 interface User {
   active: boolean;
-  id?: number;
+  id: number;
   fname: string;
   lname: string;
   cell: string;

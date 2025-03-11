@@ -65,147 +65,6 @@ export class ArchitectDashboardComponent implements OnInit {
   faTimes = faTimes;
 
 
-  renderIcon(iconDefinition: any, classes: string = ''): string {
-    return icon(iconDefinition, { classes }).html[0];
-  }
-
-  viewTaskInvoices(taskId: number): void {
-    this.taskService.getTaskWithInvoices(taskId).subscribe(
-      (taskWithInvoices: any) => {
-        console.log('Task Invoices:', taskWithInvoices);
-
-        // Helper function to get status badge styling
-        const getStatusBadge = (status: string) => {
-          const statusMap: Record<string, { color: string, icon: any }> = {
-            'FINISHED': { color: 'bg-green-100 text-green-800', icon: faCheckCircle },
-            'IN_PROGRESS': { color: 'bg-yellow-100 text-yellow-800', icon: faClock },
-            'NOT_STARTED': { color: 'bg-red-100 text-red-800', icon: faExclamationCircle },
-            'default': { color: 'bg-gray-100 text-gray-800', icon: faFileAlt }
-          };
-
-          const statusStyle = statusMap[status] || statusMap['default'];
-          return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusStyle.color}">
-                    ${this.renderIcon(statusStyle.icon, 'mr-1')}
-                    ${status}
-                  </span>`;
-        };
-
-        // Helper function for invoice state badge
-        const getInvoiceStateBadge = (state: string) => {
-          const stateMap: Record<string, { color: string, icon: any }> = {
-            'PAID': { color: 'bg-green-100 text-green-800', icon: faCheckCircle },
-            'PENDING': { color: 'bg-yellow-100 text-yellow-800', icon: faClock },
-            'OVERDUE': { color: 'bg-red-100 text-red-800', icon: faExclamationCircle },
-            'default': { color: 'bg-gray-100 text-gray-800', icon: faFileInvoice }
-          };
-
-          const stateStyle = stateMap[state] || stateMap['default'];
-          return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${stateStyle.color}">
-                    ${this.renderIcon(stateStyle.icon, 'mr-1')}
-                    ${state}
-                  </span>`;
-        };
-
-        const invoicesHtml = taskWithInvoices.invoices.map((invoice: any) => `
-          <div class="invoice-item bg-white rounded-lg shadow-sm p-4 mb-3 border border-gray-200 hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start">
-              <div>
-                <div class="flex items-center mb-2">
-                  ${this.renderIcon(faFileInvoice, 'text-indigo-500 mr-2')}
-                  <span class="font-medium">Inv-${invoice.id || 'N/A'}</span>
-                </div>
-                <div class="flex items-center text-gray-600 mb-1">
-                  ${this.renderIcon(faDollarSign, 'text-gray-500 mr-1')}
-                  <span class="font-semibold text-gray-800">${invoice.amount}</span>
-                </div>
-                <div class="flex items-center text-gray-600 mb-1">
-                  ${this.renderIcon(faCalendar, 'text-gray-500 mr-1')}
-                  <span>${invoice.emissionDate}</span>
-                </div>
-              </div>
-              <div>
-                ${getInvoiceStateBadge(invoice.state)}
-              </div>
-            </div>
-          </div>
-        `).join('');
-
-        Swal.fire({
-          title: `<div class="flex items-center">${this.renderIcon(faReceipt, 'text-indigo-500 mr-2')}<strong>Task Invoices</strong></div>`,
-          icon: 'info',
-          html: `
-          <div class="task-info bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <p class="flex items-center text-gray-700 mb-2">
-                  ${this.renderIcon(faFileAlt, 'text-gray-600 mr-2')}
-                  <span class="text-sm font-medium">Description:</span>
-                </p>
-                <p class="ml-6 text-gray-800">${taskWithInvoices.description}</p>
-              </div>
-              <div>
-                <p class="flex items-center text-gray-700 mb-2">
-                  ${this.renderIcon(faExclamationCircle, 'text-gray-600 mr-2')}
-                  <span class="text-sm font-medium">Status:</span>
-                </p>
-                <div class="ml-6">${getStatusBadge(taskWithInvoices.status)}</div>
-              </div>
-              <div>
-                <p class="flex items-center text-gray-700 mb-2">
-                  ${this.renderIcon(faCreditCard, 'text-gray-600 mr-2')}
-                  <span class="text-sm font-medium">Budget Limit:</span>
-                </p>
-                <p class="ml-6 font-semibold text-gray-800">$${taskWithInvoices.budgetLimit}</p>
-              </div>
-              <div>
-                <p class="flex items-center text-gray-700 mb-2">
-                  ${this.renderIcon(faDollarSign, 'text-gray-600 mr-2')}
-                  <span class="text-sm font-medium">Total Paid:</span>
-                </p>
-                <p class="ml-6 font-semibold ${parseFloat(taskWithInvoices.totalPaid) > parseFloat(taskWithInvoices.budgetLimit) ? 'text-red-600' : 'text-green-600'}">
-                  $${taskWithInvoices.totalPaid}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="invoices-list">
-            <div class="flex items-center mb-3">
-              ${this.renderIcon(faFileInvoice, 'text-indigo-500 mr-2')}
-              <h4 class="text-lg font-medium">Invoices</h4>
-            </div>
-            <div class="max-h-60 overflow-y-auto pr-1">
-              ${invoicesHtml || '<p class="text-gray-500 text-center py-4">No invoices found</p>'}
-            </div>
-          </div>
-          `,
-          showCloseButton: true,
-          showCancelButton: false,
-          focusConfirm: false,
-          confirmButtonText: `${this.renderIcon(faTimes, 'mr-1')} Close`,
-          confirmButtonAriaLabel: 'Close',
-          customClass: {
-            popup: 'custom-swal-popup max-w-2xl',
-            title: 'custom-swal-title text-lg font-semibold text-gray-800',
-            htmlContainer: 'custom-swal-html overflow-hidden',
-            confirmButton: 'custom-swal-confirm-button bg-indigo-600 hover:bg-indigo-700'
-          }
-        });
-      },
-      (error) => {
-        console.error('Error fetching task invoices:', error);
-        Swal.fire({
-          icon: 'error',
-          title: `<div class="flex items-center">${this.renderIcon(faExclamationCircle, 'text-red-500 mr-2')}<strong>Error</strong></div>`,
-          text: 'Failed to fetch task invoices. Please try again.',
-          customClass: {
-            popup: 'border border-red-100',
-            title: 'text-red-700',
-            confirmButton: 'bg-red-600 hover:bg-red-700'
-          }
-        });
-      }
-    );
-  }
 
   architect: User = {
     id: 0,
@@ -403,5 +262,146 @@ export class ArchitectDashboardComponent implements OnInit {
   }
 
 
+  renderIcon(iconDefinition: any, classes: string = ''): string {
+    return icon(iconDefinition, { classes }).html[0];
+  }
+
+  viewTaskInvoices(taskId: number): void {
+    this.taskService.getTaskWithInvoices(taskId).subscribe(
+      (taskWithInvoices: any) => {
+        console.log('Task Invoices:', taskWithInvoices);
+
+        // Helper function to get status badge styling
+        const getStatusBadge = (status: string) => {
+          const statusMap: Record<string, { color: string, icon: any }> = {
+            'FINISHED': { color: 'bg-green-100 text-green-800', icon: faCheckCircle },
+            'IN_PROGRESS': { color: 'bg-yellow-100 text-yellow-800', icon: faClock },
+            'NOT_STARTED': { color: 'bg-red-100 text-red-800', icon: faExclamationCircle },
+            'default': { color: 'bg-gray-100 text-gray-800', icon: faFileAlt }
+          };
+
+          const statusStyle = statusMap[status] || statusMap['default'];
+          return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusStyle.color}">
+                    ${this.renderIcon(statusStyle.icon, 'mr-1')}
+                    ${status}
+                  </span>`;
+        };
+
+        // Helper function for invoice state badge
+        const getInvoiceStateBadge = (state: string) => {
+          const stateMap: Record<string, { color: string, icon: any }> = {
+            'PAID': { color: 'bg-green-100 text-green-800', icon: faCheckCircle },
+            'PENDING': { color: 'bg-yellow-100 text-yellow-800', icon: faClock },
+            'OVERDUE': { color: 'bg-red-100 text-red-800', icon: faExclamationCircle },
+            'default': { color: 'bg-gray-100 text-gray-800', icon: faFileInvoice }
+          };
+
+          const stateStyle = stateMap[state] || stateMap['default'];
+          return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${stateStyle.color}">
+                    ${this.renderIcon(stateStyle.icon, 'mr-1')}
+                    ${state}
+                  </span>`;
+        };
+
+        const invoicesHtml = taskWithInvoices.invoices.map((invoice: any) => `
+          <div class="invoice-item bg-white rounded-lg shadow-sm p-4 mb-3 border border-gray-200 hover:shadow-md transition-shadow">
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="flex items-center mb-2">
+                  ${this.renderIcon(faFileInvoice, 'text-indigo-500 mr-2')}
+                  <span class="font-medium">Inv-${invoice.id || 'N/A'}</span>
+                </div>
+                <div class="flex items-center text-gray-600 mb-1">
+                  ${this.renderIcon(faDollarSign, 'text-gray-500 mr-1')}
+                  <span class="font-semibold text-gray-800">${invoice.amount}</span>
+                </div>
+                <div class="flex items-center text-gray-600 mb-1">
+                  ${this.renderIcon(faCalendar, 'text-gray-500 mr-1')}
+                  <span>${invoice.emissionDate}</span>
+                </div>
+              </div>
+              <div>
+                ${getInvoiceStateBadge(invoice.state)}
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        Swal.fire({
+          title: `<div class="flex items-center">${this.renderIcon(faReceipt, 'text-indigo-500 mr-2')}<strong>Task Invoices</strong></div>`,
+          icon: 'info',
+          html: `
+          <div class="task-info bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <p class="flex items-center text-gray-700 mb-2">
+                  ${this.renderIcon(faFileAlt, 'text-gray-600 mr-2')}
+                  <span class="text-sm font-medium">Description:</span>
+                </p>
+                <p class="ml-6 text-gray-800">${taskWithInvoices.description}</p>
+              </div>
+              <div>
+                <p class="flex items-center text-gray-700 mb-2">
+                  ${this.renderIcon(faExclamationCircle, 'text-gray-600 mr-2')}
+                  <span class="text-sm font-medium">Status:</span>
+                </p>
+                <div class="ml-6">${getStatusBadge(taskWithInvoices.status)}</div>
+              </div>
+              <div>
+                <p class="flex items-center text-gray-700 mb-2">
+                  ${this.renderIcon(faCreditCard, 'text-gray-600 mr-2')}
+                  <span class="text-sm font-medium">Budget Limit:</span>
+                </p>
+                <p class="ml-6 font-semibold text-gray-800">$${taskWithInvoices.budgetLimit}</p>
+              </div>
+              <div>
+                <p class="flex items-center text-gray-700 mb-2">
+                  ${this.renderIcon(faDollarSign, 'text-gray-600 mr-2')}
+                  <span class="text-sm font-medium">Total Paid:</span>
+                </p>
+                <p class="ml-6 font-semibold ${parseFloat(taskWithInvoices.totalPaid) > parseFloat(taskWithInvoices.budgetLimit) ? 'text-red-600' : 'text-green-600'}">
+                  $${taskWithInvoices.totalPaid}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="invoices-list">
+            <div class="flex items-center mb-3">
+              ${this.renderIcon(faFileInvoice, 'text-indigo-500 mr-2')}
+              <h4 class="text-lg font-medium">Invoices</h4>
+            </div>
+            <div class="max-h-60 overflow-y-auto pr-1">
+              ${invoicesHtml || '<p class="text-gray-500 text-center py-4">No invoices found</p>'}
+            </div>
+          </div>
+          `,
+          showCloseButton: true,
+          showCancelButton: false,
+          focusConfirm: false,
+          confirmButtonText: `${this.renderIcon(faTimes, 'mr-1')} Close`,
+          confirmButtonAriaLabel: 'Close',
+          customClass: {
+            popup: 'custom-swal-popup max-w-2xl',
+            title: 'custom-swal-title text-lg font-semibold text-gray-800',
+            htmlContainer: 'custom-swal-html overflow-hidden',
+            confirmButton: 'custom-swal-confirm-button bg-indigo-600 hover:bg-indigo-700'
+          }
+        });
+      },
+      (error) => {
+        console.error('Error fetching task invoices:', error);
+        Swal.fire({
+          icon: 'error',
+          title: `<div class="flex items-center">${this.renderIcon(faExclamationCircle, 'text-red-500 mr-2')}<strong>Error</strong></div>`,
+          text: 'Failed to fetch task invoices. Please try again.',
+          customClass: {
+            popup: 'border border-red-100',
+            title: 'text-red-700',
+            confirmButton: 'bg-red-600 hover:bg-red-700'
+          }
+        });
+      }
+    );
+  }
 
 }
