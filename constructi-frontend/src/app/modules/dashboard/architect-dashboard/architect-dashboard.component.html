@@ -147,7 +147,6 @@
         </div>
       </div>
       <!-- Invoices Tab -->
-      <!-- Invoices Tab -->
       <div *ngSwitchCase="'invoices'" class="bg-white rounded-lg shadow">
         <div class="p-4 border-b border-gray-200">
           <h2 class="text-lg font-semibold">My Invoices</h2>
@@ -192,7 +191,7 @@
               </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <button class="text-blue-600 hover:text-blue-900">Download</button>
+                  <button class="text-blue-600 hover:text-blue-900" (click)="downloadInvoice(invoice.id)">Download</button>
                 </td>
               </tr>
               <tr *ngIf="invoices.length === 0">
@@ -203,7 +202,6 @@
           </div>
         </div>
       </div>
-      <!-- Profile Tab -->
       <!-- Profile Tab -->
       <div *ngSwitchCase="'profile'" class="bg-white rounded-lg shadow">
         <div class="p-4 border-b border-gray-200">

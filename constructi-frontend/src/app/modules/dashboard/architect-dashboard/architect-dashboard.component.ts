@@ -1,14 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import {User} from '../../user/user.model';
-import {InvoiceService} from '../../invoice/invoice.service';
-import {TaskService} from '../../task/task.service';
-import {UserService} from '../../user/user.service';
-import {ProjectService} from '../../project/project.service';
-import {forkJoin} from 'rxjs';
+import { User } from '../../user/user.model';
+import { TaskService } from '../../task/task.service';
+import { UserService } from '../../user/user.service';
+import { ProjectService } from '../../project/project.service';
+import { forkJoin } from 'rxjs';
 import Swal from 'sweetalert2';
+import {
+  faFileInvoice, faReceipt, faCreditCard, faExclamationCircle,
+  faCheckCircle, faClock, faDollarSign, faFileAlt, faCalendar, faTimes
+} from '@fortawesome/free-solid-svg-icons';
+import {icon} from '@fortawesome/fontawesome-svg-core';
+import {InvoiceService} from '../../invoice/invoice.service';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { TDocumentDefinitions } from 'pdfmake/interfaces';
+
+pdfMake.vfs = pdfFonts.vfs;
+
 
 interface Task {
   id: number;
@@ -50,6 +59,19 @@ export class ArchitectDashboardComponent implements OnInit {
   activeTab: 'tasks' | 'invoices' | 'profile' = 'tasks';
   profileForm!: FormGroup;
 
+  faFileInvoice = faFileInvoice;
+  faReceipt = faReceipt;
+  faCreditCard = faCreditCard;
+  faExclamationCircle = faExclamationCircle;
+  faCheckCircle = faCheckCircle;
+  faClock = faClock;
+  faDollarSign = faDollarSign;
+  faFileAlt = faFileAlt;
+  faCalendar = faCalendar;
+  faTimes = faTimes;
+
+
+
   architect: User = {
     id: 0,
     fname: '',
@@ -70,7 +92,8 @@ export class ArchitectDashboardComponent implements OnInit {
     private fb: FormBuilder,
     private taskService: TaskService,
     private userService: UserService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private invoiceService: InvoiceService
   ) {}
 
 
@@ -117,7 +140,7 @@ export class ArchitectDashboardComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.userService.getCurrentUserProfile().subscribe(
         (user: User) => {
-          console.log("profile ",user)
+          // console.log("profile ",user)
           this.architect = user;
           this.initProfileForm();
           resolve();
@@ -135,7 +158,6 @@ export class ArchitectDashboardComponent implements OnInit {
       console.log('No tasks assigned to the architect. Skipping invoice fetch.');
       return;
     }
-
     // Fetch invoices for each task assigned to the architect
     const invoiceObservables = this.architect.taskIds.map(taskId =>
       this.taskService.getTaskWithInvoices(taskId)
@@ -144,24 +166,23 @@ export class ArchitectDashboardComponent implements OnInit {
     // Combine all invoice observables into a single observable
     forkJoin(invoiceObservables).subscribe(
       (taskInvoicesArray: any[]) => {
-        console.log('Task Invoices Array:', taskInvoicesArray);
-
+        // console.log('Task Invoices Array:', taskInvoicesArray);
         // Flatten the array of task objects into a single array of invoices
         this.invoices = taskInvoicesArray.flatMap((taskWithInvoices: any) => {
           if (Array.isArray(taskWithInvoices.invoices)) {
             return taskWithInvoices.invoices.map((invoice: any) => ({
               id: invoice.id,
               amount: invoice.amount,
-              emissionDate: new Date(invoice.emissionDate), // Convert to Date
+              emissionDate: new Date(invoice.emissionDate),
               justificationPath: invoice.justificationPath,
               materialId: invoice.materialId,
               projectId: invoice.projectId,
               state: invoice.state,
-              taskId: taskWithInvoices.id, // Set taskId to the parent task's id
+              taskId: taskWithInvoices.id,
               userId: invoice.userId,
               task: {
-                id: taskWithInvoices.id, // Use the parent task's id
-                title: taskWithInvoices.description || 'No Title' // Use the task's description as the title
+                id: taskWithInvoices.id,
+                title: taskWithInvoices.description || 'No Title'
               }
             }));
           } else {
@@ -170,7 +191,7 @@ export class ArchitectDashboardComponent implements OnInit {
           }
         });
 
-        console.log("Invoices fetched for tasks:", this.invoices);
+        // console.log("Invoices fetched for tasks:", this.invoices);
       },
       (error) => {
         console.error('Error fetching invoices for tasks:', error);
@@ -182,7 +203,6 @@ export class ArchitectDashboardComponent implements OnInit {
   fetchTasks(): void {
     this.taskService.getAssignedTasks().subscribe(
       (tasks: any[]) => {
-        // console.log("tasks =>", tasks);
         this.tasks = tasks.map(task => ({
           id: task.id,
           title: task.description,
@@ -217,7 +237,7 @@ export class ArchitectDashboardComponent implements OnInit {
         fname: this.profileForm.value.fname,
         lname: this.profileForm.value.lname,
         cell: this.profileForm.value.cell,
-        password: this.profileForm.value.password // Include password
+        password: this.profileForm.value.password
       };
 
       if (this.architect.id != null) {
@@ -225,19 +245,17 @@ export class ArchitectDashboardComponent implements OnInit {
           (user: User) => {
             this.architect = user;
             this.profileForm.patchValue({
-              password: '' // Clear the password field after successful update
+              password: ''
             });
-            // Show success message using SweetAlert2
             Swal.fire({
               icon: 'success',
               title: 'Profile Updated!',
               text: 'Your profile has been updated successfully.',
-              confirmButtonColor: '#3b82f6', // Blue color
+              confirmButtonColor: '#3b82f6',
             });
           },
           (error) => {
             console.error('Error updating profile:', error);
-            // Show error message using SweetAlert2
             Swal.fire({
               icon: 'error',
               title: 'Update Failed',
@@ -251,15 +269,272 @@ export class ArchitectDashboardComponent implements OnInit {
   }
 
 
+  renderIcon(iconDefinition: any, classes: string = ''): string {
+    return icon(iconDefinition, { classes }).html[0];
+  }
+
   viewTaskInvoices(taskId: number): void {
     this.taskService.getTaskWithInvoices(taskId).subscribe(
       (taskWithInvoices: any) => {
-        // console.log('Task Invoices:', taskWithInvoices);
-        // You can implement further logic to display the invoices
+        console.log('Task Invoices:', taskWithInvoices);
+
+        // Helper function to get status badge styling
+        const getStatusBadge = (status: string) => {
+          const statusMap: Record<string, { color: string, icon: any }> = {
+            'FINISHED': { color: 'bg-green-100 text-green-800', icon: faCheckCircle },
+            'IN_PROGRESS': { color: 'bg-yellow-100 text-yellow-800', icon: faClock },
+            'NOT_STARTED': { color: 'bg-red-100 text-red-800', icon: faExclamationCircle },
+            'default': { color: 'bg-gray-100 text-gray-800', icon: faFileAlt }
+          };
+
+          const statusStyle = statusMap[status] || statusMap['default'];
+          return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusStyle.color}">
+                    ${this.renderIcon(statusStyle.icon, 'mr-1')}
+                    ${status}
+                  </span>`;
+        };
+
+        // Helper function for invoice state badge
+        const getInvoiceStateBadge = (state: string) => {
+          const stateMap: Record<string, { color: string, icon: any }> = {
+            'PAID': { color: 'bg-green-100 text-green-800', icon: faCheckCircle },
+            'PENDING': { color: 'bg-yellow-100 text-yellow-800', icon: faClock },
+            'OVERDUE': { color: 'bg-red-100 text-red-800', icon: faExclamationCircle },
+            'default': { color: 'bg-gray-100 text-gray-800', icon: faFileInvoice }
+          };
+
+          const stateStyle = stateMap[state] || stateMap['default'];
+          return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${stateStyle.color}">
+                    ${this.renderIcon(stateStyle.icon, 'mr-1')}
+                    ${state}
+                  </span>`;
+        };
+
+        const invoicesHtml = taskWithInvoices.invoices.map((invoice: any) => `
+          <div class="invoice-item bg-white rounded-lg shadow-sm p-4 mb-3 border border-gray-200 hover:shadow-md transition-shadow">
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="flex items-center mb-2">
+                  ${this.renderIcon(faFileInvoice, 'text-indigo-500 mr-2')}
+                  <span class="font-medium">Inv-${invoice.id || 'N/A'}</span>
+                </div>
+                <div class="flex items-center text-gray-600 mb-1">
+                  ${this.renderIcon(faDollarSign, 'text-gray-500 mr-1')}
+                  <span class="font-semibold text-gray-800">${invoice.amount}</span>
+                </div>
+                <div class="flex items-center text-gray-600 mb-1">
+                  ${this.renderIcon(faCalendar, 'text-gray-500 mr-1')}
+                  <span>${invoice.emissionDate}</span>
+                </div>
+              </div>
+              <div>
+                ${getInvoiceStateBadge(invoice.state)}
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        Swal.fire({
+          title: `<div class="flex items-center">${this.renderIcon(faReceipt, 'text-indigo-500 mr-2')}<strong>Task Invoices</strong></div>`,
+          icon: 'info',
+          html: `
+          <div class="task-info bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <p class="flex items-center text-gray-700 mb-2">
+                  ${this.renderIcon(faFileAlt, 'text-gray-600 mr-2')}
+                  <span class="text-sm font-medium">Description:</span>
+                </p>
+                <p class="ml-6 text-gray-800">${taskWithInvoices.description}</p>
+              </div>
+              <div>
+                <p class="flex items-center text-gray-700 mb-2">
+                  ${this.renderIcon(faExclamationCircle, 'text-gray-600 mr-2')}
+                  <span class="text-sm font-medium">Status:</span>
+                </p>
+                <div class="ml-6">${getStatusBadge(taskWithInvoices.status)}</div>
+              </div>
+              <div>
+                <p class="flex items-center text-gray-700 mb-2">
+                  ${this.renderIcon(faCreditCard, 'text-gray-600 mr-2')}
+                  <span class="text-sm font-medium">Budget Limit:</span>
+                </p>
+                <p class="ml-6 font-semibold text-gray-800">$${taskWithInvoices.budgetLimit}</p>
+              </div>
+              <div>
+                <p class="flex items-center text-gray-700 mb-2">
+                  ${this.renderIcon(faDollarSign, 'text-gray-600 mr-2')}
+                  <span class="text-sm font-medium">Total Paid:</span>
+                </p>
+                <p class="ml-6 font-semibold ${parseFloat(taskWithInvoices.totalPaid) > parseFloat(taskWithInvoices.budgetLimit) ? 'text-red-600' : 'text-green-600'}">
+                  $${taskWithInvoices.totalPaid}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="invoices-list">
+            <div class="flex items-center mb-3">
+              ${this.renderIcon(faFileInvoice, 'text-indigo-500 mr-2')}
+              <h4 class="text-lg font-medium">Invoices</h4>
+            </div>
+            <div class="max-h-60 overflow-y-auto pr-1">
+              ${invoicesHtml || '<p class="text-gray-500 text-center py-4">No invoices found</p>'}
+            </div>
+          </div>
+          `,
+          showCloseButton: true,
+          showCancelButton: false,
+          focusConfirm: false,
+          confirmButtonText: `${this.renderIcon(faTimes, 'mr-1')} Close`,
+          confirmButtonAriaLabel: 'Close',
+          customClass: {
+            popup: 'custom-swal-popup max-w-2xl',
+            title: 'custom-swal-title text-lg font-semibold text-gray-800',
+            htmlContainer: 'custom-swal-html overflow-hidden',
+            confirmButton: 'custom-swal-confirm-button bg-indigo-600 hover:bg-indigo-700'
+          }
+        });
       },
       (error) => {
         console.error('Error fetching task invoices:', error);
+        Swal.fire({
+          icon: 'error',
+          title: `<div class="flex items-center">${this.renderIcon(faExclamationCircle, 'text-red-500 mr-2')}<strong>Error</strong></div>`,
+          text: 'Failed to fetch task invoices. Please try again.',
+          customClass: {
+            popup: 'border border-red-100',
+            title: 'text-red-700',
+            confirmButton: 'bg-red-600 hover:bg-red-700'
+          }
+        });
       }
     );
   }
+
+
+
+  downloadInvoice(invoiceId: number): void {
+    this.invoiceService.downloadInvoice(invoiceId).subscribe(
+      (invoice: any) => {
+        console.log('Invoice Data:', invoice);
+        this.generatePdf(invoice);
+      },
+      (error) => {
+        console.error('Error downloading invoice:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to fetch invoice. Please try again.',
+        });
+      }
+    );
+  }
+
+  async generatePdf(invoice: any): Promise<void> {
+
+    try {
+
+      const docDefinition: TDocumentDefinitions = {
+        content: [
+          {
+            columns: [
+              {
+                text: 'INVOICE',
+                alignment: 'right',
+                style: 'header'
+              }
+            ]
+          },
+          { canvas: [ { type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 2 } ] },
+          { text: '\n' },
+          {
+            columns: [
+              {
+                width: 'auto',
+                stack: [
+                  { text: 'Invoice Details', style: 'subheader' },
+                  {
+                    columns: [
+                      { width: 'auto', text: `Invoice ID: ${invoice.id || 'N/A'}`, margin: [5, 2, 0, 0] }
+                    ]
+                  },
+                  {
+                    columns: [
+                      { width: 'auto', text: `Emission Date: ${invoice.emissionDate || 'N/A'}`, margin: [5, 2, 0, 0] }
+                    ]
+                  },
+                  {
+                    columns: [
+                      { width: 'auto', text: `User ID: ${invoice.userId || 'N/A'}`, margin: [5, 2, 0, 0] }
+                    ]
+                  },
+                  {
+                    columns: [
+                      // { width: 20, image: icons.task, fit: [20, 20] },
+                      { width: 'auto', text: `Task ID: ${invoice.taskId || 'N/A'}`, margin: [5, 2, 0, 0] }
+                    ]
+                  },
+                ]
+              },
+              {
+                width: '*',
+                stack: [
+                  { text: 'Amount', style: 'subheader', alignment: 'right' },
+                  { text: `$${invoice.amount || 'N/A'}`, style: 'amount', alignment: 'right' },
+                  { text: `Status: ${invoice.state || 'N/A'}`, style: 'status', alignment: 'right' },
+                ]
+              }
+            ]
+          },
+        ],
+        footer: {
+          columns: [
+            { text: 'Thank you for your business!', alignment: 'center', style: 'footer' }
+          ]
+        },
+        styles: {
+          header: {
+            fontSize: 28,
+            bold: true,
+            color: '#2c3e50'
+          },
+          subheader: {
+            fontSize: 16,
+            bold: true,
+            margin: [0, 10, 0, 5] as [number, number, number, number],
+            color: '#34495e'
+          },
+          amount: {
+            fontSize: 20,
+            bold: true,
+            color: '#16a085'
+          },
+          status: {
+            fontSize: 14,
+            italics: true,
+            color: '#7f8c8d'
+          },
+          footer: {
+            fontSize: 10,
+            color: '#7f8c8d',
+            margin: [0, 10, 0, 0] as [number, number, number, number],
+          }
+        },
+        defaultStyle: {
+          fontSize: 12,
+          color: '#333'
+        }
+      };
+
+      pdfMake.createPdf(docDefinition).download(`invoice_${invoice.id}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to generate PDF. Please try again.',
+      });
+    }
+  }
+
 }
