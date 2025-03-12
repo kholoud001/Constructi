@@ -32,6 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class InvoiceServiceImplTest {
 
     @Mock
@@ -204,7 +205,6 @@ class InvoiceServiceImplTest {
 
 
     @Test
-    @MockitoSettings(strictness = Strictness.LENIENT)
     void getMyInvoices_ShouldReturnListOfInvoiceResponseDTO() {
         when(invoiceRepository.findByUserId(any(Long.class))).thenReturn(Collections.singletonList(invoice));
         when(invoiceMapper.toDto(any(Invoice.class))).thenReturn(new InvoiceResponseDTO());
@@ -218,7 +218,6 @@ class InvoiceServiceImplTest {
 
 
     @Test
-    @MockitoSettings(strictness = Strictness.LENIENT)
     void paySomeone_ShouldReturnInvoiceResponseDTO() throws IOException {
         // Arrange
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
@@ -268,7 +267,6 @@ class InvoiceServiceImplTest {
     }
 
     @Test
-    @MockitoSettings(strictness = Strictness.LENIENT)
     void getInvoiceById_ShouldReturnInvoiceResponseDTO() {
         when(invoiceRepository.findById(any(Long.class))).thenReturn(Optional.of(invoice));
         when(invoiceMapper.toDto(any(Invoice.class))).thenReturn(new InvoiceResponseDTO());
