@@ -4,12 +4,10 @@ import com.constructi.DTO.TaskRequestDTO;
 import com.constructi.DTO.TaskResponseDTO;
 import com.constructi.exception.TaskNotFoundException;
 import com.constructi.mapper.TaskMapper;
-import com.constructi.model.entity.Project;
-import com.constructi.model.entity.Role;
-import com.constructi.model.entity.Task;
-import com.constructi.model.entity.User;
+import com.constructi.model.entity.*;
 import com.constructi.model.enums.RoleType;
 import com.constructi.repository.ProjectRepository;
+import com.constructi.repository.SubtaskRepository;
 import com.constructi.repository.TaskRepository;
 import com.constructi.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,9 +41,6 @@ class TaskServiceImplTest {
     @Mock
     private TaskMapper taskMapper;
 
-    @InjectMocks
-    private TaskServiceImpl taskService;
-
     @Mock
     private Authentication authentication;
 
@@ -59,11 +54,20 @@ class TaskServiceImplTest {
     private Task task;
 
     @Mock
+    private Subtask subtask;
+
+    @Mock
     private TaskRequestDTO taskRequestDTO;
 
     @Mock
     private TaskResponseDTO taskResponseDTO;
 
+    @Mock
+    private SubtaskRepository subtaskRepository;
+
+
+    @InjectMocks
+    private TaskServiceImpl taskService;
 
 
     @BeforeEach
@@ -74,6 +78,8 @@ class TaskServiceImplTest {
 //        task = new Task();
 //        user = new User();
 //        project = new Project();
+         subtask = new Subtask();
+
 
 
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -155,6 +161,7 @@ class TaskServiceImplTest {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
         when(taskRepository.findByUserId(anyLong())).thenReturn(List.of(task));
         when(taskMapper.toTaskResponseDTO(any(Task.class))).thenReturn(taskResponseDTO);
+        when(subtaskRepository.findByParentTaskId(anyLong())).thenReturn(List.of(subtask));
 
         List<TaskResponseDTO> tasks = taskService.getMyTasks();
 
@@ -170,7 +177,7 @@ class TaskServiceImplTest {
 //        architectRole.setRoleType(RoleType.ARCHITECT);
 //        architectRole.setUsers(new ArrayList<>());
         Role architectRole = mock(Role.class);
-        when(architectRole.getRoleType()).thenReturn(RoleType.ARCHITECT);
+        when(architectRole.getRoleType()).thenReturn(RoleType.ADMIN);
         architect.setRole(architectRole);
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(architect));
         when(taskRepository.findById(anyLong())).thenReturn(Optional.of(task));
@@ -185,7 +192,7 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void assignTaskToWorker_ShouldThrowException_WhenNotArchitect() {
+    void assignTaskToWorker_ShouldThrowException_WhenNotAdmin() {
         // Mock behavior
         User nonArchitect = new User();
         nonArchitect.setRole(new Role());
