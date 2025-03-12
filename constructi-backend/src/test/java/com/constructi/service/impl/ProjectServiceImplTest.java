@@ -9,6 +9,7 @@ import com.constructi.mapper.ProjectMapper;
 import com.constructi.mapper.TaskMapper;
 import com.constructi.mapper.UserMapper;
 import com.constructi.model.entity.Project;
+import com.constructi.model.entity.Task;
 import com.constructi.model.entity.User;
 import com.constructi.model.enums.ProjectState;
 import com.constructi.repository.ProjectRepository;
@@ -198,19 +199,33 @@ class ProjectServiceImplTest {
 
     @Test
     void getProjectByIdForAssignedUser_ShouldReturnProjectResponseDTO_WhenProjectAndUserExist() {
+        // Mock the authenticated user and the project
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
         when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
+
+        // Mock the response DTO from project mapper
         when(projectMapper.toDto(any(Project.class))).thenReturn(responseDTO);
 
-        List<TaskResponseDTO> taskList = List.of(new TaskResponseDTO());
-        when(taskMapper.toTaskResponseDTO(any())).thenReturn(new TaskResponseDTO());
+        // Create a mock task and assign a user to it
+        Task task = new Task();
+        task.setUser(user); // Assign the user to the task
 
+        TaskResponseDTO taskResponseDTO = new TaskResponseDTO(); // Create a mock task response
+        List<TaskResponseDTO> taskList = List.of(taskResponseDTO); // Add the mock task to a list
+        when(taskMapper.toTaskResponseDTO(any())).thenReturn(taskResponseDTO); // Mock task mapper
+
+        // Set up project tasks
+        project.setTasks(List.of(task)); // Make sure project has tasks
+
+        // Call the method to be tested
         ProjectResponseDTO result = projectService.getProjectByIdForAssignedUser(1L);
 
+        // Assertions
         assertNotNull(result);
         assertEquals("Test Project", result.getName());
-        assertFalse(result.getTasks().isEmpty());
+        assertFalse(result.getTasks().isEmpty(), "Tasks should not be empty");
     }
+
 
     @Test
     void getProjectByIdForAssignedUser_ShouldThrowException_WhenUserNotFound() {
