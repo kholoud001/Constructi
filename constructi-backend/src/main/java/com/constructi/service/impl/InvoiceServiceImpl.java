@@ -158,9 +158,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         invoice = invoiceRepository.save(invoice);
 
-        return InvoiceMapper.INSTANCE.toDto(invoice);
-//        return invoiceMapper.toDto(invoiceRepository.save(invoice));
-
+//        return InvoiceMapper.INSTANCE.toDto(invoice);
+        return invoiceMapper.toDto(invoice);
     }
 
     @Override
