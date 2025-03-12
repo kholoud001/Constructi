@@ -156,31 +156,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
-//    @Override
-//    public void trackProgress(Long id) {
-//        // Here you can implement logic to track project progress
-//        // You can calculate how many tasks are completed, check delays, etc.
-//        Optional<Project> project = projectRepository.findById(id);
-//        if (project.isPresent()) {
-//            // Implement logic to track project progress based on the tasks
-//            Project existingProject = project.get();
-//            // Example: You can check the project's tasks and update its status
-//        }
-//    }
-//
-//    @Override
-//    public void alertOnDelays(Long id) {
-//        // Implement logic to alert if there are delays on the project
-//        // Example: If a task is overdue, send an alert
-//        Optional<Project> project = projectRepository.findById(id);
-//        if (project.isPresent()) {
-//            // Check if any task is overdue and alert
-//            Project existingProject = project.get();
-//            // Example: You can check if any tasks have deadlines that have passed and trigger alerts
-//        }
-//    }
-
-
     @Override
     public ProjectResponseDTO getProjectDetails(Long projectId) {
         Project project = projectRepository.findById(projectId)

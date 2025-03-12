@@ -4,14 +4,13 @@ import com.constructi.DTO.TaskRequestDTO;
 import com.constructi.DTO.TaskResponseDTO;
 import com.constructi.exception.TaskNotFoundException;
 import com.constructi.mapper.TaskMapper;
-import com.constructi.model.entity.Project;
-import com.constructi.model.entity.Role;
-import com.constructi.model.entity.Task;
-import com.constructi.model.entity.User;
+import com.constructi.model.entity.*;
 import com.constructi.model.enums.RoleType;
 import com.constructi.repository.ProjectRepository;
+import com.constructi.repository.SubtaskRepository;
 import com.constructi.repository.TaskRepository;
 import com.constructi.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -43,9 +42,6 @@ class TaskServiceImplTest {
     @Mock
     private TaskMapper taskMapper;
 
-    @InjectMocks
-    private TaskServiceImpl taskService;
-
     @Mock
     private Authentication authentication;
 
@@ -59,11 +55,20 @@ class TaskServiceImplTest {
     private Task task;
 
     @Mock
+    private Subtask subtask;
+
+    @Mock
     private TaskRequestDTO taskRequestDTO;
 
     @Mock
     private TaskResponseDTO taskResponseDTO;
 
+    @Mock
+    private SubtaskRepository subtaskRepository;
+
+
+    @InjectMocks
+    private TaskServiceImpl taskService;
 
 
     @BeforeEach
@@ -74,6 +79,8 @@ class TaskServiceImplTest {
 //        task = new Task();
 //        user = new User();
 //        project = new Project();
+         subtask = new Subtask();
+
 
 
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -95,10 +102,8 @@ class TaskServiceImplTest {
 
     @Test
     void createTask_ShouldCreateTask() {
-        // Call the service method
         TaskResponseDTO createdTask = taskService.createTask(taskRequestDTO);
 
-        // Verify interactions and assert the results
         verify(userRepository).findByEmail(anyString());
         verify(projectRepository).findById(anyLong());
         verify(taskRepository).save(any(Task.class));
@@ -136,38 +141,31 @@ class TaskServiceImplTest {
 
     @Test
     void deleteTask_ShouldThrowTaskNotFoundException_WhenTaskNotFound() {
-        // Mock behavior
         when(taskRepository.existsById(anyLong())).thenReturn(false);
 
-        // Call the service method and assert exception
         assertThrows(TaskNotFoundException.class, () -> taskService.deleteTask(1L));
     }
 
     @Test
     void getTaskById_ShouldReturnTask() {
-        // Mock behavior
         when(taskRepository.findById(anyLong())).thenReturn(Optional.of(task));
         when(taskMapper.toTaskResponseDTO(any(Task.class))).thenReturn(taskResponseDTO);
 
-        // Call the service method
         TaskResponseDTO fetchedTask = taskService.getTaskById(1L);
 
-        // Verify interaction and assert the result
         verify(taskRepository).findById(anyLong());
         assertNotNull(fetchedTask);
     }
 
     @Test
     void getMyTasks_ShouldReturnTasksAssignedToUser() {
-        // Mock behavior
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
         when(taskRepository.findByUserId(anyLong())).thenReturn(List.of(task));
         when(taskMapper.toTaskResponseDTO(any(Task.class))).thenReturn(taskResponseDTO);
+        when(subtaskRepository.findByParentTaskId(anyLong())).thenReturn(List.of(subtask));
 
-        // Call the service method
         List<TaskResponseDTO> tasks = taskService.getMyTasks();
 
-        // Verify interaction and assert the result
         verify(taskRepository).findByUserId(anyLong());
         assertNotNull(tasks);
         assertFalse(tasks.isEmpty());
@@ -180,7 +178,7 @@ class TaskServiceImplTest {
 //        architectRole.setRoleType(RoleType.ARCHITECT);
 //        architectRole.setUsers(new ArrayList<>());
         Role architectRole = mock(Role.class);
-        when(architectRole.getRoleType()).thenReturn(RoleType.ARCHITECT);
+        when(architectRole.getRoleType()).thenReturn(RoleType.ADMIN);
         architect.setRole(architectRole);
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(architect));
         when(taskRepository.findById(anyLong())).thenReturn(Optional.of(task));
@@ -188,23 +186,83 @@ class TaskServiceImplTest {
         when(taskRepository.save(any(Task.class))).thenReturn(task);
         when(taskMapper.toTaskResponseDTO(any(Task.class))).thenReturn(taskResponseDTO);
 
-        // Call the service method
         TaskResponseDTO assignedTask = taskService.assignTaskToWorker(1L, 1L);
 
-        // Verify interaction and assert the result
         verify(taskRepository).save(any(Task.class));
         assertNotNull(assignedTask);
     }
 
     @Test
-    void assignTaskToWorker_ShouldThrowException_WhenNotArchitect() {
+    void assignTaskToWorker_ShouldThrowException_WhenNotAdmin() {
         // Mock behavior
         User nonArchitect = new User();
         nonArchitect.setRole(new Role());
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(nonArchitect));
 
-        // Call the service method and assert exception
         assertThrows(RuntimeException.class, () -> taskService.assignTaskToWorker(1L, 1L));
     }
+
+
+    @Test
+    void testGetTasksAssignedToWorker() {
+        // Arrange
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(task);
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
+        when(taskRepository.findByUser(user)).thenReturn(tasks);
+        when(taskMapper.toTaskResponseDTO(task)).thenReturn(taskResponseDTO);
+        when(taskResponseDTO.getProgress()).thenReturn(50.0);
+
+        // Act
+        List<TaskResponseDTO> taskResponseDTOs = taskService.getTasksAssignedToWorker();
+
+        // Assert
+        assertNotNull(taskResponseDTOs);
+        assertEquals(1, taskResponseDTOs.size()); // We have mocked 1 task
+        verify(userRepository).findByEmail("user@example.com");
+        verify(taskRepository).findByUser(user);
+        verify(taskMapper).toTaskResponseDTO(task);
+    }
+
+    @Test
+    void testGetTasksAssignedToWorker_UserNotFound() {
+        // Arrange
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            taskService.getTasksAssignedToWorker();
+        });
+        assertEquals("Worker not found", exception.getMessage());
+    }
+
+    @Test
+    void testGetTaskWithInvoices() {
+        // Arrange
+        when(taskRepository.findByIdWithInvoices(1L)).thenReturn(Optional.of(task));
+        when(taskMapper.toTaskResponseDTO(task)).thenReturn(taskResponseDTO);
+
+        // Act
+        TaskResponseDTO responseDTO = taskService.getTaskWithInvoices(1L);
+
+        // Assert
+        assertNotNull(responseDTO);
+        verify(taskRepository).findByIdWithInvoices(1L);
+        verify(taskMapper).toTaskResponseDTO(task);
+    }
+
+    @Test
+    void testGetTaskWithInvoices_TaskNotFound() {
+        // Arrange
+        when(taskRepository.findByIdWithInvoices(1L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
+            taskService.getTaskWithInvoices(1L);
+        });
+        assertEquals("Task not found", exception.getMessage());
+    }
+
+
 
 }

@@ -2,10 +2,14 @@ package com.constructi.service.impl;
 
 import com.constructi.DTO.ProjectRequestDTO;
 import com.constructi.DTO.ProjectResponseDTO;
+import com.constructi.DTO.TaskResponseDTO;
 import com.constructi.exception.InvalidProjectDateException;
+import com.constructi.mapper.BudgetMapper;
 import com.constructi.mapper.ProjectMapper;
+import com.constructi.mapper.TaskMapper;
 import com.constructi.mapper.UserMapper;
 import com.constructi.model.entity.Project;
+import com.constructi.model.entity.Task;
 import com.constructi.model.entity.User;
 import com.constructi.model.enums.ProjectState;
 import com.constructi.repository.ProjectRepository;
@@ -37,6 +41,12 @@ class ProjectServiceImplTest {
 
     @Mock
     private ProjectMapper projectMapper;
+
+    @Mock
+    private BudgetMapper budgetMapper;
+
+    @Mock
+    TaskMapper taskMapper;
 
     @Mock
     private UserMapper userMapper;
@@ -166,4 +176,164 @@ class ProjectServiceImplTest {
         when(projectRepository.existsById(anyLong())).thenReturn(false);
         assertThrows(RuntimeException.class, () -> projectService.deleteProject(1L));
     }
+
+    @Test
+    void getProjectById_ShouldReturnProjectResponseDTO_WhenProjectExists() {
+        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
+        when(projectMapper.toDto(any(Project.class))).thenReturn(responseDTO);
+
+        ProjectResponseDTO result = projectService.getProjectById(1L);
+
+        assertNotNull(result);
+        assertEquals("Test Project", result.getName());
+    }
+
+
+    @Test
+    void getProjectById_ShouldThrowException_WhenProjectNotFound() {
+        when(projectRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> projectService.getProjectById(1L));
+    }
+
+
+    @Test
+    void getProjectByIdForAssignedUser_ShouldReturnProjectResponseDTO_WhenProjectAndUserExist() {
+        // Mock the authenticated user and the project
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
+
+        // Mock the response DTO from project mapper
+        when(projectMapper.toDto(any(Project.class))).thenReturn(responseDTO);
+
+        // Create a mock task and assign a user to it
+        Task task = new Task();
+        task.setUser(user); // Assign the user to the task
+
+        TaskResponseDTO taskResponseDTO = new TaskResponseDTO(); // Create a mock task response
+        List<TaskResponseDTO> taskList = List.of(taskResponseDTO); // Add the mock task to a list
+        when(taskMapper.toTaskResponseDTO(any())).thenReturn(taskResponseDTO); // Mock task mapper
+
+        // Set up project tasks
+        project.setTasks(List.of(task)); // Make sure project has tasks
+
+        // Call the method to be tested
+        ProjectResponseDTO result = projectService.getProjectByIdForAssignedUser(1L);
+
+        // Assertions
+        assertNotNull(result);
+        assertEquals("Test Project", result.getName());
+        assertFalse(result.getTasks().isEmpty(), "Tasks should not be empty");
+    }
+
+
+    @Test
+    void getProjectByIdForAssignedUser_ShouldThrowException_WhenUserNotFound() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> projectService.getProjectByIdForAssignedUser(1L));
+    }
+
+    @Test
+    void getProjectByIdForAssignedUser_ShouldThrowException_WhenProjectNotFound() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+        when(projectRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> projectService.getProjectByIdForAssignedUser(1L));
+    }
+
+    @Test
+    void getAllProjects_ShouldReturnListOfProjects() {
+        when(projectRepository.findAll()).thenReturn(List.of(project));
+        when(projectMapper.toDto(any(Project.class))).thenReturn(responseDTO);
+
+        List<ProjectResponseDTO> result = projectService.getAllProjects();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Test Project", result.get(0).getName());
+    }
+
+    @Test
+    void getMyProjects_ShouldReturnListOfProjects_WhenUserHasProjects() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+        when(projectRepository.findProjectsByAssignedUser(anyLong())).thenReturn(List.of(project));
+        when(projectMapper.toDto(any(Project.class))).thenReturn(responseDTO);
+
+        List<ProjectResponseDTO> result = projectService.getMyProjects();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Test Project", result.get(0).getName());
+    }
+
+    @Test
+    void getMyProjects_ShouldThrowException_WhenUserNotFound() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> projectService.getMyProjects());
+    }
+
+
+    @Test
+    void createProject_ShouldThrowException_WhenStartDateIsInTheFuture() {
+        requestDTO.setStartDate(LocalDate.now().plusDays(1));  // Invalid start date
+
+        assertThrows(InvalidProjectDateException.class, () -> projectService.createProject(requestDTO));
+    }
+
+    @Test
+    void createProject_ShouldThrowException_WhenEndDateIsBeforeStartDate() {
+        requestDTO.setStartDate(LocalDate.now().plusDays(1));
+        requestDTO.setEndDate(LocalDate.now().minusDays(1));  // Invalid end date
+
+        assertThrows(InvalidProjectDateException.class, () -> projectService.createProject(requestDTO));
+    }
+
+
+    @Test
+    void getProjectDetails_ShouldReturnProjectDetails_WhenProjectExists() {
+        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
+        when(projectMapper.toDto(any(Project.class))).thenReturn(responseDTO);
+        when(taskMapper.toDtoList(any())).thenReturn(List.of(new TaskResponseDTO()));
+        when(budgetMapper.toDtoList(any())).thenReturn(List.of());
+
+        ProjectResponseDTO result = projectService.getProjectDetails(1L);
+
+        assertNotNull(result);
+        assertEquals("Test Project", result.getName());
+        assertFalse(result.getTasks().isEmpty());
+    }
+
+    @Test
+    void getProjectDetails_ShouldThrowException_WhenProjectNotFound() {
+        when(projectRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> projectService.getProjectDetails(1L));
+    }
+
+    @Test
+    void isAssignedToProjectViaTask_ShouldReturnTrue_WhenUserIsAssigned() {
+        when(projectRepository.isUserAssignedToProjectThroughTask(anyString(), anyLong())).thenReturn(true);
+
+        boolean result = projectService.isAssignedToProjectViaTask("test@example.com", 1L);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void isAssignedToProjectViaTask_ShouldReturnFalse_WhenUserIsNotAssigned() {
+        when(projectRepository.isUserAssignedToProjectThroughTask(anyString(), anyLong())).thenReturn(false);
+
+        boolean result = projectService.isAssignedToProjectViaTask("test@example.com", 1L);
+
+        assertFalse(result);
+    }
+
+
+
+
+
+
+
 }

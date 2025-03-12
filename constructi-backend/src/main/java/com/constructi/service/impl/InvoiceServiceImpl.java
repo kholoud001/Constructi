@@ -7,6 +7,8 @@ import com.constructi.model.entity.*;
 import com.constructi.model.enums.InvoiceState;
 import com.constructi.repository.*;
 import com.constructi.service.InvoiceService;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+
 public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
@@ -45,8 +48,9 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setEmissionDate(LocalDateTime.now());
         invoice.setState(InvoiceState.PENDING);
 
-        return InvoiceMapper.INSTANCE.toDto(invoiceRepository.save(invoice));
+        return invoiceMapper.toDto(invoiceRepository.save(invoice));
     }
+
 
     @Override
     public List<InvoiceResponseDTO> getMyInvoices(Long userId) {
@@ -122,7 +126,6 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
 
-
     @Override
     public InvoiceResponseDTO createMaterialInvoice(Long materialId, Long userId, Double amount, MultipartFile justificationFile) {
         Material material = materialRepository.findById(materialId)
@@ -155,7 +158,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         invoice = invoiceRepository.save(invoice);
 
-        return InvoiceMapper.INSTANCE.toDto(invoice);
+//        return InvoiceMapper.INSTANCE.toDto(invoice);
+        return invoiceMapper.toDto(invoice);
     }
 
     @Override
@@ -166,7 +170,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .collect(Collectors.toList());
     }
 
-    private String saveJustificationFile(MultipartFile file) {
+    String saveJustificationFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new RuntimeException("Justification file is required");
         }
