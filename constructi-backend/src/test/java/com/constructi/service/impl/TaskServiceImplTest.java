@@ -95,10 +95,8 @@ class TaskServiceImplTest {
 
     @Test
     void createTask_ShouldCreateTask() {
-        // Call the service method
         TaskResponseDTO createdTask = taskService.createTask(taskRequestDTO);
 
-        // Verify interactions and assert the results
         verify(userRepository).findByEmail(anyString());
         verify(projectRepository).findById(anyLong());
         verify(taskRepository).save(any(Task.class));
@@ -136,38 +134,30 @@ class TaskServiceImplTest {
 
     @Test
     void deleteTask_ShouldThrowTaskNotFoundException_WhenTaskNotFound() {
-        // Mock behavior
         when(taskRepository.existsById(anyLong())).thenReturn(false);
 
-        // Call the service method and assert exception
         assertThrows(TaskNotFoundException.class, () -> taskService.deleteTask(1L));
     }
 
     @Test
     void getTaskById_ShouldReturnTask() {
-        // Mock behavior
         when(taskRepository.findById(anyLong())).thenReturn(Optional.of(task));
         when(taskMapper.toTaskResponseDTO(any(Task.class))).thenReturn(taskResponseDTO);
 
-        // Call the service method
         TaskResponseDTO fetchedTask = taskService.getTaskById(1L);
 
-        // Verify interaction and assert the result
         verify(taskRepository).findById(anyLong());
         assertNotNull(fetchedTask);
     }
 
     @Test
     void getMyTasks_ShouldReturnTasksAssignedToUser() {
-        // Mock behavior
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
         when(taskRepository.findByUserId(anyLong())).thenReturn(List.of(task));
         when(taskMapper.toTaskResponseDTO(any(Task.class))).thenReturn(taskResponseDTO);
 
-        // Call the service method
         List<TaskResponseDTO> tasks = taskService.getMyTasks();
 
-        // Verify interaction and assert the result
         verify(taskRepository).findByUserId(anyLong());
         assertNotNull(tasks);
         assertFalse(tasks.isEmpty());
@@ -188,10 +178,8 @@ class TaskServiceImplTest {
         when(taskRepository.save(any(Task.class))).thenReturn(task);
         when(taskMapper.toTaskResponseDTO(any(Task.class))).thenReturn(taskResponseDTO);
 
-        // Call the service method
         TaskResponseDTO assignedTask = taskService.assignTaskToWorker(1L, 1L);
 
-        // Verify interaction and assert the result
         verify(taskRepository).save(any(Task.class));
         assertNotNull(assignedTask);
     }
@@ -203,7 +191,6 @@ class TaskServiceImplTest {
         nonArchitect.setRole(new Role());
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(nonArchitect));
 
-        // Call the service method and assert exception
         assertThrows(RuntimeException.class, () -> taskService.assignTaskToWorker(1L, 1L));
     }
 
