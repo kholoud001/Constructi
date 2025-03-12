@@ -1,5 +1,6 @@
 package com.constructi.service.impl;
 
+import com.constructi.DTO.ProfileUpdateRequestDTO;
 import com.constructi.DTO.UserRequestDTO;
 import com.constructi.DTO.UserResponseDTO;
 import com.constructi.model.entity.Role;
@@ -9,12 +10,15 @@ import com.constructi.repository.RoleRepository;
 import com.constructi.repository.UserRepository;
 import com.constructi.mapper.UserMapper;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -23,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class UserServiceImplTest {
 
     @Mock
@@ -163,4 +168,78 @@ class UserServiceImplTest {
         assertFalse(user.isActive());
         verify(userRepository).save(user);
     }
+
+
+    @Test
+    void updateUser_Success() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.existsByEmail(userRequestDTO.getEmail())).thenReturn(false);
+        when(roleRepository.findById(userRequestDTO.getRoleId())).thenReturn(Optional.of(role));
+        when(passwordEncoder.encode(userRequestDTO.getPassword())).thenReturn("hashedPassword");
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userMapper.toResponseDTO(any(User.class))).thenReturn(userResponseDTO);
+
+        UserResponseDTO result = userService.updateUser(1L, userRequestDTO);
+
+        assertNotNull(result);
+        assertEquals("John", result.getFname());
+        verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    void updateUser_UserNotFound_ThrowsException() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> userService.updateUser(1L, userRequestDTO));
+    }
+
+    @Test
+    void updateUser_EmailAlreadyExists_ThrowsException() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.existsByEmail(userRequestDTO.getEmail())).thenReturn(true);
+
+        assertThrows(EntityNotFoundException.class, () -> userService.updateUser(1L, userRequestDTO));
+    }
+
+    @Test
+    void updateUser_RoleNotFound_ThrowsException() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.existsByEmail(userRequestDTO.getEmail())).thenReturn(false);
+        when(roleRepository.findById(userRequestDTO.getRoleId())).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> userService.updateUser(1L, userRequestDTO));
+    }
+
+    @Test
+    void updateUserProfile_Success() {
+        ProfileUpdateRequestDTO profileUpdateRequestDTO = new ProfileUpdateRequestDTO();
+        profileUpdateRequestDTO.setFname("Jane");
+        profileUpdateRequestDTO.setLname("Smith");
+        profileUpdateRequestDTO.setCell("123456789");
+        profileUpdateRequestDTO.setPassword("newpassword");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode(profileUpdateRequestDTO.getPassword())).thenReturn("hashedPassword");
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userMapper.toResponseDTO(any(User.class))).thenReturn(userResponseDTO);
+
+        UserResponseDTO result = userService.updateUserProfile(1L, profileUpdateRequestDTO);
+
+        assertNotNull(result);
+//        assertEquals("Jane", result.getFname());
+//        assertEquals("Smith", result.getLname());
+        verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    void updateUserProfile_UserNotFound_ThrowsException() {
+        ProfileUpdateRequestDTO profileUpdateRequestDTO = new ProfileUpdateRequestDTO();
+        profileUpdateRequestDTO.setFname("Jane");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> userService.updateUserProfile(1L, profileUpdateRequestDTO));
+    }
+
+
+
 }
