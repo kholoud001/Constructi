@@ -21,7 +21,7 @@ import {
 interface Subtask {
   id: number;
   description: string;
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  status: 'NOT_STARTED' | 'IN_PROGRESS' | 'FINISHED' ;
   beginDate: string;
   dateEndEstimated: string;
   approved: boolean;
@@ -98,14 +98,12 @@ export class SubtaskDetailComponent implements OnInit {
 
   getStatusIcon(status: string): any {
     switch (status) {
-      case 'PENDING':
+      case 'NOT_STARTED':
         return faClock;
       case 'IN_PROGRESS':
         return faHourglass;
-      case 'COMPLETED':
+      case 'FINISHED':
         return faCheck;
-      case 'CANCELLED':
-        return faBan;
       default:
         return faClock;
     }
