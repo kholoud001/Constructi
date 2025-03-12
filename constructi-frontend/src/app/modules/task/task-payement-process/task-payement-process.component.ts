@@ -48,6 +48,8 @@ export class TaskPayementProcessComponent implements OnInit {
   protected readonly faArrowLeft = faArrowLeft;
   protected readonly faImage = faImage;
   protected readonly faFile = faFile;
+  protected readonly faTimes = faTimes;
+  protected readonly faCloudUpload = faCloudUpload;
 
 
   paymentData = {
@@ -123,28 +125,24 @@ export class TaskPayementProcessComponent implements OnInit {
     return this.taskDetails?.budgetLimit <= this.taskDetails?.totalPaid;
   }
 
-  // Method to open the payment modal
   openPaymentModal() {
     this.isPaymentModalOpen = true;
-      // Populate paymentData with valid IDs
       this.paymentData = {
-        userId: this.taskDetails?.userId || 0, // Replace with the correct property
+        userId: this.taskDetails?.userId || 0,
         amount: 0,
         justificationFile: null,
-        projectId: this.taskDetails?.projectId || 0, // Replace with the correct property
-        taskId: this.taskDetails?.id || 0, // Replace with the correct property
+        projectId: this.taskDetails?.projectId || 0,
+        taskId: this.taskDetails?.id || 0,
       };
       this.isPaymentModalOpen = true;
 
   }
 
-// Method to close the payment modal
   closePaymentModal() {
     this.isPaymentModalOpen = false;
     this.resetPaymentData();
   }
 
-// Method to handle file input
   handleFileInput(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -161,7 +159,6 @@ export class TaskPayementProcessComponent implements OnInit {
     }
   }
 
-// Method to reset payment data
   resetPaymentData() {
     this.paymentData = {
       userId: 0,
@@ -174,12 +171,13 @@ export class TaskPayementProcessComponent implements OnInit {
   }
 
   doPayment() {
+    // Validate required fields
     if (!this.paymentData.justificationFile || this.paymentData.amount <= 0) {
       Swal.fire('Error', 'Please fill all required fields.', 'error');
       return;
     }
 
-    console.log('Payment Data:', this.paymentData); // Log the payment data
+    console.log('Payment Data:', this.paymentData);
 
     this.paymentProcessing = true;
     this.invoiceService
@@ -194,11 +192,22 @@ export class TaskPayementProcessComponent implements OnInit {
         next: () => {
           Swal.fire('Success', 'Payment processed successfully!', 'success');
           this.closePaymentModal();
-          this.fetchTaskDetails(Number(this.taskId)); // Refresh task details
+          this.fetchTaskDetails(Number(this.taskId));
         },
         error: (err) => {
-          console.error('Error processing payment:', err);
-          Swal.fire('Error', 'Failed to process payment.', 'error');
+          console.error('Full error object:', err);
+
+          let errorMessage = 'Failed to process payment.';
+          if (err.error && typeof err.error === 'string') {
+            errorMessage = err.error;
+          } else if (err.error && typeof err.error === 'object' && err.error.message) {
+            errorMessage = err.error.message;
+          } else if (err.message) {
+            errorMessage = err.message;
+          }
+
+          console.log('Extracted error message:', errorMessage);
+          Swal.fire('Error', errorMessage, 'error');
         },
         complete: () => {
           this.paymentProcessing = false;
@@ -206,6 +215,4 @@ export class TaskPayementProcessComponent implements OnInit {
       });
   }
 
-  protected readonly faTimes = faTimes;
-  protected readonly faCloudUpload = faCloudUpload;
 }

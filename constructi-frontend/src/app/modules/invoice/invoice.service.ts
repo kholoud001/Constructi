@@ -19,7 +19,7 @@ export class InvoiceService {
     formData.append('amount', amount.toString());
     formData.append('justificationFile', justificationFile);
     formData.append('projectId', projectId.toString());
-    formData.append('taskId', taskId.toString()); // Add taskId
+    formData.append('taskId', taskId.toString());
 
     return this.http.post(`${this.apiUrl}/pay`, formData);
   }

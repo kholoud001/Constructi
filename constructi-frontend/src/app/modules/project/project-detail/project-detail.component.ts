@@ -226,16 +226,22 @@ export class ProjectDetailComponent implements OnInit {
         });
       },
       error: (err) => {
-        let errorMessage = 'Une erreur est survenue lors du traitement du paiement.';
+        console.error('Full error object:', err);
 
-        if (err.status === 400) {
-          errorMessage = 'Les informations de paiement sont invalides.';
-        } else if (err.status === 403) {
-          errorMessage = 'Vous n\'avez pas les droits nécessaires pour effectuer ce paiement.';
-        } else if (err.status === 404) {
-          errorMessage = 'Utilisateur, projet ou tâche non trouvé.';
+        // Extract the specific error message from the backend response
+        let errorMessage = 'Une erreur est survenue lors du traitement du paiement.';
+        if (err.error && typeof err.error === 'string') {
+          // If the error message is directly in err.error
+          errorMessage = err.error;
+        } else if (err.error && typeof err.error === 'object' && err.error.message) {
+          // If the error message is nested in err.error.message
+          errorMessage = err.error.message;
+        } else if (err.message) {
+          // Fallback to the general error message
+          errorMessage = err.message;
         }
 
+        // Display the specific error message to the user
         Swal.fire({
           icon: 'error',
           title: 'Erreur de paiement',
@@ -243,11 +249,9 @@ export class ProjectDetailComponent implements OnInit {
           confirmButtonText: 'Fermer',
           confirmButtonColor: '#EF4444'
         });
-        console.error('Erreur de paiement:', err);
       }
     });
   }
-
 
   private readonly VALID_TYPES = [
     'application/pdf',
