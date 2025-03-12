@@ -4,7 +4,9 @@ import com.constructi.DTO.ProjectRequestDTO;
 import com.constructi.DTO.ProjectResponseDTO;
 import com.constructi.DTO.TaskResponseDTO;
 import com.constructi.exception.InvalidProjectDateException;
+import com.constructi.mapper.BudgetMapper;
 import com.constructi.mapper.ProjectMapper;
+import com.constructi.mapper.TaskMapper;
 import com.constructi.mapper.UserMapper;
 import com.constructi.model.entity.Project;
 import com.constructi.model.entity.User;
@@ -38,6 +40,12 @@ class ProjectServiceImplTest {
 
     @Mock
     private ProjectMapper projectMapper;
+
+    @Mock
+    private BudgetMapper budgetMapper;
+
+    @Mock
+    TaskMapper taskMapper;
 
     @Mock
     private UserMapper userMapper;
@@ -190,18 +198,18 @@ class ProjectServiceImplTest {
 
     @Test
     void getProjectByIdForAssignedUser_ShouldReturnProjectResponseDTO_WhenProjectAndUserExist() {
-//        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
-//        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
-//        when(projectMapper.toDto(any(Project.class))).thenReturn(responseDTO);
-//
-//        List<TaskResponseDTO> taskList = List.of(new TaskResponseDTO());
-//        when(taskMapper.toTaskResponseDTO(any())).thenReturn(new TaskResponseDTO());
-//
-//        ProjectResponseDTO result = projectService.getProjectByIdForAssignedUser(1L);
-//
-//        assertNotNull(result);
-//        assertEquals("Test Project", result.getName());
-//        assertFalse(result.getTasks().isEmpty());
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
+        when(projectMapper.toDto(any(Project.class))).thenReturn(responseDTO);
+
+        List<TaskResponseDTO> taskList = List.of(new TaskResponseDTO());
+        when(taskMapper.toTaskResponseDTO(any())).thenReturn(new TaskResponseDTO());
+
+        ProjectResponseDTO result = projectService.getProjectByIdForAssignedUser(1L);
+
+        assertNotNull(result);
+        assertEquals("Test Project", result.getName());
+        assertFalse(result.getTasks().isEmpty());
     }
 
     @Test
@@ -270,16 +278,16 @@ class ProjectServiceImplTest {
 
     @Test
     void getProjectDetails_ShouldReturnProjectDetails_WhenProjectExists() {
-//        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
-//        when(projectMapper.toDto(any(Project.class))).thenReturn(responseDTO);
-//        when(taskMapper.toDtoList(any())).thenReturn(List.of(new TaskResponseDTO()));
-//        when(budgetMapper.toDtoList(any())).thenReturn(List.of());
-//
-//        ProjectResponseDTO result = projectService.getProjectDetails(1L);
-//
-//        assertNotNull(result);
-//        assertEquals("Test Project", result.getName());
-//        assertFalse(result.getTasks().isEmpty());
+        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
+        when(projectMapper.toDto(any(Project.class))).thenReturn(responseDTO);
+        when(taskMapper.toDtoList(any())).thenReturn(List.of(new TaskResponseDTO()));
+        when(budgetMapper.toDtoList(any())).thenReturn(List.of());
+
+        ProjectResponseDTO result = projectService.getProjectDetails(1L);
+
+        assertNotNull(result);
+        assertEquals("Test Project", result.getName());
+        assertFalse(result.getTasks().isEmpty());
     }
 
     @Test
