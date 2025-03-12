@@ -10,6 +10,7 @@ import com.constructi.repository.ProjectRepository;
 import com.constructi.repository.SubtaskRepository;
 import com.constructi.repository.TaskRepository;
 import com.constructi.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -200,5 +201,68 @@ class TaskServiceImplTest {
 
         assertThrows(RuntimeException.class, () -> taskService.assignTaskToWorker(1L, 1L));
     }
+
+
+    @Test
+    void testGetTasksAssignedToWorker() {
+        // Arrange
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(task);
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
+        when(taskRepository.findByUser(user)).thenReturn(tasks);
+        when(taskMapper.toTaskResponseDTO(task)).thenReturn(taskResponseDTO);
+        when(taskResponseDTO.getProgress()).thenReturn(50.0);
+
+        // Act
+        List<TaskResponseDTO> taskResponseDTOs = taskService.getTasksAssignedToWorker();
+
+        // Assert
+        assertNotNull(taskResponseDTOs);
+        assertEquals(1, taskResponseDTOs.size()); // We have mocked 1 task
+        verify(userRepository).findByEmail("user@example.com");
+        verify(taskRepository).findByUser(user);
+        verify(taskMapper).toTaskResponseDTO(task);
+    }
+
+    @Test
+    void testGetTasksAssignedToWorker_UserNotFound() {
+        // Arrange
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            taskService.getTasksAssignedToWorker();
+        });
+        assertEquals("Worker not found", exception.getMessage());
+    }
+
+    @Test
+    void testGetTaskWithInvoices() {
+        // Arrange
+        when(taskRepository.findByIdWithInvoices(1L)).thenReturn(Optional.of(task));
+        when(taskMapper.toTaskResponseDTO(task)).thenReturn(taskResponseDTO);
+
+        // Act
+        TaskResponseDTO responseDTO = taskService.getTaskWithInvoices(1L);
+
+        // Assert
+        assertNotNull(responseDTO);
+        verify(taskRepository).findByIdWithInvoices(1L);
+        verify(taskMapper).toTaskResponseDTO(task);
+    }
+
+    @Test
+    void testGetTaskWithInvoices_TaskNotFound() {
+        // Arrange
+        when(taskRepository.findByIdWithInvoices(1L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
+            taskService.getTaskWithInvoices(1L);
+        });
+        assertEquals("Task not found", exception.getMessage());
+    }
+
+
 
 }
