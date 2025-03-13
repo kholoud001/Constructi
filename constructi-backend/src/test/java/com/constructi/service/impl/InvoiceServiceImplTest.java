@@ -129,13 +129,11 @@ class InvoiceServiceImplTest {
 
     @Test
     void createInvoice_ShouldThrowException_WhenUserNotFound() {
-        // Arrange
         Long userId = 99L;
         Double amount = 100.0;
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> {
             invoiceService.createInvoice(userId, amount);
         });
@@ -148,7 +146,6 @@ class InvoiceServiceImplTest {
 
     @Test
     void createMaterialInvoice_ShouldReturnInvoiceResponseDTO_WhenValidDataIsProvided() {
-        // Arrange
         Long materialId = 1L;
         Long userId = 1L;
         Double amount = 100.0;
@@ -158,39 +155,35 @@ class InvoiceServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(invoiceRepository.sumAmountByMaterialId(materialId)).thenReturn(50.0);
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
-        when(invoiceMapper.toDto(any(Invoice.class))).thenReturn(new InvoiceResponseDTO());  // Ensure this mock is correct
+        when(invoiceMapper.toDto(any(Invoice.class))).thenReturn(new InvoiceResponseDTO());
 
-        // Create a spy for invoiceService
+        // spy invoiceService
         InvoiceServiceImpl spyInvoiceService = Mockito.spy(invoiceService);
         doReturn(fakeFilePath).when(spyInvoiceService).saveJustificationFile(any(MultipartFile.class));
 
-        // Act
         InvoiceResponseDTO response = spyInvoiceService.createMaterialInvoice(materialId, userId, amount, justificationFile);
 
-        // Assert
         assertNotNull(response);
         verify(materialRepository, times(1)).findById(materialId);
         verify(userRepository, times(1)).findById(userId);
         verify(invoiceRepository, times(1)).sumAmountByMaterialId(materialId);
         verify(invoiceRepository, times(1)).save(any(Invoice.class));
-        verify(invoiceMapper, times(1)).toDto(any(Invoice.class));  // Ensure the verification is correct
+        verify(invoiceMapper, times(1)).toDto(any(Invoice.class));
     }
 
 
     @Test
     void createMaterialInvoice_ShouldThrowException_WhenAmountExceedsMaterialValue() {
-        // Arrange
         Long materialId = 1L;
         Long userId = 1L;
-        Double amount = 500.0; // Too high
+        Double amount = 500.0;
 
         when(materialRepository.findById(materialId)).thenReturn(Optional.of(material));
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(invoiceRepository.sumAmountByMaterialId(materialId)).thenReturn(450.0); // Already paid
+        when(invoiceRepository.sumAmountByMaterialId(materialId)).thenReturn(450.0);
 
         Double totalMaterialValue = material.getPriceUnit() * material.getQuantity();
 
-        // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> {
             invoiceService.createMaterialInvoice(materialId, userId, amount, justificationFile);
         });
@@ -227,30 +220,25 @@ class InvoiceServiceImplTest {
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
         when(invoiceMapper.toDto(any(Invoice.class))).thenReturn(new InvoiceResponseDTO());
 
-        // Mocking justificationFile behavior (leniently if not used in assertions)
+
         lenient().when(justificationFile.getOriginalFilename()).thenReturn("test.txt");
         lenient().when(justificationFile.getInputStream()).thenReturn(new ByteArrayInputStream(new byte[0]));
         lenient().when(justificationFile.isEmpty()).thenReturn(false);
 
-        // Mocking projectRepository.save() if it's used in the method (remove if not used)
         when(projectRepository.save(any(Project.class))).thenReturn(project);
 
-        // Mocking budgetRepository.save() if it's used in the method (remove if not used)
         when(budgetRepository.save(any(Budget.class))).thenReturn(new Budget());
 
-        // Act
         InvoiceResponseDTO response = invoiceService.paySomeone(1L, 100.0, justificationFile, 1L, 1L);
 
-        // Assert
         assertNotNull(response);
         verify(userRepository, times(1)).findById(1L);
         verify(projectRepository, times(1)).findById(1L);
         verify(taskRepository, times(1)).findById(1L);
         verify(invoiceRepository, times(1)).save(any(Invoice.class));
 
-        // Verify that other repository methods are called if necessary
-        verify(projectRepository, times(1)).save(any(Project.class)); // Only if needed
-        verify(budgetRepository, times(1)).save(any(Budget.class));  // Only if needed
+        verify(projectRepository, times(1)).save(any(Project.class));
+        verify(budgetRepository, times(1)).save(any(Budget.class));
     }
 
 

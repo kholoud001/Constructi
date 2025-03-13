@@ -113,7 +113,6 @@ public class MaterialServiceImplTest {
 
     @Test
     void createMaterial_ShouldReturnMaterialResponseDTO() {
-        // Arrange: Mock repository methods
         when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
         when(providerRepository.findById(anyLong())).thenReturn(Optional.of(provider));
         when(materialMapper.toEntity(any(MaterialRequestDTO.class))).thenReturn(material);
@@ -124,10 +123,8 @@ public class MaterialServiceImplTest {
         budgetTransaction.setAmount(materialRequestDTO.getPriceUnit() * materialRequestDTO.getQuantity());
         when(budgetRepository.save(any(Budget.class))).thenReturn(budgetTransaction);
 
-        // Act: Call the method under test
         MaterialResponseDTO response = materialService.createMaterial(materialRequestDTO);
 
-        // Assert: Verify behavior and response
         assertNotNull(response);
         verify(projectRepository).findById(anyLong());
         verify(providerRepository).findById(anyLong());
@@ -137,11 +134,9 @@ public class MaterialServiceImplTest {
 
     @Test
     void createMaterial_ShouldThrowException_WhenProviderNotFound() {
-        // Arrange
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
         when(providerRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // Act & Assert
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
             materialService.createMaterial(materialRequestDTO);
         });
@@ -151,14 +146,12 @@ public class MaterialServiceImplTest {
 
     @Test
     void createMaterial_ShouldThrowException_WhenExceedsBudget() {
-        // Arrange
-        project.setActualBudget(1950.0); // Setting the budget to close to the initial budget
+        project.setActualBudget(1950.0);
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
         when(providerRepository.findById(1L)).thenReturn(Optional.of(provider));
 
-        // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            materialService.createMaterial(materialRequestDTO); // 10 * 100 = 1000, exceeds the budget
+            materialService.createMaterial(materialRequestDTO);
         });
 
         assertEquals("Adding this material exceeds the project's initial budget. Remaining budget: 50.0", exception.getMessage());
@@ -204,7 +197,6 @@ public class MaterialServiceImplTest {
 
     @Test
     void updateMaterial_ShouldReturnUpdatedMaterialResponseDTO() {
-        // Initialize updatedMaterialRequestDTO using setters
         MaterialRequestDTO updatedMaterialRequestDTO = new MaterialRequestDTO();
         updatedMaterialRequestDTO.setName("Updated Material");
         updatedMaterialRequestDTO.setQuantity(20);
@@ -212,37 +204,30 @@ public class MaterialServiceImplTest {
         updatedMaterialRequestDTO.setProjectId(1L);
         updatedMaterialRequestDTO.setProviderId(1L);
 
-        // Mock the repository methods
         when(materialRepository.findById(1L)).thenReturn(Optional.of(material));
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
         when(providerRepository.findById(1L)).thenReturn(Optional.of(provider));
 
-        // Update the material entity with new values before saving
         material.setName(updatedMaterialRequestDTO.getName());
         material.setQuantity(updatedMaterialRequestDTO.getQuantity());
         material.setPriceUnit(updatedMaterialRequestDTO.getPriceUnit());
         material.setProject(project);
         material.setProvider(provider);
 
-        // Mock the repository save to return the updated material
         when(materialRepository.save(material)).thenReturn(material);
 
-        // Update the materialResponseDTO to reflect the updated material
         materialResponseDTO.setId(1L);
         materialResponseDTO.setName(updatedMaterialRequestDTO.getName());
         materialResponseDTO.setQuantity(updatedMaterialRequestDTO.getQuantity());
         materialResponseDTO.setPriceUnit(updatedMaterialRequestDTO.getPriceUnit());
 
-        // Mock materialMapper to return the updated materialResponseDTO
         when(materialMapper.toResponseDTO(material)).thenReturn(materialResponseDTO);
 
-        // Call the method
         MaterialResponseDTO result = materialService.updateMaterial(1L, updatedMaterialRequestDTO);
 
-        // Verify the results
         assertNotNull(result);
-        assertEquals("Updated Material", result.getName());  // Ensure the name was updated
-        verify(materialRepository).save(any(Material.class));  // Ensure save was called
+        assertEquals("Updated Material", result.getName());
+        verify(materialRepository).save(any(Material.class));
     }
 
 
@@ -255,7 +240,6 @@ public class MaterialServiceImplTest {
 
     @Test
     void deleteMaterial_ShouldThrowResourceNotFoundException_WhenMaterialNotFound() {
-        // Mock dependencies
         when(materialRepository.existsById(1L)).thenReturn(false);
 
         assertThrows(ResourceNotFoundException.class, () -> materialService.deleteMaterial(1L));
@@ -301,11 +285,9 @@ public class MaterialServiceImplTest {
 
     @Test
     void getInvoicesByMaterialId_ShouldThrowResourceNotFoundException() {
-        // Arrange
         Long materialId = 1L;
         when(materialRepository.findById(materialId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> {
             materialService.getInvoicesByMaterialId(materialId);
         });
@@ -317,7 +299,6 @@ public class MaterialServiceImplTest {
 
     @Test
     void purchaseMaterial_ShouldUpdateProjectBudgetAndSaveTransaction() {
-        // Arrange
         Long projectId = 1L;
         Double materialCost = 500.0;
 
@@ -329,11 +310,9 @@ public class MaterialServiceImplTest {
         when(projectRepository.save(project)).thenReturn(project);
         when(budgetRepository.save(any(Budget.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Act
         materialService.purchaseMaterial(projectId, materialCost);
 
-        // Assert
-        assertEquals(1500.0, project.getActualBudget()); // Verify budget is updated
+        assertEquals(1500.0, project.getActualBudget());
         verify(projectRepository, times(1)).findById(projectId);
         verify(projectRepository, times(1)).save(project);
         verify(budgetRepository, times(1)).save(any(Budget.class));
@@ -341,13 +320,11 @@ public class MaterialServiceImplTest {
 
     @Test
     void purchaseMaterial_ShouldThrowRuntimeExceptionWhenProjectNotFound() {
-        // Arrange
         Long projectId = 1L;
         Double materialCost = 500.0;
 
         when(projectRepository.findById(projectId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(RuntimeException.class, () -> {
             materialService.purchaseMaterial(projectId, materialCost);
         });

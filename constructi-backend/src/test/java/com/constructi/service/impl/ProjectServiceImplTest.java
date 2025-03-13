@@ -199,28 +199,22 @@ class ProjectServiceImplTest {
 
     @Test
     void getProjectByIdForAssignedUser_ShouldReturnProjectResponseDTO_WhenProjectAndUserExist() {
-        // Mock the authenticated user and the project
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
         when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
 
-        // Mock the response DTO from project mapper
         when(projectMapper.toDto(any(Project.class))).thenReturn(responseDTO);
 
-        // Create a mock task and assign a user to it
         Task task = new Task();
-        task.setUser(user); // Assign the user to the task
+        task.setUser(user);
 
-        TaskResponseDTO taskResponseDTO = new TaskResponseDTO(); // Create a mock task response
-        List<TaskResponseDTO> taskList = List.of(taskResponseDTO); // Add the mock task to a list
-        when(taskMapper.toTaskResponseDTO(any())).thenReturn(taskResponseDTO); // Mock task mapper
+        TaskResponseDTO taskResponseDTO = new TaskResponseDTO();
+        List<TaskResponseDTO> taskList = List.of(taskResponseDTO);
+        when(taskMapper.toTaskResponseDTO(any())).thenReturn(taskResponseDTO);
 
-        // Set up project tasks
-        project.setTasks(List.of(task)); // Make sure project has tasks
+        project.setTasks(List.of(task));
 
-        // Call the method to be tested
         ProjectResponseDTO result = projectService.getProjectByIdForAssignedUser(1L);
 
-        // Assertions
         assertNotNull(result);
         assertEquals("Test Project", result.getName());
         assertFalse(result.getTasks().isEmpty(), "Tasks should not be empty");
@@ -277,7 +271,7 @@ class ProjectServiceImplTest {
 
     @Test
     void createProject_ShouldThrowException_WhenStartDateIsInTheFuture() {
-        requestDTO.setStartDate(LocalDate.now().plusDays(1));  // Invalid start date
+        requestDTO.setStartDate(LocalDate.now().plusDays(1));
 
         assertThrows(InvalidProjectDateException.class, () -> projectService.createProject(requestDTO));
     }
@@ -285,7 +279,7 @@ class ProjectServiceImplTest {
     @Test
     void createProject_ShouldThrowException_WhenEndDateIsBeforeStartDate() {
         requestDTO.setStartDate(LocalDate.now().plusDays(1));
-        requestDTO.setEndDate(LocalDate.now().minusDays(1));  // Invalid end date
+        requestDTO.setEndDate(LocalDate.now().minusDays(1));
 
         assertThrows(InvalidProjectDateException.class, () -> projectService.createProject(requestDTO));
     }

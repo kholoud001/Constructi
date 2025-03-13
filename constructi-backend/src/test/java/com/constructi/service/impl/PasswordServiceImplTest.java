@@ -54,24 +54,19 @@ class PasswordServiceImplTest {
 
     @Test
     void sendResetPasswordEmail_shouldSendEmailWhenUserExists() {
-        // Arrange
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(tokenRepository.save(any(PasswordResetToken.class))).thenReturn(token);
 
-        // Act
         passwordService.sendResetPasswordEmail(user.getEmail());
 
-        // Assert
         verify(emailService, times(1)).sendHtmlEmail(eq(user.getEmail()), eq("Reset your password"), anyString());
         verify(tokenRepository, times(1)).save(any(PasswordResetToken.class));
     }
 
     @Test
     void sendResetPasswordEmail_shouldThrowExceptionWhenUserNotFound() {
-        // Arrange
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 
-        // Act & Assert
         RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
             passwordService.sendResetPasswordEmail(user.getEmail());
         });
@@ -80,7 +75,6 @@ class PasswordServiceImplTest {
 
     @Test
     void resetPassword_shouldResetPasswordWhenTokenIsValid() {
-        // Arrange
         ResetPasswordRequest request = new ResetPasswordRequest();
         request.setToken("dummy-token");
         request.setNewPassword("new-password");
@@ -89,10 +83,8 @@ class PasswordServiceImplTest {
         when(passwordEncoder.encode(request.getNewPassword())).thenReturn("encoded-password");
         when(userRepository.save(user)).thenReturn(user);
 
-        // Act
         passwordService.resetPassword(request);
 
-        // Assert
         verify(userRepository, times(1)).save(user);
         assertEquals("encoded-password", user.getPassword());
         verify(tokenRepository, times(1)).delete(token);
@@ -100,14 +92,12 @@ class PasswordServiceImplTest {
 
     @Test
     void resetPassword_shouldThrowExceptionWhenTokenIsInvalid() {
-        // Arrange
         ResetPasswordRequest request = new ResetPasswordRequest();
         request.setToken("invalid-token");
         request.setNewPassword("new-password");
 
         when(tokenRepository.findByToken(request.getToken())).thenReturn(Optional.empty());
 
-        // Act & Assert
         RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
             passwordService.resetPassword(request);
         });

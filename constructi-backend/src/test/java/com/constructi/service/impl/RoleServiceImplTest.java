@@ -25,15 +25,12 @@ class RoleServiceImplTest {
 
     @Test
     void testSeedRoles_ShouldSaveRolesWhenNotExist() {
-        // Arrange
         for (RoleType roleType : RoleType.values()) {
             when(roleRepository.existsByRoleType(roleType)).thenReturn(false);
         }
 
-        // Act
         roleService.seedRoles();
 
-        // Assert
         for (RoleType roleType : RoleType.values()) {
             verify(roleRepository).existsByRoleType(roleType);
         }
@@ -43,15 +40,11 @@ class RoleServiceImplTest {
 
     @Test
     void testSeedRoles_ShouldNotSaveRolesWhenExist() {
-        // Arrange
         for (RoleType roleType : RoleType.values()) {
             when(roleRepository.existsByRoleType(roleType)).thenReturn(true);
         }
-
-        // Act
         roleService.seedRoles();
 
-        // Assert
         for (RoleType roleType : RoleType.values()) {
             verify(roleRepository).existsByRoleType(roleType);
             verify(roleRepository, never()).save(any(Role.class));
