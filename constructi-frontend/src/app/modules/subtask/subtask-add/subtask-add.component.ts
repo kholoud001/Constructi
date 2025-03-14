@@ -164,8 +164,8 @@ export class SubtaskAddComponent implements OnInit {
         Swal.close();
 
         Swal.fire({
-          title: 'Success!',
-          text: `Subtask ${this.isEditMode ? 'updated' : 'created'} successfully.`,
+          title: 'Succès !',
+          text: `Sous-tâche ${this.isEditMode ? 'mise à jour' : 'créée'} avec succès.`,
           icon: 'success',
           timer: 2000,
           showConfirmButton: false,
@@ -228,7 +228,7 @@ export class SubtaskAddComponent implements OnInit {
 
     Swal.fire({
       icon: 'error',
-      title: 'Error',
+      title: 'Erreur',
       text: errorMessage,
       confirmButtonText: 'OK',
       confirmButtonColor: '#dc2626',

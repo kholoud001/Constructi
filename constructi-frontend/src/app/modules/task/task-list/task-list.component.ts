@@ -97,9 +97,9 @@ export class TaskListComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error loading tasks:', error);
+        console.error('Erreur lors du chargement des tâches :', error);
         this.isLoading = false;
-        this.showErrorAlert('Failed to load tasks', 'Please try again later.');
+        this.showErrorAlert('Échec du chargement des tâches', 'Veuillez réessayer plus tard.');
       }
     });
   }
@@ -119,9 +119,9 @@ export class TaskListComponent implements OnInit {
         task.subtasksLoading = false;
       },
       error: (error) => {
-        console.error('Error loading subtasks:', error);
+        console.error('Erreur lors du chargement des sous-tâches :', error);
         task.subtasksLoading = false;
-        this.showErrorAlert('Failed to load subtasks', 'Please try again later.');
+        this.showErrorAlert('Échec du chargement des sous-tâches', 'Veuillez réessayer plus tard.');
       }
     });
   }
@@ -132,12 +132,12 @@ export class TaskListComponent implements OnInit {
 
   confirmDeleteSubtask(subtask: Subtask): void {
     Swal.fire({
-      title: 'Delete Subtask?',
-      text: 'Are you sure you want to delete this subtask? This action cannot be undone.',
+      title: 'Supprimer la Sous-tâche ?',
+      text: 'Êtes-vous sûr de vouloir supprimer cette sous-tâche ? Cette action ne peut pas être annulée.',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Oui, supprimez-la',
+      cancelButtonText: 'Annuler',
       confirmButtonColor: '#dc2626',
       cancelButtonColor: '#6b7280',
       heightAuto: false,
@@ -154,12 +154,12 @@ export class TaskListComponent implements OnInit {
   }
 
   deleteSubtask(subtask: Subtask): void {
-    const loadingAlert = this.showLoadingAlert('Deleting subtask...');
+    const loadingAlert = this.showLoadingAlert('Suppression de la sous-tâche...');
 
     this.subtaskService.deleteSubtask(subtask.id).subscribe({
       next: () => {
         Swal.close();
-        this.showSuccessAlert('Subtask deleted successfully');
+        this.showSuccessAlert('Sous-tâche supprimée avec succès');
         // Reload the subtasks for the parent task
         const parentTask = this.tasks.find(t => t.id === subtask.parentTaskId);
         if (parentTask) {
@@ -168,20 +168,20 @@ export class TaskListComponent implements OnInit {
       },
       error: (error) => {
         Swal.close();
-        console.error('Error deleting subtask:', error);
-        this.showErrorAlert('Failed to delete subtask', 'Please try again later.');
+        console.error('Erreur lors de la suppression de la sous-tâche :', error);
+        this.showErrorAlert('Échec de la suppression de la sous-tâche', 'Veuillez réessayer plus tard.');
       }
     });
   }
 
   confirmApproveSubtask(subtask: Subtask): void {
     Swal.fire({
-      title: 'Approve Subtask?',
-      text: 'Are you sure you want to approve this subtask?',
+      title: 'Approuver la Sous-tâche ?',
+      text: 'Êtes-vous sûr de vouloir approuver cette sous-tâche ?',
       icon: 'question',
       showCancelButton: true,
-      confirmButtonText: 'Yes, approve it',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Oui, approuvez-la',
+      cancelButtonText: 'Annuler',
       confirmButtonColor: '#16a34a',
       cancelButtonColor: '#6b7280',
       heightAuto: false,
@@ -198,12 +198,12 @@ export class TaskListComponent implements OnInit {
   }
 
   approveSubtask(subtask: Subtask): void {
-    const loadingAlert = this.showLoadingAlert('Approving subtask...');
+    const loadingAlert = this.showLoadingAlert('Approbation de la sous-tâche...');
 
     this.subtaskService.approveSubtask(subtask.id).subscribe({
       next: () => {
         Swal.close();
-        this.showSuccessAlert('Subtask approved successfully');
+        this.showSuccessAlert('Sous-tâche approuvée avec succès');
         // Reload the subtasks for the parent task
         const parentTask = this.tasks.find(t => t.id === subtask.parentTaskId);
         if (parentTask) {
@@ -212,8 +212,8 @@ export class TaskListComponent implements OnInit {
       },
       error: (error) => {
         Swal.close();
-        console.error('Error approving subtask:', error);
-        this.showErrorAlert('Failed to approve subtask', 'Please try again later.');
+        console.error('Erreur lors de l\'approbation de la sous-tâche :', error);
+        this.showErrorAlert('Échec de l\'approbation de la sous-tâche', 'Veuillez réessayer plus tard.');
       }
     });
   }
@@ -236,12 +236,12 @@ export class TaskListComponent implements OnInit {
 
   confirmDelete(task: Task): void {
     Swal.fire({
-      title: 'Delete Task?',
-      text: 'Are you sure you want to delete this task and all its subtasks? This action cannot be undone.',
+      title: 'Supprimer la Tâche ?',
+      text: 'Êtes-vous sûr de vouloir supprimer cette tâche et toutes ses sous-tâches ? Cette action ne peut pas être annulée.',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Oui, supprimez-la',
+      cancelButtonText: 'Annuler',
       confirmButtonColor: '#dc2626',
       cancelButtonColor: '#6b7280',
       heightAuto: false,
@@ -258,18 +258,18 @@ export class TaskListComponent implements OnInit {
   }
 
   deleteTask(taskId: number): void {
-    const loadingAlert = this.showLoadingAlert('Deleting task...');
+    const loadingAlert = this.showLoadingAlert('Suppression de la tâche...');
 
     this.taskService.deleteTask(taskId).subscribe({
       next: () => {
         Swal.close();
-        this.showSuccessAlert('Task deleted successfully');
+        this.showSuccessAlert('Tâche supprimée avec succès');
         this.loadTasks();
       },
       error: (error) => {
         Swal.close();
-        console.error('Error deleting task:', error);
-        this.showErrorAlert('Failed to delete task', 'Please try again later.');
+        console.error('Erreur lors de la suppression de la tâche :', error);
+        this.showErrorAlert('Échec de la suppression de la tâche', 'Veuillez réessayer plus tard.');
       }
     });
   }
@@ -280,15 +280,15 @@ export class TaskListComponent implements OnInit {
 
   prolongSubtask(subtaskId: number): void {
     Swal.fire({
-      title: 'Prolong Subtask',
+      title: 'Prolonger la Sous-tâche',
       input: 'date',
-      inputLabel: 'New End Date',
+      inputLabel: 'Nouvelle Date de Fin',
       inputAttributes: {
         required: 'true'
       },
       showCancelButton: true,
-      confirmButtonText: 'Prolong',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Prolonger',
+      cancelButtonText: 'Annuler',
       confirmButtonColor: '#16a34a',
       cancelButtonColor: '#6b7280',
       heightAuto: false,
@@ -300,13 +300,13 @@ export class TaskListComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const newEndDate = result.value;
-        const loadingAlert = this.showLoadingAlert('Prolonging subtask...');
+        const loadingAlert = this.showLoadingAlert('Prolongation de la sous-tâche...');
 
         this.subtaskService.prolongSubtask(subtaskId, newEndDate).subscribe({
           next: () => {
             Swal.close();
-            this.showSuccessAlert('Subtask prolonged successfully');
-            // Find and reload the parent task's subtasks
+            this.showSuccessAlert('Sous-tâche prolongée avec succès');
+            // Trouver et recharger les sous-tâches de la tâche parente
             for (const task of this.tasks) {
               if (task.subtasks.some(s => s.id === subtaskId)) {
                 this.loadSubtasks(task);
@@ -316,7 +316,7 @@ export class TaskListComponent implements OnInit {
           },
           error: (error) => {
             Swal.close();
-            let errorMessage = 'Failed to prolong subtask. Please try again later.';
+            let errorMessage = 'Échec de la prolongation de la sous-tâche. Veuillez réessayer plus tard.';
 
             if (error.error) {
               if (typeof error.error === 'string') {
@@ -344,16 +344,16 @@ export class TaskListComponent implements OnInit {
         }, {} as { [key: number]: string });
 
         Swal.fire({
-          title: 'Assign Task to Worker',
+          title: 'Assigner une tâche à un travailleur',
           input: 'select',
           inputOptions: userOptions,
-          inputLabel: 'Select a Worker',
+          inputLabel: 'Sélectionner un travailleur',
           inputAttributes: {
             required: 'true'
           },
           showCancelButton: true,
-          confirmButtonText: 'Assign',
-          cancelButtonText: 'Cancel',
+          confirmButtonText: 'Assigner',
+          cancelButtonText: 'Annuler',
           confirmButtonColor: '#16a34a',
           cancelButtonColor: '#6b7280',
           heightAuto: false,
@@ -365,26 +365,26 @@ export class TaskListComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
             const workerId = result.value;
-            const loadingAlert = this.showLoadingAlert('Assigning task...');
+            const loadingAlert = this.showLoadingAlert('Assignation de la tâche...');
 
             this.taskService.assignTaskToWorker(taskId, workerId).subscribe({
               next: () => {
                 Swal.close();
-                this.showSuccessAlert('Task assigned successfully');
+                this.showSuccessAlert('Tâche assignée avec succès');
                 this.loadTasks();
               },
               error: (error) => {
                 Swal.close();
-                console.error('Error assigning task:', error);
-                this.showErrorAlert('Failed to assign task', 'Please try again later.');
+                console.error('Erreur lors de l\'assignation de la tâche :', error);
+                this.showErrorAlert('Échec de l\'assignation de la tâche', 'Veuillez réessayer plus tard.');
               }
             });
           }
         });
       },
       error: (error) => {
-        console.error('Error fetching users:', error);
-        this.showErrorAlert('Failed to load users', 'Please try again later.');
+        console.error('Erreur lors de la récupération des utilisateurs :', error);
+        this.showErrorAlert('Échec du chargement des utilisateurs', 'Veuillez réessayer plus tard.');
       }
     });
   }

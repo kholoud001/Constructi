@@ -20,7 +20,6 @@ import Swal from 'sweetalert2';
 
 })
 export class TaskAddComponent implements OnInit {
-  // Icons
   faChevronRight = faChevronRight;
   faPlus = faPlus;
   faPencil = faPencil;
@@ -28,7 +27,6 @@ export class TaskAddComponent implements OnInit {
   faCheck = faCheck;
   faChevronDown = faChevronDown;
 
-  // Component state
   task: any = {
     description: '',
     status: '',
@@ -100,8 +98,8 @@ export class TaskAddComponent implements OnInit {
       next: () => {
         this.showSuccessToast = true;
         Swal.fire({
-          title: 'Success!',
-          text: 'Task saved successfully.',
+          title: 'Succès !',
+          text: 'Tâche enregistrée avec succès.',
           icon: 'success',
           timer: 2000,
           showConfirmButton: false
@@ -121,21 +119,21 @@ export class TaskAddComponent implements OnInit {
             });
 
             Swal.fire({
-              title: 'Validation Error',
+              title: 'Erreur de Validation',
               html: errorMessage,
               icon: 'error'
             });
           } else {
             Swal.fire({
-              title: 'Error',
+              title: 'Erreur',
               text: error.error,
               icon: 'error'
             });
           }
         } else {
           Swal.fire({
-            title: 'Error',
-            text: 'Something went wrong. Please try again later.',
+            title: 'Erreur',
+            text: 'Quelque chose a mal tourné. Veuillez réessayer plus tard.',
             icon: 'error'
           });
         }
