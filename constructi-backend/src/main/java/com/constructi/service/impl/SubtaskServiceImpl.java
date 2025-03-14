@@ -6,10 +6,12 @@ import com.constructi.exception.SubtaskNotFoundException;
 import com.constructi.mapper.SubtaskMapper;
 import com.constructi.model.entity.Subtask;
 import com.constructi.model.entity.Task;
+import com.constructi.model.enums.StatusTask;
 import com.constructi.repository.SubtaskRepository;
 import com.constructi.repository.TaskRepository;
 import com.constructi.repository.UserRepository;
 import com.constructi.service.SubtaskService;
+import com.constructi.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,8 @@ public class SubtaskServiceImpl implements SubtaskService {
     private final TaskRepository taskRepository;
     private final SubtaskMapper subtaskMapper;
     private final UserRepository userRepository;
+    private final TaskService taskService;
+
 
     @Override
     public SubtaskResponseDTO createSubtask(SubtaskRequestDTO subtaskRequestDTO) {
@@ -104,8 +108,13 @@ public class SubtaskServiceImpl implements SubtaskService {
     public SubtaskResponseDTO approveSubtask(Long subtaskId) {
         Subtask subtask = subtaskRepository.findById(subtaskId)
                 .orElseThrow(() -> new SubtaskNotFoundException("Subtask not found"));
+
         subtask.setApproved(true);
+        subtask.setStatus(StatusTask.FINISHED);
         Subtask approvedSubtask = subtaskRepository.save(subtask);
+
+        taskService.updateParentTaskStatusIfSubtasksCompleted(subtask.getParentTask().getId());
+
         return subtaskMapper.toSubtaskResponseDTO(approvedSubtask);
     }
 
