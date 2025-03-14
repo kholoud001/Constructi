@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  frontend:
+    container_name: constructi-frontend
+    build:
+      context: ./constructi-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - constructi-network
+    depends_on:
+      - app
+    restart: unless-stopped
+
+  app:
+    image: constructi-api:latest
+    container_name: constructi-app
+    build:
+      context: ./constructi-backend
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/Constructi
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=action
+    depends_on:
+      - postgres
+    ports:
+      - "8086:8086"
+    networks:
+      - constructi-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: Constructi
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: action
+      POSTGRES_HOST_AUTH_METHOD: md5
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - constructi-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  constructi-network:
+    driver: bridge
+
+volumes:
+  postgres-data:

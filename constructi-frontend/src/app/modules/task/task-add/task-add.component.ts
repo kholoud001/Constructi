@@ -10,12 +10,14 @@ import {
   faCheck,
   faChevronDown,
 } from '@fortawesome/free-solid-svg-icons';
-import Swal from 'sweetalert2'; // Import Sweetalert2
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-task-add',
   templateUrl: './task-add.component.html',
   styleUrls: ['./task-add.component.css'],
+  standalone: false,
+
 })
 export class TaskAddComponent implements OnInit {
   // Icons

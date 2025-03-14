@@ -18,7 +18,9 @@ interface User {
 @Component({
   selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
-  styleUrls: ['./user-detail.component.css']
+  styleUrls: ['./user-detail.component.css'],
+  standalone: false,
+
 })
 export class UserDetailComponent implements OnInit {
   user: User | null = null;

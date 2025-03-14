@@ -7,7 +7,9 @@ import {ProjectService} from '../project.service';
 @Component({
   selector: 'app-my-project-detail',
   templateUrl: './my-project-detail.component.html',
-  styleUrls: ['./my-project-detail.component.css']
+  styleUrls: ['./my-project-detail.component.css'],
+  standalone: false,
+
 })
 export class MyProjectDetailComponent implements OnInit {
   projectId!: number;

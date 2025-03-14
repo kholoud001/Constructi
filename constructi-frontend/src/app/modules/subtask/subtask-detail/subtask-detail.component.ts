@@ -15,7 +15,7 @@ import {
   faClock,
   faHourglass,
   faCheck,
-  faBan
+  faBan, faHistory
 } from '@fortawesome/free-solid-svg-icons';
 
 interface Subtask {
@@ -206,4 +206,6 @@ export class SubtaskDetailComponent implements OnInit {
       }
     });
   }
+
+  protected readonly faHistory = faHistory;
 }

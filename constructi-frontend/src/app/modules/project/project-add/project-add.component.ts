@@ -54,7 +54,6 @@ export class ProjectAddComponent {
       this.isSubmitting = true;
       const projectData = this.projectForm.value;
 
-      // Format dates to ISO string
       projectData.startDate = new Date(projectData.startDate).toISOString();
       projectData.endDate = new Date(projectData.endDate).toISOString();
 
@@ -62,9 +61,9 @@ export class ProjectAddComponent {
         next: () => {
           this.isSubmitting = false;
           Swal.fire({
-            icon: "success",
-            title: "Success!",
-            text: "Project has been created successfully.",
+            icon: "success", 
+            title: "Succès !",
+            text: "Le projet a été créé avec succès.",
             confirmButtonColor: "#16a34a",
             heightAuto: false,
             customClass: {
@@ -77,7 +76,7 @@ export class ProjectAddComponent {
         },
         error: (error) => {
           this.isSubmitting = false;
-          let errorMessage = "Failed to create project. Please try again.";
+          let errorMessage = "Échec de la création du projet. Veuillez réessayer.";
 
           if (error.error?.message) {
             errorMessage = error.error.message;
@@ -85,7 +84,7 @@ export class ProjectAddComponent {
 
           Swal.fire({
             icon: "error",
-            title: "Error",
+            title: "Erreur",
             text: errorMessage,
             confirmButtonColor: "#dc2626",
             heightAuto: false,
@@ -97,7 +96,7 @@ export class ProjectAddComponent {
         },
       });
     } else {
-      // Mark all fields as touched to trigger validation messages
+      // Marquer tous les champs comme touchés pour déclencher les messages de validation
       Object.keys(this.projectForm.controls).forEach((key) => {
         const control = this.projectForm.get(key);
         control?.markAsTouched();
@@ -105,8 +104,8 @@ export class ProjectAddComponent {
 
       Swal.fire({
         icon: "error",
-        title: "Form Invalid",
-        text: "Please check all required fields and try again.",
+        title: "Formulaire Invalide",
+        text: "Veuillez vérifier tous les champs requis et réessayer.",
         confirmButtonColor: "#dc2626",
         heightAuto: false,
         customClass: {
