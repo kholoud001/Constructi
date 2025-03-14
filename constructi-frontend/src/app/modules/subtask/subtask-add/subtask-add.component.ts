@@ -20,7 +20,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 
-// Define a type for the subtask
 interface Subtask {
   id?: number;
   description: string;
@@ -53,7 +52,6 @@ export class SubtaskAddComponent implements OnInit {
   isSubmitting = false;
   isLoading = false;
 
-  // Icons
   faPlus = faPlus;
   faEdit = faEdit;
   faSave = faSave;
@@ -87,7 +85,6 @@ export class SubtaskAddComponent implements OnInit {
       this.isEditMode = true;
       this.loadSubtask(subtaskId);
     } else {
-      // Set default dates for new subtasks
       const today = new Date();
       this.subtask.beginDate = today.toISOString().split('T')[0];
 
@@ -120,15 +117,14 @@ export class SubtaskAddComponent implements OnInit {
 
   onSubmit(): void {
     if (this.subtaskForm.invalid) {
-      // Mark all form controls as touched to trigger validation messages
       Object.keys(this.subtaskForm.controls).forEach(key => {
         const control = this.subtaskForm.controls[key];
         control.markAsTouched();
       });
 
       Swal.fire({
-        title: 'Form Invalid',
-        text: 'Please fill in all required fields correctly.',
+        title: 'Formulaire Invalide',
+        text: 'Veuillez remplir correctement tous les champs requis.',
         icon: 'warning',
         confirmButtonText: 'OK'
       });
@@ -138,11 +134,10 @@ export class SubtaskAddComponent implements OnInit {
 
     if (this.isSubmitting || this.isLoading) return;
 
-    // Validate dates
     if (new Date(this.subtask.dateEndEstimated) < new Date(this.subtask.beginDate)) {
       Swal.fire({
-        title: 'Invalid Dates',
-        text: 'Estimated end date cannot be before the begin date.',
+        title: 'Dates Invalides',
+        text: 'La date de fin estimée ne peut pas être antérieure à la date de début.',
         icon: 'warning',
         confirmButtonText: 'OK'
       });
@@ -152,8 +147,8 @@ export class SubtaskAddComponent implements OnInit {
     this.isSubmitting = true;
 
     const loadingSwal = Swal.fire({
-      title: this.isEditMode ? 'Updating...' : 'Creating...',
-      text: 'Please wait while we save your subtask.',
+      title: this.isEditMode ? 'Mise à jour...' : 'Création...',
+      text: 'Veuillez patienter pendant que nous enregistrons votre sous-tâche.',
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();

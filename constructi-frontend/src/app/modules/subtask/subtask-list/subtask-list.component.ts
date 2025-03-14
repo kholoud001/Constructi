@@ -56,8 +56,8 @@ export class SubtaskListComponent implements OnInit {
     this.parentTaskId = +this.route.snapshot.params['parentTaskId'];
 
     if (isNaN(this.parentTaskId)) {
-      console.error('Invalid parentTaskId');
-      this.showErrorAlert('Invalid Task ID', 'The parent task ID is invalid.');
+      console.error('Invalid parentTaskId');     
+      this.showErrorAlert('ID de Tâche invalide', 'L\'ID de la tâche parente est invalide.');
       return;
     }
     this.loadSubtasks();
@@ -65,7 +65,7 @@ export class SubtaskListComponent implements OnInit {
 
   loadSubtasks(): void {
     if (this.parentTaskId === undefined) {
-      console.warn("No parentTaskId provided, skipping API call.");
+      console.warn("Aucun parentTaskId fourni, saut de l'appel API.");
       return;
     }
 
@@ -76,9 +76,9 @@ export class SubtaskListComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error("Error loading subtasks", error);
+        console.error("Erreur lors du chargement des sous-tâches", error);
         this.isLoading = false;
-        this.showErrorAlert('Failed to load subtasks', 'Please try again later.');
+        this.showErrorAlert('Erreur lors du chargement des sous-tâches', 'Veuillez réessayer plus tard.');
       }
     });
   }
@@ -93,12 +93,12 @@ export class SubtaskListComponent implements OnInit {
 
   confirmDelete(subtask: Subtask): void {
     Swal.fire({
-      title: 'Delete Subtask?',
-      text: 'Are you sure you want to delete this subtask? This action cannot be undone.',
+      title: 'Supprimer la Sous-tâche?',
+      text: 'Êtes-vous sûr de vouloir supprimer cette sous-tâche? Cette action ne peut pas être annulée.',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Oui, supprimer',
+      cancelButtonText: 'Annuler',
       confirmButtonColor: '#dc2626',
       cancelButtonColor: '#6b7280',
       heightAuto: false,
@@ -115,30 +115,30 @@ export class SubtaskListComponent implements OnInit {
   }
 
   deleteSubtask(subtaskId: number): void {
-    const loadingAlert = this.showLoadingAlert('Deleting subtask...');
+    const loadingAlert = this.showLoadingAlert('Suppression de la sous-tâche...');
 
     this.subtaskService.deleteSubtask(subtaskId).subscribe({
       next: () => {
         Swal.close();
-        this.showSuccessAlert('Subtask deleted successfully');
+        this.showSuccessAlert('Sous-tâche supprimée avec succès');
         this.loadSubtasks();
       },
       error: (error) => {
         Swal.close();
-        console.error('Error deleting subtask:', error);
-        this.showErrorAlert('Failed to delete subtask', 'Please try again later.');
+        console.error('Erreur lors de la suppression de la sous-tâche:', error);
+        this.showErrorAlert('Erreur lors de la suppression de la sous-tâche', 'Veuillez réessayer plus tard.');
       }
-    });
+    }); 
   }
 
   confirmApprove(subtask: Subtask): void {
     Swal.fire({
-      title: 'Approve Subtask?',
-      text: 'Are you sure you want to approve this subtask?',
-      icon: 'question',
+      title: 'Approuver la Sous-tâche?',
+      text: 'Êtes-vous sûr de vouloir approuver cette sous-tâche?',
+      icon: 'question', 
       showCancelButton: true,
-      confirmButtonText: 'Yes, approve it',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Oui, approuver',
+      cancelButtonText: 'Annuler',
       confirmButtonColor: '#16a34a',
       cancelButtonColor: '#6b7280',
       heightAuto: false,
@@ -155,18 +155,18 @@ export class SubtaskListComponent implements OnInit {
   }
 
   approveSubtask(subtaskId: number): void {
-    const loadingAlert = this.showLoadingAlert('Approving subtask...');
+    const loadingAlert = this.showLoadingAlert('Approbation de la sous-tâche...');
 
     this.subtaskService.approveSubtask(subtaskId).subscribe({
       next: () => {
         Swal.close();
-        this.showSuccessAlert('Subtask approved successfully');
+        this.showSuccessAlert('Sous-tâche approuvée avec succès');
         this.loadSubtasks();
       },
       error: (error) => {
         Swal.close();
-        console.error('Error approving subtask:', error);
-        this.showErrorAlert('Failed to approve subtask', 'Please try again later.');
+        console.error('Erreur lors de l\'approbation de la sous-tâche:', error);
+        this.showErrorAlert('Échec de l\'approbation de la sous-tâche', 'Veuillez réessayer plus tard.');
       }
     });
   }
@@ -196,7 +196,7 @@ export class SubtaskListComponent implements OnInit {
   private showSuccessAlert(message: string) {
     Swal.fire({
       icon: 'success',
-      title: 'Success',
+      title: 'Succès',
       text: message,
       timer: 2000,
       showConfirmButton: false,

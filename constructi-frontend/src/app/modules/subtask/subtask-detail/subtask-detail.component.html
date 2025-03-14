@@ -19,7 +19,7 @@
       <div>
         <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
           <fa-icon [icon]="faClipboardList" class="mr-3 text-blue-600 dark:text-blue-400"></fa-icon>
-          Subtask Details
+          Détails de la Sous-tâche
         </h2>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">ID: {{ subtask.id }}</p>
       </div>
@@ -51,21 +51,21 @@
         </div>
 
         <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Approval Status</h3>
+          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Statut d'Approbation</h3>
           <div class="flex items-center">
             <fa-icon
               [icon]="subtask.approved ? faCheckCircle : faTimesCircle"
               [ngClass]="{'text-green-500 dark:text-green-400': subtask.approved, 'text-red-500 dark:text-red-400': !subtask.approved}"
               class="mr-2 text-lg"
             ></fa-icon>
-            <span class="text-gray-900 dark:text-white">{{ subtask.approved ? 'Approved' : 'Not Approved' }}</span>
+            <span class="text-gray-900 dark:text-white">{{ subtask.approved ? 'Approuvé' : 'Non Approuvé' }}</span>
           </div>
         </div>
       </div>
 
       <div class="space-y-4">
         <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Begin Date</h3>
+          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Date de Début</h3>
           <div class="flex items-center">
             <fa-icon [icon]="faCalendarDay" class="mr-2 text-blue-500 dark:text-blue-400"></fa-icon>
             <span class="text-gray-900 dark:text-white">{{ subtask.beginDate | date:'medium' }}</span>
@@ -73,18 +73,18 @@
         </div>
 
         <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Estimated End Date</h3>
+          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Date de Fin Estimée</h3>
           <div class="flex items-center">
             <fa-icon [icon]="faCalendarCheck" class="mr-2 text-blue-500 dark:text-blue-400"></fa-icon>
             <span class="text-gray-900 dark:text-white">{{ subtask.dateEndEstimated | date:'medium' }}</span>
           </div>
         </div>
         <div *ngIf="subtask.originalDateEndEstimated" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border-l-4 border-amber-500 dark:border-amber-600">
-          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Original End Date</h3>
+          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Date de Fin Initiale</h3>
           <div class="flex items-center">
             <fa-icon [icon]="faHistory" class="mr-2 text-amber-500 dark:text-amber-400"></fa-icon>
             <span class="text-gray-900 dark:text-white">{{ subtask.originalDateEndEstimated | date:'medium' }}</span>
-            <span class="ml-2 text-xs text-amber-600 dark:text-amber-400 italic">(Extended)</span>
+            <span class="ml-2 text-xs text-amber-600 dark:text-amber-400 italic">(Prolongée)</span>
           </div>
         </div>
       </div>
@@ -97,7 +97,7 @@
         class="inline-flex items-center justify-center px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
       >
         <fa-icon [icon]="faArrowLeft" class="mr-2"></fa-icon>
-        Back
+        Retour
       </button>
 
       <button
@@ -106,7 +106,7 @@
         class="inline-flex items-center justify-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
       >
         <fa-icon [icon]="faCheckCircle" class="mr-2"></fa-icon>
-        Approve
+        Approuver
       </button>
 
       <button
@@ -114,7 +114,7 @@
         class="inline-flex items-center justify-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
       >
         <fa-icon [icon]="faEdit" class="mr-2"></fa-icon>
-        Edit
+        Modifier
       </button>
 
       <button
@@ -122,7 +122,7 @@
         class="inline-flex items-center justify-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
       >
         <fa-icon [icon]="faTrash" class="mr-2"></fa-icon>
-        Delete
+        Supprimer
       </button>
     </div>
   </div>

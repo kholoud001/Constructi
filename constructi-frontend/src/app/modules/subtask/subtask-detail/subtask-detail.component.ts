@@ -74,13 +74,13 @@ export class SubtaskDetailComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.error = 'Failed to load subtask details. Please try again.';
+        this.error = 'Échec du chargement des détails de la sous-tâche. Veuillez réessayer.';
         this.loading = false;
-        console.error('Error loading subtask:', err);
+        console.error('Erreur lors du chargement de la sous-tâche:', err);
 
         Swal.fire({
-          title: 'Error!',
-          text: 'Failed to load subtask details.',
+          title: 'Erreur !',
+          text: 'Échec du chargement des détails de la sous-tâche.',
           icon: 'error',
           confirmButtonText: 'OK'
         });
@@ -113,12 +113,12 @@ export class SubtaskDetailComponent implements OnInit {
     if (!this.subtask) return;
 
     Swal.fire({
-      title: 'Approve Subtask',
-      text: 'Are you sure you want to approve this subtask?',
-      icon: 'question',
+      title: 'Approuver la sous-tâche',
+      text: 'Êtes-vous sûr de vouloir approuver cette sous-tâche ?',
+      icon: 'question', 
       showCancelButton: true,
-      confirmButtonText: 'Yes, approve it!',
-      cancelButtonText: 'Cancel'
+      confirmButtonText: 'Oui, approuver !',
+      cancelButtonText: 'Annuler'
     }).then((result) => {
       if (result.isConfirmed) {
         this.loading = true;
@@ -128,8 +128,8 @@ export class SubtaskDetailComponent implements OnInit {
             this.subtask!.approved = true;
 
             Swal.fire({
-              title: 'Approved!',
-              text: 'The subtask has been approved successfully.',
+              title: 'Approuvée !',
+              text: 'La sous-tâche a été approuvée avec succès.',
               icon: 'success',
               timer: 2000,
               showConfirmButton: false
@@ -137,11 +137,11 @@ export class SubtaskDetailComponent implements OnInit {
           },
           error: (err) => {
             this.loading = false;
-            console.error('Error approving subtask:', err);
+            console.error('Erreur lors de l\'approbation de la sous-tâche:', err);
 
             Swal.fire({
-              title: 'Error!',
-              text: 'Failed to approve the subtask.',
+              title: 'Erreur !',
+              text: 'Échec de l\'approbation de la sous-tâche.',
               icon: 'error',
               confirmButtonText: 'OK'
             });
@@ -160,14 +160,14 @@ export class SubtaskDetailComponent implements OnInit {
     if (!this.subtask) return;
 
     Swal.fire({
-      title: 'Delete Subtask',
-      text: 'Are you sure you want to delete this subtask? This action cannot be undone.',
-      icon: 'warning',
+      title: 'Supprimer la sous-tâche',
+      text: 'Êtes-vous sûr de vouloir supprimer cette sous-tâche ? Cette action est irréversible.',
+      icon: 'warning', 
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'Cancel'
+      confirmButtonText: 'Oui, supprimer !',
+      cancelButtonText: 'Annuler'
     }).then((result) => {
       if (result.isConfirmed) {
         this.deleteSubtask();
@@ -184,8 +184,8 @@ export class SubtaskDetailComponent implements OnInit {
         this.loading = false;
 
         Swal.fire({
-          title: 'Deleted!',
-          text: 'The subtask has been deleted successfully.',
+          title: 'Supprimée !',
+          text: 'La sous-tâche a été supprimée avec succès.',
           icon: 'success',
           timer: 2000,
           showConfirmButton: false
@@ -195,11 +195,11 @@ export class SubtaskDetailComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        console.error('Error deleting subtask:', err);
+        console.error('Erreur lors de la suppression de la sous-tâche:', err);
 
         Swal.fire({
-          title: 'Error!',
-          text: 'Failed to delete the subtask.',
+          title: 'Erreur !',
+          text: 'Échec de la suppression de la sous-tâche.',
           icon: 'error',
           confirmButtonText: 'OK'
         });
