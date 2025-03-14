@@ -57,7 +57,7 @@ public class User {
     @Column(name = "contrat_type")
     private ContratType contratType;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
 

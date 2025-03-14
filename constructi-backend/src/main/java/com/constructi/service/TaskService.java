@@ -30,6 +30,8 @@ public interface TaskService {
 
     TaskResponseDTO getTaskWithInvoices(Long taskId);
 
+    void updateParentTaskStatusIfSubtasksCompleted(Long parentTaskId);
+
 
 //    TaskResponseDTO prolongTask(Long taskId, LocalDate newEndDate);
 }

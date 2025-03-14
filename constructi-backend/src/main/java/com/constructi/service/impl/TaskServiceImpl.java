@@ -3,7 +3,6 @@ package com.constructi.service.impl;
 import com.constructi.DTO.TaskRequestDTO;
 import com.constructi.DTO.TaskResponseDTO;
 import com.constructi.exception.TaskNotFoundException;
-import com.constructi.mapper.SubtaskMapper;
 import com.constructi.mapper.TaskMapper;
 import com.constructi.model.entity.Project;
 import com.constructi.model.entity.Subtask;
@@ -21,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -194,6 +192,22 @@ public class TaskServiceImpl implements TaskService {
                 .count();
 
         return (double) approvedCompleted / subtasks.size() * 100;
+    }
+
+    @Override
+    public void updateParentTaskStatusIfSubtasksCompleted(Long parentTaskId) {
+        Task parentTask = taskRepository.findById(parentTaskId)
+                .orElseThrow(() -> new RuntimeException("Parent task not found"));
+
+        List<Subtask> subtasks = subtaskRepository.findByParentTaskId(parentTaskId);
+
+        boolean allSubtasksCompleted = subtasks.stream()
+                .allMatch(subtask -> subtask.getStatus() == StatusTask.FINISHED && subtask.isApproved());
+
+        if (allSubtasksCompleted) {
+            parentTask.setStatus(StatusTask.FINISHED);
+            taskRepository.save(parentTask);
+        }
     }
 
 
