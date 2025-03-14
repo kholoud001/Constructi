@@ -111,7 +111,7 @@ export class AdminDashboardComponent implements OnInit {
       this.providers = providers;
     });
 
-    this.invoiceService.getMyInvoices(1).subscribe((invoices) => { // Replace 1 with the actual user ID
+    this.invoiceService.getMyInvoices(1).subscribe((invoices) => { 
       this.invoices = invoices;
     });
   }
@@ -126,25 +126,25 @@ export class AdminDashboardComponent implements OnInit {
 
   deleteProject(id: number): void {
     Swal.fire({
-      title: 'Are you sure?',
-      text: 'You won\'t be able to revert this!',
+      title: 'Êtes-vous sûr ?',
+      text: 'Vous ne pourrez pas revenir en arrière !', 
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Oui, supprimer !',
+      cancelButtonText: 'Annuler',
     }).then((result) => {
       if (result.isConfirmed) {
         this.projectService.deleteProject(id).subscribe({
           next: () => {
             this.recentProjects = this.recentProjects.filter(project => project.id !== id);
             this.totalProjects--;
-            Swal.fire('Deleted!', 'The project has been deleted.', 'success');
+            Swal.fire('Supprimé !', 'Le projet a été supprimé.', 'success');
           },
           error: (err) => {
-            console.error('Error deleting project:', err);
-            Swal.fire('Error!', 'Failed to delete the project.', 'error');
+            console.error('Erreur lors de la suppression du projet:', err);
+            Swal.fire('Erreur !', 'Échec de la suppression du projet.', 'error');
           },
         });
       }
@@ -161,25 +161,25 @@ export class AdminDashboardComponent implements OnInit {
 
   deleteTask(id: number): void {
     Swal.fire({
-      title: 'Are you sure?',
-      text: 'You won\'t be able to revert this!',
+      title: 'Êtes-vous sûr ?',
+      text: 'Vous ne pourrez pas revenir en arrière !',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Oui, supprimer !',
+      cancelButtonText: 'Annuler',
     }).then((result) => {
       if (result.isConfirmed) {
         this.taskService.deleteTask(id).subscribe({
           next: () => {
             this.tasks = this.tasks.filter(task => task.id !== id);
             this.totalTasks--;
-            Swal.fire('Deleted!', 'The task has been deleted.', 'success');
+            Swal.fire('Supprimé !', 'La tâche a été supprimée.', 'success');
           },
           error: (err) => {
-            console.error('Error deleting task:', err);
-            Swal.fire('Error!', 'Failed to delete the task.', 'error');
+            console.error('Erreur lors de la suppression de la tâche:', err);
+            Swal.fire('Erreur !', 'Échec de la suppression de la tâche.', 'error');
           },
         });
       }
