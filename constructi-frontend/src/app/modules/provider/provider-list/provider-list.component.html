@@ -1,33 +1,21 @@
 <div class="p-4 sm:p-6 max-w-7xl mx-auto">
-  <!-- Header -->
+  <!-- En-tête -->
   <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
     <div class="flex items-center gap-4">
       <div class="p-3 bg-gradient-to-br from-blue-500/20 to-indigo-500/10 dark:from-blue-600/30 dark:to-indigo-600/20 rounded-xl shadow-sm">
         <fa-icon [icon]="faBuilding" class="text-blue-600 dark:text-blue-400 text-2xl"></fa-icon>
       </div>
       <div>
-        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Providers</h2>
-        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Manage your service providers</p>
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Fournisseurs</h2>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Gérez vos fournisseurs de services</p>
       </div>
     </div>
 
     <div class="flex items-center gap-3">
-<!--      <div class="relative">-->
-<!--        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">-->
-<!--          <fa-icon [icon]="faSearch" class="text-gray-400 dark:text-gray-500"></fa-icon>-->
-<!--        </div>-->
-<!--        <input-->
-<!--          type="text"-->
-<!--          [(ngModel)]="searchTerm"-->
-<!--          placeholder="Search providers..."-->
-<!--          class="pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white text-sm w-full sm:w-64"-->
-<!--        >-->
-<!--      </div>-->
-
       <button
         (click)="refreshList()"
         class="p-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        title="Refresh list"
+        title="Actualiser la liste"
       >
         <fa-icon [icon]="faSync"></fa-icon>
       </button>
@@ -37,68 +25,68 @@
         class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm hover:shadow transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
       >
         <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
-        <span class="font-medium">Add Provider</span>
+        <span class="font-medium">Ajouter un Fournisseur</span>
       </button>
     </div>
   </div>
 
-  <!-- Main Content Card -->
+  <!-- Carte du Contenu Principal -->
   <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
-    <!-- Loading State -->
+    <!-- État de Chargement -->
     <div *ngIf="isLoading" class="flex flex-col items-center justify-center p-12">
       <div class="w-16 h-16 relative">
         <div class="absolute inset-0 rounded-full border-4 border-blue-200 dark:border-blue-900 opacity-25"></div>
         <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-600 animate-spin"></div>
       </div>
-      <p class="text-gray-500 dark:text-gray-400 mt-4 font-medium">Loading providers...</p>
+      <p class="text-gray-500 dark:text-gray-400 mt-4 font-medium">Chargement des fournisseurs...</p>
     </div>
 
-    <!-- Empty State -->
+    <!-- État Vide -->
     <div *ngIf="!isLoading && filteredProviders.length === 0 && providers.length === 0"
          class="p-12 text-center bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
       <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-6">
         <fa-icon [icon]="faBuilding" class="text-blue-600 dark:text-blue-400 text-3xl"></fa-icon>
       </div>
-      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No providers found</h3>
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Aucun fournisseur trouvé</h3>
       <p class="text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
-        Start by adding your first service provider
+        Commencez par ajouter votre premier fournisseur de services
       </p>
       <button
         routerLink="/providers/add"
         class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm hover:shadow transition-all duration-200"
       >
         <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
-        <span class="font-medium">Add First Provider</span>
+        <span class="font-medium">Ajouter le Premier Fournisseur</span>
       </button>
     </div>
 
-    <!-- No Search Results -->
+    <!-- Aucun Résultat de Recherche -->
     <div *ngIf="!isLoading && filteredProviders.length === 0 && providers.length > 0"
          class="p-12 text-center bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
       <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow-100 dark:bg-yellow-900/30 mb-6">
         <fa-icon [icon]="faSearch" class="text-yellow-600 dark:text-yellow-400 text-3xl"></fa-icon>
       </div>
-      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No matching providers</h3>
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Aucun fournisseur correspondant</h3>
       <p class="text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
-        No providers match your search criteria
+        Aucun fournisseur ne correspond à vos critères de recherche
       </p>
       <button
         (click)="searchTerm = ''"
         class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm hover:shadow transition-all duration-200"
       >
         <fa-icon [icon]="faSync" class="text-sm"></fa-icon>
-        <span class="font-medium">Clear Search</span>
+        <span class="font-medium">Effacer la Recherche</span>
       </button>
     </div>
 
-    <!-- Providers Table -->
+    <!-- Tableau des Fournisseurs -->
     <div *ngIf="!isLoading && filteredProviders.length > 0" class="overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead>
         <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Name</th>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Phone</th>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Address</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Nom</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Téléphone</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Adresse</th>
           <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Actions</th>
         </tr>
         </thead>
@@ -132,11 +120,11 @@
           <td class="px-6 py-4 whitespace-nowrap">
             <div class="flex items-center gap-2">
               <a [routerLink]="['/providers/edit', provider.id]"
-                 title="Modifier"  class="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-lg transition-colors duration-200">
+                 title="Modifier" class="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-lg transition-colors duration-200">
                 <fa-icon [icon]="faEdit"></fa-icon>
               </a>
               <button (click)="deleteProvider(provider.id)"
-                      title="Supprimer"     class="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-colors duration-200">
+                      title="Supprimer" class="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-colors duration-200">
                 <fa-icon [icon]="faTrash"></fa-icon>
               </button>
             </div>
