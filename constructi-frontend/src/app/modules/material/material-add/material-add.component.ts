@@ -71,7 +71,7 @@ export class MaterialAddComponent implements OnInit {
   private loadProjects(): void {
     this.projectService.getProjects().subscribe({
       next: (data) => {
-        this.projects = data; // Store projects in the array
+        this.projects = data; 
       },
       error: (err) => {
         console.error('Erreur lors du chargement des projets:', err);
