@@ -316,7 +316,7 @@ export class ArchitectDashboardComponent implements OnInit {
               <div>
                 <div class="flex items-center mb-2">
                   ${this.renderIcon(faFileInvoice, 'text-indigo-500 mr-2')}
-                  <span class="font-medium">Inv-${invoice.id || 'N/A'}</span>
+                  <span class="font-medium">Fact-${invoice.id || 'N/D'}</span>
                 </div>
                 <div class="flex items-center text-gray-600 mb-1">
                   ${this.renderIcon(faDollarSign, 'text-gray-500 mr-1')}
@@ -335,7 +335,7 @@ export class ArchitectDashboardComponent implements OnInit {
         `).join('');
 
         Swal.fire({
-          title: `<div class="flex items-center">${this.renderIcon(faReceipt, 'text-indigo-500 mr-2')}<strong>Task Invoices</strong></div>`,
+          title: `<div class="flex items-center">${this.renderIcon(faReceipt, 'text-indigo-500 mr-2')}<strong>Factures de la tâche</strong></div>`,
           icon: 'info',
           html: `
           <div class="task-info bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
@@ -350,21 +350,21 @@ export class ArchitectDashboardComponent implements OnInit {
               <div>
                 <p class="flex items-center text-gray-700 mb-2">
                   ${this.renderIcon(faExclamationCircle, 'text-gray-600 mr-2')}
-                  <span class="text-sm font-medium">Status:</span>
+                  <span class="text-sm font-medium">Statut:</span>
                 </p>
                 <div class="ml-6">${getStatusBadge(taskWithInvoices.status)}</div>
               </div>
               <div>
                 <p class="flex items-center text-gray-700 mb-2">
                   ${this.renderIcon(faCreditCard, 'text-gray-600 mr-2')}
-                  <span class="text-sm font-medium">Budget Limit:</span>
+                  <span class="text-sm font-medium">Budget Limite:</span>
                 </p>
                 <p class="ml-6 font-semibold text-gray-800">$${taskWithInvoices.budgetLimit}</p>
               </div>
               <div>
                 <p class="flex items-center text-gray-700 mb-2">
                   ${this.renderIcon(faDollarSign, 'text-gray-600 mr-2')}
-                  <span class="text-sm font-medium">Total Paid:</span>
+                  <span class="text-sm font-medium">Total Payé:</span>
                 </p>
                 <p class="ml-6 font-semibold ${parseFloat(taskWithInvoices.totalPaid) > parseFloat(taskWithInvoices.budgetLimit) ? 'text-red-600' : 'text-green-600'}">
                   $${taskWithInvoices.totalPaid}
@@ -375,10 +375,10 @@ export class ArchitectDashboardComponent implements OnInit {
           <div class="invoices-list">
             <div class="flex items-center mb-3">
               ${this.renderIcon(faFileInvoice, 'text-indigo-500 mr-2')}
-              <h4 class="text-lg font-medium">Invoices</h4>
+              <h4 class="text-lg font-medium">Factures</h4>
             </div>
             <div class="max-h-60 overflow-y-auto pr-1">
-              ${invoicesHtml || '<p class="text-gray-500 text-center py-4">No invoices found</p>'}
+              ${invoicesHtml || '<p class="text-gray-500 text-center py-4">Aucune facture trouvée</p>'}
             </div>
           </div>
           `,
@@ -399,8 +399,8 @@ export class ArchitectDashboardComponent implements OnInit {
         console.error('Error fetching task invoices:', error);
         Swal.fire({
           icon: 'error',
-          title: `<div class="flex items-center">${this.renderIcon(faExclamationCircle, 'text-red-500 mr-2')}<strong>Error</strong></div>`,
-          text: 'Failed to fetch task invoices. Please try again.',
+          title: `<div class="flex items-center">${this.renderIcon(faExclamationCircle, 'text-red-500 mr-2')}<strong>Erreur</strong></div>`,
+          text: 'Échec de la récupération des factures de la tâche. Veuillez réessayer.',
           customClass: {
             popup: 'border border-red-100',
             title: 'text-red-700',

@@ -52,7 +52,7 @@ export class MaterialUpdateComponent implements OnInit {
       quantity: [null, [Validators.required, Validators.min(0)]],
       priceUnit: [null, [Validators.required, Validators.min(0)]],
       providerId: ['', Validators.required],
-      projectId: ['', Validators.required] // Remove Validators.min(1) for select input
+      projectId: ['', Validators.required] 
     });
 
     this.materialId = Number(this.route.snapshot.paramMap.get('id'));
@@ -97,7 +97,7 @@ export class MaterialUpdateComponent implements OnInit {
   loadProjects(): void {
     this.projectService.getProjects().subscribe({
       next: (data) => {
-        this.projects = data; // Store projects in the array
+        this.projects = data; 
       },
       error: (error) => {
         console.error('Erreur lors du chargement des projets :', error);
@@ -133,7 +133,6 @@ export class MaterialUpdateComponent implements OnInit {
     this.router.navigate(['/materials']);
   }
 
-  // Getters pour accéder aux contrôles dans le template
   get name() {
     return this.materialForm.get('name');
   }

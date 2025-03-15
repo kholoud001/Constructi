@@ -57,7 +57,7 @@ export class ProviderListComponent implements OnInit {
       error: (error) => {
         console.error('Error loading providers:', error);
         this.isLoading = false;
-        this.showErrorAlert('Failed to load providers', 'Please try again later.');
+        this.showErrorAlert('Erreur lors du chargement des fournisseurs', 'Veuillez réessayer plus tard.');
       },
     });
   }
@@ -81,7 +81,6 @@ export class ProviderListComponent implements OnInit {
     );
   }
 
-  // Watch for changes to searchTerm
   ngDoCheck() {
     this.applyFilter();
   }

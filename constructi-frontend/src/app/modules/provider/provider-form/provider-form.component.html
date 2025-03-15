@@ -1,21 +1,21 @@
 <div class="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 bg-white rounded-lg shadow-lg mt-18">
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-2xl font-bold text-gray-800">
-      {{ isEditMode ? 'Edit Provider' : 'Add Provider' }}
+      {{ isEditMode ? 'Modifier le Fournisseur' : 'Ajouter un Fournisseur' }}
     </h2>
     <button
       type="button"
       (click)="goBack()"
       class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors duration-200">
       <fa-icon [icon]="faArrowLeft"></fa-icon>
-      Back to List
+      Retour à la Liste
     </button>
   </div>
 
   <form [formGroup]="providerForm" (ngSubmit)="onSubmit()" class="space-y-6">
-    <!-- Name Field -->
+    <!-- Champ Nom -->
     <div class="form-group sm:mb-4">
-      <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+      <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
       <div class="relative">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <fa-icon [icon]="faUser" class="text-gray-400"></fa-icon>
@@ -29,27 +29,27 @@
             'border-red-300 focus:ring-red-500 focus:border-red-500': isControlInvalid('name'),
             'border-green-300 focus:ring-green-500 focus:border-green-500': isControlValid('name')
           }"
-          placeholder="Enter provider name" />
+          placeholder="Entrez le nom du fournisseur" />
       </div>
 
-      <!-- Validation Messages -->
+      <!-- Messages de Validation -->
       @if (hasError('name', 'required') && providerForm.get('name')?.touched) {
         <p class="mt-1 text-sm text-red-600 flex items-center gap-1">
           <fa-icon [icon]="faExclamationTriangle" class="text-xs"></fa-icon>
-          Name is required
+          Le nom est requis
         </p>
       }
       @if (hasError('name', 'minlength')) {
         <p class="mt-1 text-sm text-red-600 flex items-center gap-1">
           <fa-icon [icon]="faExclamationTriangle" class="text-xs"></fa-icon>
-          Name must be at least 3 characters
+          Le nom doit contenir au moins 3 caractères
         </p>
       }
     </div>
 
-    <!-- Phone Field -->
+    <!-- Champ Téléphone -->
     <div class="form-group sm:mb-4">
-      <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+      <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
       <div class="relative">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <fa-icon [icon]="faPhone" class="text-gray-400"></fa-icon>
@@ -63,27 +63,27 @@
             'border-red-300 focus:ring-red-500 focus:border-red-500': isControlInvalid('phone'),
             'border-green-300 focus:ring-green-500 focus:border-green-500': isControlValid('phone')
           }"
-          placeholder="Enter phone number" />
+          placeholder="Entrez le numéro de téléphone" />
       </div>
 
-      <!-- Validation Messages -->
+      <!-- Messages de Validation -->
       @if (hasError('phone', 'required') && providerForm.get('phone')?.touched) {
         <p class="mt-1 text-sm text-red-600 flex items-center gap-1">
           <fa-icon [icon]="faExclamationTriangle" class="text-xs"></fa-icon>
-          Phone number is required
+          Le numéro de téléphone est requis
         </p>
       }
       @if (hasError('phone', 'pattern')) {
         <p class="mt-1 text-sm text-red-600 flex items-center gap-1">
           <fa-icon [icon]="faExclamationTriangle" class="text-xs"></fa-icon>
-          Please enter a valid phone number
+          Veuillez entrer un numéro de téléphone valide
         </p>
       }
     </div>
 
-    <!-- Address Field -->
+    <!-- Champ Adresse -->
     <div class="form-group sm:mb-4">
-      <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+      <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
       <div class="relative">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <fa-icon [icon]="faLocationDot" class="text-gray-400"></fa-icon>
@@ -97,38 +97,38 @@
             'border-red-300 focus:ring-red-500 focus:border-red-500': isControlInvalid('address'),
             'border-green-300 focus:ring-green-500 focus:border-green-500': isControlValid('address')
           }"
-          placeholder="Enter provider address" />
+          placeholder="Entrez l'adresse du fournisseur" />
       </div>
 
-      <!-- Validation Messages -->
+      <!-- Messages de Validation -->
       @if (hasError('address', 'required') && providerForm.get('address')?.touched) {
         <p class="mt-1 text-sm text-red-600 flex items-center gap-1">
           <fa-icon [icon]="faExclamationTriangle" class="text-xs"></fa-icon>
-          Address is required
+          L'adresse est requise
         </p>
       }
       @if (hasError('address', 'minlength')) {
         <p class="mt-1 text-sm text-red-600 flex items-center gap-1">
           <fa-icon [icon]="faExclamationTriangle" class="text-xs"></fa-icon>
-          Address must be at least 5 characters
+          L'adresse doit contenir au moins 5 caractères
         </p>
       }
     </div>
 
-    <!-- Form Actions -->
+    <!-- Actions du Formulaire -->
     <div class="flex flex-col sm:flex-row gap-3 pt-4">
       <button
         type="submit"
         class="flex-1 flex justify-center items-center gap-2 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
         [disabled]="providerForm.invalid || isSubmitting">
         <fa-icon [icon]="faSave"></fa-icon>
-        {{ isEditMode ? 'Update Provider' : 'Create Provider' }}
+        {{ isEditMode ? 'Mettre à jour le Fournisseur' : 'Créer le Fournisseur' }}
       </button>
       <button
         type="button"
         (click)="goBack()"
         class="flex-1 px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200">
-        Cancel
+        Annuler
       </button>
     </div>
   </form>

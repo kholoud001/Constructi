@@ -5,6 +5,8 @@ import { ChartData, ChartOptions } from 'chart.js';
   selector: 'app-project-progress',
   templateUrl: './project-progress.component.html',
   styleUrls: ['./project-progress.component.css'],
+  standalone: false,
+
 })
 export class ProjectProgressComponent implements OnInit {
   @Input() project: any;

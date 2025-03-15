@@ -6,15 +6,15 @@
         <fa-icon [icon]="faListCheck" class="text-blue-600 dark:text-blue-400 text-2xl"></fa-icon>
       </div>
       <div>
-        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Task Management</h2>
-        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Organize, track, and manage your project tasks</p>
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Gestion des Tâches</h2>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Organisez, suivez et gérez vos tâches de projet</p>
       </div>
     </div>
 
     <button (click)="addTask()"
             class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
       <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
-      <span class="font-medium">Create Task</span>
+      <span class="font-medium">Créer une Tâche</span>
     </button>
   </div>
 
@@ -25,9 +25,9 @@
       <div class="w-16 h-16 relative">
         <div class="absolute inset-0 rounded-full border-4 border-blue-200 dark:border-blue-900 opacity-25"></div>
         <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-600 animate-spin"></div>
-        <fa-icon [icon]="faSpinner" [spin]="true" class="text-blue-600 dark:text-blue-400 text-3xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></fa-icon>
+        <fa-icon [icon]="faSpinner" class="text-blue-600 dark:text-blue-400 text-3xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></fa-icon>
       </div>
-      <p class="text-gray-500 dark:text-gray-400 mt-4 font-medium">Loading tasks...</p>
+      <p class="text-gray-500 dark:text-gray-400 mt-4 font-medium">Chargement des tâches...</p>
     </div>
 
     <!-- Empty State -->
@@ -36,14 +36,14 @@
       <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-6">
         <fa-icon [icon]="faClipboardList" class="text-blue-600 dark:text-blue-400 text-3xl"></fa-icon>
       </div>
-      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No tasks found</h3>
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Aucune tâche trouvée</h3>
       <p class="text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
-        Start organizing your work by creating your first task
+        Commencez à organiser votre travail en créant votre première tâche
       </p>
       <button (click)="addTask()"
               class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm">
         <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
-        <span class="font-medium">Create First Task</span>
+        <span class="font-medium">Créer la Première Tâche</span>
       </button>
     </div>
 
@@ -53,11 +53,11 @@
         <thead>
         <tr class="bg-gray-50 dark:bg-gray-900/50">
           <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Description</th>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Status</th>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Progress</th>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Due Date</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Statut</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Progrès</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Date d'échéance</th>
           <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Actions</th>
-          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Subtasks</th>
+          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Sous-tâches</th>
         </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
@@ -70,9 +70,9 @@
                 <div class="flex-shrink-0 mt-1">
                   <div class="w-2 h-2 rounded-full"
                        [ngClass]="{
-                           'bg-green-500': task.status === 'Completed',
-                           'bg-yellow-500': task.status === 'In Progress',
-                           'bg-blue-500': task.status === 'Pending',
+                           'bg-green-500': task.status === 'FINISHED',
+                           'bg-yellow-500': task.status === 'IN_PROGRESS',
+                           'bg-blue-500': task.status === 'NOT_STARTED',
                            'bg-red-500': task.status === 'Blocked'
                          }">
                   </div>
@@ -80,7 +80,7 @@
                 <div>
                   <p class="text-sm font-medium text-gray-900 dark:text-white line-clamp-2">{{ task.description }}</p>
                   <p *ngIf="task.assignedTo" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Assigned to: {{ task.assignedTo }}
+                    Assigné à : {{ task.assignedTo }}
                   </p>
                 </div>
               </div>
@@ -88,9 +88,9 @@
             <td class="px-6 py-4 whitespace-nowrap">
                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
                       [ngClass]="{
-                        'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300': task.status === 'Completed',
-                        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300': task.status === 'In Progress',
-                        'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': task.status === 'Pending',
+                        'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300': task.status === 'FINISHED',
+                        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300': task.status === 'IN_PROGRESS',
+                        'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': task.status === 'NOT_STARTED',
                         'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300': task.status === 'Blocked'
                       }">
                   {{ task.status }}
@@ -130,22 +130,22 @@
               <div class="flex items-center gap-1">
                 <button (click)="viewTask(task.id)"
                         class="p-1.5 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md transition-all duration-200"
-                        title="View Task">
+                        title="Voir la Tâche">
                   <fa-icon [icon]="faEye" class="text-sm"></fa-icon>
                 </button>
                 <button (click)="editTask(task.id)"
                         class="p-1.5 text-gray-500 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-md transition-all duration-200"
-                        title="Edit Task">
+                        title="Modifier la Tâche">
                   <fa-icon [icon]="faPencil" class="text-sm"></fa-icon>
                 </button>
                 <button (click)="confirmDelete(task)"
                         class="p-1.5 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-md transition-all duration-200"
-                        title="Delete Task">
+                        title="Supprimer la Tâche">
                   <fa-icon [icon]="faTrash" class="text-sm"></fa-icon>
                 </button>
                 <button (click)="assignTaskToWorker(task.id)"
                         class="p-1.5 text-gray-500 dark:text-gray-400 hover:text-amber-500 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-md transition-all duration-200"
-                        title="Assign Task to">
+                        title="Assigner la Tâche à">
                   <fa-icon [icon]="faUserCheck" class="text-sm"></fa-icon>
                 </button>
               </div>
@@ -155,7 +155,7 @@
                 <button (click)="toggleSubtasks(task)"
                         class="p-1.5 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md transition-all duration-200 relative"
                         [ngClass]="{'bg-blue-50 dark:bg-blue-900/30 text-blue-500 dark:text-blue-400': task.showSubtasks}"
-                        title="Toggle Subtasks">
+                        title="Basculer les Sous-tâches">
                   <fa-icon [icon]="task.showSubtasks ? faChevronUp : faChevronDown" class="text-sm"></fa-icon>
                   <span *ngIf="task.subtasks && task.subtasks.length > 0"
                         class="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-blue-500 rounded-full">
@@ -164,7 +164,7 @@
                 </button>
                 <button (click)="addSubtask(task.id)"
                         class="p-1.5 text-gray-500 dark:text-gray-400 hover:text-green-500 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-md transition-all duration-200"
-                        title="Add Subtask">
+                        title="Ajouter une Sous-tâche">
                   <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
                 </button>
               </div>
@@ -178,19 +178,19 @@
                 <!-- Subtasks Loading -->
                 <div *ngIf="task.subtasksLoading" class="flex items-center justify-center p-8 bg-white dark:bg-gray-800">
                   <div class="flex items-center gap-3">
-                    <fa-icon [icon]="faSpinner" [spin]="true" class="text-blue-500 text-lg"></fa-icon>
-                    <span class="text-gray-500 dark:text-gray-400">Loading subtasks...</span>
+                    <fa-icon [icon]="faSpinner" class="text-blue-500 text-lg"></fa-icon>
+                    <span class="text-gray-500 dark:text-gray-400">Chargement des sous-tâches...</span>
                   </div>
                 </div>
 
                 <!-- No Subtasks -->
                 <div *ngIf="!task.subtasksLoading && task.subtasks.length === 0"
                      class="p-8 text-center bg-white dark:bg-gray-800">
-                  <p class="text-gray-500 dark:text-gray-400 mb-3">No subtasks found for this task.</p>
+                  <p class="text-gray-500 dark:text-gray-400 mb-3">Aucune sous-tâche trouvée pour cette tâche.</p>
                   <button (click)="addSubtask(task.id)"
                           class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors duration-200">
                     <fa-icon [icon]="faPlus" class="text-xs"></fa-icon>
-                    <span class="text-sm font-medium">Add First Subtask</span>
+                    <span class="text-sm font-medium">Ajouter la Première Sous-tâche</span>
                   </button>
                 </div>
 
@@ -200,8 +200,8 @@
                     <thead>
                     <tr class="bg-gray-100 dark:bg-gray-900/50">
                       <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Description</th>
-                      <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                      <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Approved</th>
+                      <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Statut</th>
+                      <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Approuvé</th>
                       <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                     </tr>
                     </thead>
@@ -213,9 +213,9 @@
                           <div class="flex-shrink-0 mt-1">
                             <div class="w-2 h-2 rounded-full"
                                  [ngClass]="{
-                                       'bg-green-500': subtask.status === 'Completed',
-                                       'bg-yellow-500': subtask.status === 'In Progress',
-                                       'bg-blue-500': subtask.status === 'Pending',
+                                       'bg-green-500': subtask.status === 'FINISHED',
+                                       'bg-yellow-500': subtask.status === 'IN_PROGRESS',
+                                       'bg-blue-500': subtask.status === 'NOT_STARTED',
                                        'bg-red-500': subtask.status === 'Blocked'
                                      }">
                             </div>
@@ -226,9 +226,9 @@
                       <td class="px-4 py-3 whitespace-nowrap">
                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
                                   [ngClass]="{
-                                    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300': subtask.status === 'Completed',
-                                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300': subtask.status === 'In Progress',
-                                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': subtask.status === 'Pending',
+                                    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300': subtask.status === 'FINISHED',
+                                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300': subtask.status === 'IN_PROGRESS',
+                                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': subtask.status === 'NOT_STARTED',
                                     'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300': subtask.status === 'Blocked'
                                   }">
                               {{ subtask.status }}
@@ -248,35 +248,35 @@
                                   'text-gray-500 dark:text-gray-400': !subtask.approved
                                 }">
                               </fa-icon>
-                              {{ subtask.approved ? 'Approved' : 'Not Approved' }}
+                              {{ subtask.approved ? 'Approuvé' : 'Non Approuvé' }}
                             </span>
                       </td>
                       <td class="px-4 py-3 whitespace-nowrap">
                         <div class="flex items-center gap-1">
                           <button (click)="viewSubtask(subtask.id)"
                                   class="p-1.5 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md transition-all duration-200"
-                                  title="View Subtask">
+                                  title="Voir la Sous-tâche">
                             <fa-icon [icon]="faEye" class="text-xs"></fa-icon>
                           </button>
                           <button (click)="editSubtask(subtask.id)"
                                   class="p-1.5 text-gray-500 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-md transition-all duration-200"
-                                  title="Edit Subtask">
+                                  title="Modifier la Sous-tâche">
                             <fa-icon [icon]="faPencil" class="text-xs"></fa-icon>
                           </button>
                           <button (click)="confirmDeleteSubtask(subtask)"
                                   class="p-1.5 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-md transition-all duration-200"
-                                  title="Delete Subtask">
+                                  title="Supprimer la Sous-tâche">
                             <fa-icon [icon]="faTrash" class="text-xs"></fa-icon>
                           </button>
                           <button *ngIf="!subtask.approved"
                                   (click)="confirmApproveSubtask(subtask)"
                                   class="p-1.5 text-gray-500 dark:text-gray-400 hover:text-green-500 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-md transition-all duration-200"
-                                  title="Approve Subtask">
+                                  title="Approuver la Sous-tâche">
                             <fa-icon [icon]="faCheckCircle" class="text-xs"></fa-icon>
                           </button>
                           <button (click)="prolongSubtask(subtask.id)"
                                   class="p-1.5 text-gray-500 dark:text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-md transition-all duration-200"
-                                  title="Prolong Subtask">
+                                  title="Prolonger la Sous-tâche">
                             <fa-icon [icon]="faCalendarPlus" class="text-xs"></fa-icon>
                           </button>
                         </div>

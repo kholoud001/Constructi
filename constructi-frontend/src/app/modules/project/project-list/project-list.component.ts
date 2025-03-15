@@ -33,19 +33,19 @@ export class ProjectListComponent implements OnInit {
     this.loading = true
     this.projectService.getProjects().subscribe({
       next: (data) => {
-        console.log("projects ",data)
+        console.log("projets ", data)
         this.projects = data
         this.totalPages = Math.ceil(this.projects.length / this.itemsPerPage)
         this.updatePaginatedProjects()
         this.loading = false
       },
       error: (error) => {
-        console.error("Error fetching projects:", error)
+        console.error("Erreur lors du chargement des projets:", error)
         this.loading = false
         Swal.fire({
           icon: "error",
-          title: "Error",
-          text: "Failed to load projects. Please try again.",
+          title: "Erreur",
+          text: "Échec du chargement des projets. Veuillez réessayer.",
           confirmButtonColor: "#dc2626",
           heightAuto: false,
           customClass: {
@@ -67,12 +67,12 @@ export class ProjectListComponent implements OnInit {
 
   deleteProject(id: number): void {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You will not be able to recover this project!",
+      title: "Êtes-vous sûr ?",
+      text: "Vous ne pourrez pas récupérer ce projet !",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "No, keep it",
+      confirmButtonText: "Oui, supprimer !",
+      cancelButtonText: "Non, annuler",
       confirmButtonColor: "#dc2626",
       cancelButtonColor: "#6b7280",
       heightAuto: false,
@@ -87,8 +87,8 @@ export class ProjectListComponent implements OnInit {
           next: () => {
             Swal.fire({
               icon: "success",
-              title: "Deleted!",
-              text: "The project has been deleted.",
+              title: "Supprimé !",
+              text: "Le projet a été supprimé.",
               confirmButtonColor: "#16a34a",
               heightAuto: false,
               customClass: {
@@ -99,11 +99,11 @@ export class ProjectListComponent implements OnInit {
             this.loadProjects()
           },
           error: (error) => {
-            console.error("Error deleting project:", error)
+            console.error("Erreur lors de la suppression du projet:", error)
             Swal.fire({
               icon: "error",
-              title: "Error",
-              text: "Failed to delete project. Please try again.",
+              title: "Erreur",
+              text: "Échec de la suppression du projet. Veuillez réessayer.",
               confirmButtonColor: "#dc2626",
               heightAuto: false,
               customClass: {
@@ -211,6 +211,6 @@ export class ProjectListComponent implements OnInit {
     }
   }
 
-
+  protected readonly Number = Number;
 }
 

@@ -15,7 +15,9 @@ import {
 @Component({
   selector: 'app-my-projects',
   templateUrl: './my-projects.component.html',
-  styleUrls: ['./my-projects.component.css']
+  styleUrls: ['./my-projects.component.css'],
+  standalone: false,
+
 })
 export class MyProjectsComponent implements OnInit {
   projects: any[] = [];

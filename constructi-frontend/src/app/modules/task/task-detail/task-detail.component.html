@@ -3,14 +3,14 @@
     <!-- Back Button -->
     <button (click)="goBack()" class="mb-6 inline-flex items-center text-gray-600 hover:text-gray-900">
       <fa-icon [icon]="faArrowLeft" class="mr-2"></fa-icon>
-      Back to Tasks
+      Retour aux Tâches
     </button>
 
     <!-- Loading State -->
     <div *ngIf="loading" class="flex justify-center items-center min-h-[400px]">
       <div class="text-center">
-        <fa-icon [icon]="faSpinner" [spin]="true" class="text-4xl text-blue-500 mb-4"></fa-icon>
-        <p class="text-gray-500">Loading task details...</p>
+        <fa-icon [icon]="faSpinner"  class="text-4xl text-blue-500 mb-4"></fa-icon>
+        <p class="text-gray-500">Chargement des détails de la tâche...</p>
       </div>
     </div>
 
@@ -31,7 +31,7 @@
         <div class="p-6 border-b border-gray-200">
           <div class="flex justify-between items-start">
             <div>
-              <h1 class="text-2xl font-bold text-gray-900 mb-2">Task #{{ task.id }}</h1>
+              <h1 class="text-2xl font-bold text-gray-900 mb-2">Tâche #{{ task.id }}</h1>
               <div class="flex items-center gap-3">
                 <span [class]="'px-3 py-1 rounded-full text-sm font-medium ' + getStatusColor(task.status)">
                   {{ task.status }}
@@ -41,7 +41,7 @@
             <div class="flex gap-2">
               <button (click)="viewSubtasks(task.id)"
                       class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
-                <fa-icon [icon]="faListCheck" title="View Subtasks"></fa-icon>
+                <fa-icon [icon]="faListCheck" title="Voir les Sous-tâches"></fa-icon>
               </button>
               <button (click)="editTask(task.id)"
                       class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
@@ -72,7 +72,7 @@
             <div class="flex items-start">
               <fa-icon [icon]="faUserCircle" class="mt-1 mr-3 text-gray-400"></fa-icon>
               <div>
-                <p class="text-sm font-medium text-gray-500">Assigned To</p>
+                <p class="text-sm font-medium text-gray-500">Assigné à</p>
                 <p class="text-gray-900">{{ task.userEmail }}</p>
               </div>
             </div>
@@ -81,7 +81,7 @@
             <div class="flex items-start">
               <fa-icon [icon]="faProjectDiagram" class="mt-1 mr-3 text-gray-400"></fa-icon>
               <div>
-                <p class="text-sm font-medium text-gray-500">Project ID</p>
+                <p class="text-sm font-medium text-gray-500">ID du Projet</p>
                 <p class="text-gray-900">#{{ task.projectId }}</p>
               </div>
             </div>
@@ -90,7 +90,7 @@
             <div class="flex items-start">
               <fa-icon [icon]="faCalendarAlt" class="mt-1 mr-3 text-gray-400"></fa-icon>
               <div>
-                <p class="text-sm font-medium text-gray-500">Start Date</p>
+                <p class="text-sm font-medium text-gray-500">Date de Début</p>
                 <p class="text-gray-900">{{ task.beginDate | date:'mediumDate' }}</p>
               </div>
             </div>
@@ -99,7 +99,7 @@
             <div class="flex items-start">
               <fa-icon [icon]="faClock" class="mt-1 mr-3 text-gray-400"></fa-icon>
               <div class="w-full">
-                <p class="text-sm font-medium text-gray-500">Estimated End Date</p>
+                <p class="text-sm font-medium text-gray-500">Date de Fin Estimée</p>
                 <p class="text-gray-900 font-medium">{{ task.dateEndEstimated | date:'mediumDate' }}</p>
               </div>
             </div>
@@ -108,7 +108,7 @@
             <div class="flex items-start">
               <fa-icon [icon]="faMoneyBill" class="mt-1 mr-3 text-gray-400"></fa-icon>
               <div>
-                <p class="text-sm font-medium text-gray-500">Budget Limit</p>
+                <p class="text-sm font-medium text-gray-500">Limite de Budget</p>
                 <p class="text-gray-900">{{ task.budgetLimit | currency }}</p>
               </div>
             </div>
@@ -117,7 +117,7 @@
             <div class="flex items-start">
               <fa-icon [icon]="faFileInvoiceDollar" class="mt-1 mr-3 text-gray-400"></fa-icon>
               <div>
-                <p class="text-sm font-medium text-gray-500">Total Paid</p>
+                <p class="text-sm font-medium text-gray-500">Total Payé</p>
                 <p class="text-gray-900">{{ task.totalPaid | currency }}</p>
               </div>
             </div>
@@ -126,8 +126,8 @@
             <div class="flex items-start">
               <fa-icon [icon]="faHourglassHalf" class="mt-1 mr-3 text-gray-400"></fa-icon>
               <div>
-                <p class="text-sm font-medium text-gray-500">Effective Time</p>
-                <p class="text-gray-900">{{ task.effectiveTime }} hours</p>
+                <p class="text-sm font-medium text-gray-500">Temps Effectif</p>
+                <p class="text-gray-900">{{ task.effectiveTime }} heures</p>
               </div>
             </div>
 
@@ -135,7 +135,7 @@
             <div class="flex items-start">
               <fa-icon [icon]="faTag" class="mt-1 mr-3 text-gray-400"></fa-icon>
               <div>
-                <p class="text-sm font-medium text-gray-500">Task ID</p>
+                <p class="text-sm font-medium text-gray-500">ID de la Tâche</p>
                 <p class="text-gray-900">#{{ task.id }}</p>
               </div>
             </div>
@@ -145,13 +145,13 @@
           <div *ngIf="task.invoices && task.invoices.length > 0" class="mt-8">
             <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <fa-icon [icon]="faFileInvoiceDollar" class="mr-2 text-gray-500"></fa-icon>
-              Invoices
+              Factures
             </h2>
             <div class="overflow-x-auto">
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                 </tr>
                 </thead>

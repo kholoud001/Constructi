@@ -8,7 +8,7 @@
   <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-4 mb-6">
     <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
       <fa-icon [icon]="isEditMode ? faEdit : faPlus" class="mr-3 text-blue-600 dark:text-blue-400"></fa-icon>
-      {{ isEditMode ? 'Edit Subtask' : 'Add Subtask' }}
+      {{ isEditMode ? 'Modifier la Sous-tâche' : 'Ajouter une Sous-tâche' }}
     </h2>
     <span
       *ngIf="isEditMode && subtask.status"
@@ -42,14 +42,14 @@
           [ngClass]="{'border-red-500 dark:border-red-400': description.invalid && (description.dirty || description.touched)}"
         >
         <div *ngIf="description.invalid && (description.dirty || description.touched)" class="text-red-500 dark:text-red-400 text-xs mt-1">
-          Description is required
+          La description est requise
         </div>
       </div>
     </div>
 
     <!-- Status -->
     <div>
-      <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Status</label>
+      <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Statut</label>
       <div class="relative rounded-md shadow-sm">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <fa-icon [icon]="faFlag" class="text-gray-500 dark:text-gray-400"></fa-icon>
@@ -63,12 +63,12 @@
           class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors"
           [ngClass]="{'border-red-500 dark:border-red-400': status.invalid && (status.dirty || status.touched)}"
         >
-          <option value="NOT_STARTED">Not Started</option>
-          <option value="IN_PROGRESS">In Progress</option>
-          <option value="FINISHED">Finished</option>
+          <option value="NOT_STARTED">Non Commencée</option>
+          <option value="IN_PROGRESS">En Cours</option>
+          <option value="FINISHED">Terminée</option>
         </select>
         <div *ngIf="status.invalid && (status.dirty || status.touched)" class="text-red-500 dark:text-red-400 text-xs mt-1">
-          Status is required
+          Le statut est requis
         </div>
       </div>
     </div>
@@ -77,7 +77,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       <!-- Begin Date -->
       <div>
-        <label for="beginDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Begin Date</label>
+        <label for="beginDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Date de Début</label>
         <div class="relative rounded-md shadow-sm">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <fa-icon [icon]="faCalendarDay" class="text-gray-500 dark:text-gray-400"></fa-icon>
@@ -93,14 +93,14 @@
             [ngClass]="{'border-red-500 dark:border-red-400': beginDate.invalid && (beginDate.dirty || beginDate.touched)}"
           >
           <div *ngIf="beginDate.invalid && (beginDate.dirty || beginDate.touched)" class="text-red-500 dark:text-red-400 text-xs mt-1">
-            Begin date is required
+            La date de début est requise
           </div>
         </div>
       </div>
 
       <!-- Estimated End Date -->
       <div>
-        <label for="dateEndEstimated" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Estimated End Date</label>
+        <label for="dateEndEstimated" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Date de Fin Estimée</label>
         <div class="relative rounded-md shadow-sm">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <fa-icon [icon]="faCalendarCheck" class="text-gray-500 dark:text-gray-400"></fa-icon>
@@ -116,7 +116,7 @@
             [ngClass]="{'border-red-500 dark:border-red-400': dateEndEstimated.invalid && (dateEndEstimated.dirty || dateEndEstimated.touched)}"
           >
           <div *ngIf="dateEndEstimated.invalid && (dateEndEstimated.dirty || dateEndEstimated.touched)" class="text-red-500 dark:text-red-400 text-xs mt-1">
-            Estimated end date is required
+            La date de fin estimée est requise
           </div>
         </div>
       </div>
@@ -124,7 +124,7 @@
 
     <!-- Effective Time -->
     <div>
-      <label for="effectiveTime" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Effective Time (hours)</label>
+      <label for="effectiveTime" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Temps Effectif (heures)</label>
       <div class="relative rounded-md shadow-sm">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <fa-icon [icon]="faClock" class="text-gray-500 dark:text-gray-400"></fa-icon>
@@ -142,8 +142,8 @@
           [ngClass]="{'border-red-500 dark:border-red-400': effectiveTime.invalid && (effectiveTime.dirty || effectiveTime.touched)}"
         >
         <div *ngIf="effectiveTime.invalid && (effectiveTime.dirty || effectiveTime.touched)" class="text-red-500 dark:text-red-400 text-xs mt-1">
-          <span *ngIf="effectiveTime.errors?.['required']">Effective time is required</span>
-          <span *ngIf="effectiveTime.errors?.['min']">Effective time must be greater than or equal to 0</span>
+          <span *ngIf="effectiveTime.errors?.['required']">Le temps effectif est requis</span>
+          <span *ngIf="effectiveTime.errors?.['min']">Le temps effectif doit être supérieur ou égal à 0</span>
         </div>
       </div>
     </div>
@@ -156,7 +156,7 @@
         class="inline-flex items-center justify-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <fa-icon [icon]="isEditMode ? faSave : faPlus" class="mr-2"></fa-icon>
-        {{ isSubmitting ? 'Saving...' : (isEditMode ? 'Update Subtask' : 'Add Subtask') }}
+        {{ isSubmitting ? 'Enregistrement...' : (isEditMode ? 'Mettre à jour la Sous-tâche' : 'Ajouter la Sous-tâche') }}
       </button>
 
       <button
@@ -165,7 +165,7 @@
         class="inline-flex items-center justify-center px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
       >
         <fa-icon [icon]="faTimes" class="mr-2"></fa-icon>
-        Cancel
+        Annuler
       </button>
     </div>
   </form>

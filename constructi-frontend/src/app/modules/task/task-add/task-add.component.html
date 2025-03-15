@@ -1,25 +1,25 @@
 <div class="p-6 max-w-2xl mx-auto">
   <!-- Breadcrumb -->
   <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-    <a routerLink="/tasks" class="hover:text-primary transition-colors">Tasks</a>
+    <a routerLink="/tasks" class="hover:text-primary transition-colors">Tâches</a>
     <fa-icon [icon]="faChevronRight" class="text-xs"></fa-icon>
-    <span class="font-medium text-gray-900">{{ isEditMode ? 'Edit Task' : 'New Task' }}</span>
+    <span class="font-medium text-gray-900">{{ isEditMode ? 'Modifier la Tâche' : 'Nouvelle Tâche' }}</span>
   </nav>
 
-  <!-- Header -->
+  <!-- En-tête -->
   <div class="flex items-center gap-3 mb-8">
     <div class="p-2 bg-primary/10 rounded-lg">
       <fa-icon [icon]="isEditMode ? faPencil : faPlus" class="text-primary text-xl"></fa-icon>
     </div>
     <h1 class="text-2xl font-semibold text-gray-900">
-      {{ isEditMode ? 'Edit Task' : 'Create New Task' }}
+      {{ isEditMode ? 'Modifier la Tâche' : 'Créer une Nouvelle Tâche' }}
     </h1>
   </div>
 
   <!-- Form Card -->
   <div class="bg-white rounded-xl border shadow-sm">
     <form (ngSubmit)="onSubmit()" #taskForm="ngForm" class="p-6 space-y-6">
-      <!-- Description Field -->
+      <!-- Champ Description -->
       <div class="space-y-2">
         <label for="description" class="text-sm font-medium text-gray-900">
           Description
@@ -35,21 +35,20 @@
             required
             class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
             [ngClass]="{'border-red-500 focus:ring-red-500/50': description.invalid && (description.dirty || description.touched)}"
-            placeholder="Enter task description"
+            placeholder="Entrez la description de la tâche"
           ></textarea>
           <div *ngIf="description.invalid && (description.dirty || description.touched)"
                class="text-sm text-red-500 mt-1">
-            <div *ngIf="description.errors?.['required']">Description is required</div>
-            <div *ngIf="description.errors?.['maxlength']">Description must not exceed 255 characters.</div>
-
+            <div *ngIf="description.errors?.['required']">La description est requise</div>
+            <div *ngIf="description.errors?.['maxlength']">La description ne doit pas dépasser 255 caractères.</div>
           </div>
         </div>
       </div>
 
-      <!-- Status Field -->
+      <!-- Champ Statut -->
       <div class="space-y-2">
         <label for="status" class="text-sm font-medium text-gray-900">
-          Status
+          Statut
           <span class="text-red-500">*</span>
         </label>
         <div class="relative">
@@ -62,25 +61,25 @@
             class="w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
             [ngClass]="{'border-red-500 focus:ring-red-500/50': status.invalid && (status.dirty || status.touched)}"
           >
-            <option value="" disabled selected>Select status</option>
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="FINISHED">Finished</option>
-            <option value="NOT_STARTED">Pending</option>
+            <option value="" disabled selected>Sélectionnez le statut</option>
+            <option value="IN_PROGRESS">En Cours</option>
+            <option value="FINISHED">Terminé</option>
+            <option value="NOT_STARTED">En Attente</option>
           </select>
           <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
             <fa-icon [icon]="faChevronDown" class="text-sm"></fa-icon>
           </div>
           <div *ngIf="status.invalid && (status.dirty || status.touched)"
                class="text-sm text-red-500 mt-1">
-            <div *ngIf="status.errors?.['required']">Status is required</div>
+            <div *ngIf="status.errors?.['required']">Le statut est requis</div>
           </div>
         </div>
       </div>
 
-      <!-- Begin Date Field -->
+      <!-- Champ Date de Début -->
       <div class="space-y-2">
         <label for="beginDate" class="text-sm font-medium text-gray-900">
-          Begin Date
+          Date de Début
           <span class="text-red-500">*</span>
         </label>
         <div class="relative">
@@ -96,15 +95,15 @@
           >
           <div *ngIf="beginDate.invalid && (beginDate.dirty || beginDate.touched)"
                class="text-sm text-red-500 mt-1">
-            <div *ngIf="beginDate.errors?.['required']">Begin Date is required</div>
+            <div *ngIf="beginDate.errors?.['required']">La date de début est requise</div>
           </div>
         </div>
       </div>
 
-      <!-- Estimated End Date Field -->
+      <!-- Champ Date de Fin Estimée -->
       <div class="space-y-2">
         <label for="dateEndEstimated" class="text-sm font-medium text-gray-900">
-          Estimated End Date
+          Date de Fin Estimée
           <span class="text-red-500">*</span>
         </label>
         <div class="relative">
@@ -120,15 +119,15 @@
           >
           <div *ngIf="dateEndEstimated.invalid && (dateEndEstimated.dirty || dateEndEstimated.touched)"
                class="text-sm text-red-500 mt-1">
-            <div *ngIf="dateEndEstimated.errors?.['required']">Estimated End Date is required</div>
+            <div *ngIf="dateEndEstimated.errors?.['required']">La date de fin estimée est requise</div>
           </div>
         </div>
       </div>
 
-      <!-- Effective Time Field -->
+      <!-- Champ Temps Effectif -->
       <div class="space-y-2">
         <label for="effectiveTime" class="text-sm font-medium text-gray-900">
-          Effective Time (optional)
+          Temps Effectif (optionnel)
         </label>
         <div class="relative">
           <input
@@ -141,10 +140,10 @@
         </div>
       </div>
 
-      <!-- Budget Limit Field -->
+      <!-- Champ Limite de Budget -->
       <div class="space-y-2">
         <label for="budgetLimit" class="text-sm font-medium text-gray-900">
-          Budget Limit
+          Limite de Budget
           <span class="text-red-500">*</span>
         </label>
         <div class="relative">
@@ -160,16 +159,15 @@
           >
           <div *ngIf="budgetLimit.invalid && (budgetLimit.dirty || budgetLimit.touched)"
                class="text-sm text-red-500 mt-1">
-            <div *ngIf="budgetLimit.errors?.['required']">Budget Limit is required</div>
-
+            <div *ngIf="budgetLimit.errors?.['required']">La limite de budget est requise</div>
           </div>
         </div>
       </div>
 
-      <!-- Project Field -->
+      <!-- Champ Projet -->
       <div class="space-y-2">
         <label for="projectId" class="text-sm font-medium text-gray-900">
-          Project
+          Projet
           <span class="text-red-500">*</span>
         </label>
         <div class="relative">
@@ -182,7 +180,7 @@
             class="w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
             [ngClass]="{'border-red-500 focus:ring-red-500/50': projectId.invalid && (projectId.dirty || projectId.touched)}"
           >
-            <option value="" disabled selected>Select project</option>
+            <option value="" disabled selected>Sélectionnez le projet</option>
             <option *ngFor="let project of projects" [value]="project.id">{{ project.name }}</option>
           </select>
           <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
@@ -190,27 +188,27 @@
           </div>
           <div *ngIf="projectId.invalid && (projectId.dirty || projectId.touched)"
                class="text-sm text-red-500 mt-1">
-            <div *ngIf="projectId.errors?.['required']">Project is required</div>
+            <div *ngIf="projectId.errors?.['required']">Le projet est requis</div>
           </div>
         </div>
       </div>
 
-      <!-- Form Actions -->
+      <!-- Actions du Formulaire -->
       <div class="flex items-center justify-end gap-3 pt-6 border-t">
         <button
           type="button"
           (click)="onCancel()"
           class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-colors"
         >
-          Cancel
+          Annuler
         </button>
         <button
           type="submit"
           [disabled]="!taskForm.form.valid || isSubmitting"
           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
         >
-          <fa-icon *ngIf="isSubmitting" [icon]="faSpinner" [spin]="true"></fa-icon>
-          {{ isEditMode ? 'Update Task' : 'Create Task' }}
+          <fa-icon *ngIf="isSubmitting" [icon]="faSpinner" ></fa-icon>
+          {{ isEditMode ? 'Mettre à Jour la Tâche' : 'Créer la Tâche' }}
         </button>
       </div>
     </form>
@@ -219,6 +217,6 @@
   <div *ngIf="showSuccessToast"
        class="fixed bottom-4 right-4 flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg transition-opacity duration-300">
     <fa-icon [icon]="faCheck" class="text-sm"></fa-icon>
-    <span>Task successfully {{ isEditMode ? 'updated' : 'created' }}!</span>
+    <span>Tâche {{ isEditMode ? 'mise à jour' : 'créée' }} avec succès !</span>
   </div>
 </div>

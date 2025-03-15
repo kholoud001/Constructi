@@ -70,8 +70,8 @@ export class UpdateComponent implements OnInit {
           console.log('Profile updated successfully:', response);
 
           Swal.fire({
-            title: 'Success!',
-            text: 'Profile updated successfully!',
+            title: 'Succès!',
+            text: 'Profil mis à jour avec succès !',
             icon: 'success',
             confirmButtonText: 'OK',
           }).then((result) => {
@@ -84,8 +84,8 @@ export class UpdateComponent implements OnInit {
           console.error('Failed to update profile:', error);
 
           Swal.fire({
-            title: 'Error!',
-            text: 'Failed to update profile. Please try again.',
+            title: 'Erreur!',
+            text: 'Erreur lors de la mise à jour du profil. Veuillez réessayer.',
             icon: 'error',
             confirmButtonText: 'OK',
           });

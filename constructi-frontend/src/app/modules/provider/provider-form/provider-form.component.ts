@@ -72,8 +72,8 @@ export class ProviderFormComponent implements OnInit {
         console.error("Error loading provider:", error)
         Swal.fire({
           icon: "error",
-          title: "Error",
-          text: "Failed to load provider data. Please try again.",
+          title: "Erreur",
+          text: "Erreur lors du chargement des données du fournisseur. Veuillez réessayer.",
           confirmButtonText: "OK",
         })
       },
@@ -85,7 +85,7 @@ export class ProviderFormComponent implements OnInit {
       this.isSubmitting = true
 
       Swal.fire({
-        title: this.isEditMode ? "Updating Provider..." : "Creating Provider...",
+        title: this.isEditMode ? "Mise à jour du Fournisseur..." : "Création du Fournisseur...",
         didOpen: () => {
           Swal.showLoading()
         },
@@ -102,8 +102,8 @@ export class ProviderFormComponent implements OnInit {
             this.isSubmitting = false
             Swal.fire({
               icon: "success",
-              title: "Success!",
-              text: "Provider updated successfully",
+              title: "Succès!",
+              text: "Fournisseur mis à jour avec succès",
               confirmButtonText: "OK",
             }).then(() => {
               this.router.navigate(["/providers"])
@@ -112,10 +112,10 @@ export class ProviderFormComponent implements OnInit {
           error: (error) => {
             this.isSubmitting = false
             console.error("Error updating provider:", error)
-            Swal.fire({
+            Swal.fire({ 
               icon: "error",
-              title: "Error",
-              text: "Failed to update provider. Please try again.",
+              title: "Erreur",
+              text: "Erreur lors de la mise à jour du fournisseur. Veuillez réessayer.",
               confirmButtonText: "OK",
             })
           },
@@ -124,10 +124,10 @@ export class ProviderFormComponent implements OnInit {
         this.providerService.createProvider(providerData).subscribe({
           next: () => {
             this.isSubmitting = false
-            Swal.fire({
+            Swal.fire({ 
               icon: "success",
-              title: "Success!",
-              text: "Provider created successfully",
+              title: "Succès!",
+              text: "Fournisseur créé avec succès",
               confirmButtonText: "OK",
             }).then(() => {
               this.router.navigate(["/providers"])
@@ -138,8 +138,8 @@ export class ProviderFormComponent implements OnInit {
             console.error("Error creating provider:", error)
             Swal.fire({
               icon: "error",
-              title: "Error",
-              text: "Failed to create provider. Please try again.",
+              title: "Erreur",
+              text: "Erreur lors de la création du fournisseur. Veuillez réessayer.",
               confirmButtonText: "OK",
             })
           },
@@ -150,8 +150,8 @@ export class ProviderFormComponent implements OnInit {
 
       Swal.fire({
         icon: "warning",
-        title: "Validation Error",
-        text: "Please fill in all required fields correctly.",
+        title: "Erreur de validation",
+        text: "Veuillez remplir tous les champs requis correctement.",
         confirmButtonText: "OK",
       })
     }

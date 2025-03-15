@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
   <div class="max-w-4xl mx-auto">
-    <!-- Header -->
+    <!-- En-tête -->
     <div class="mb-8">
       <div class="flex items-center mb-4">
         <button
@@ -9,33 +9,33 @@
         >
           <i class="fas fa-arrow-left"></i>
         </button>
-        <h2 class="text-2xl font-bold text-gray-900">Create New Project</h2>
+        <h2 class="text-2xl font-bold text-gray-900">Créer un Nouveau Projet</h2>
       </div>
-      <p class="text-gray-600">Fill in the details below to create a new project.</p>
+      <p class="text-gray-600">Remplissez les détails ci-dessous pour créer un nouveau projet.</p>
     </div>
 
-    <!-- Form Card -->
+    <!-- Carte du Formulaire -->
     <div class="bg-white rounded-xl shadow-lg overflow-hidden">
       <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="p-6 space-y-6">
-        <!-- Project Name -->
+        <!-- Nom du Projet -->
         <div class="space-y-2">
           <label for="name" class="flex items-center text-sm font-medium text-gray-700">
             <i class="fas fa-project-diagram mr-2 text-gray-400"></i>
-            Project Name
+            Nom du Projet
             <span class="text-red-500 ml-1">*</span>
           </label>
           <input
             type="text"
             id="name"
             formControlName="name"
-            placeholder="Enter project name"
+            placeholder="Entrez le nom du projet"
             class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             [ngClass]="{'border-red-300 focus:ring-red-500 focus:border-red-500': projectForm.get('name')?.invalid && projectForm.get('name')?.touched}"
           />
           <div *ngIf="projectForm.get('name')?.invalid && projectForm.get('name')?.touched"
                class="text-red-500 text-sm flex items-center">
             <i class="fas fa-exclamation-circle mr-2"></i>
-            Project name is required and must not exceed 100 characters.
+            Le nom du projet est requis et ne doit pas dépasser 100 caractères.
           </div>
         </div>
 
@@ -49,24 +49,24 @@
             id="description"
             formControlName="description"
             rows="4"
-            placeholder="Enter project description"
+            placeholder="Entrez la description du projet"
             class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
             [ngClass]="{'border-red-300 focus:ring-red-500 focus:border-red-500': projectForm.get('description')?.invalid && projectForm.get('description')?.touched}"
           ></textarea>
           <div *ngIf="projectForm.get('description')?.invalid && projectForm.get('description')?.touched"
                class="text-red-500 text-sm flex items-center">
             <i class="fas fa-exclamation-circle mr-2"></i>
-            Description must not exceed 255 characters.
+            La description ne doit pas dépasser 255 caractères.
           </div>
         </div>
 
-        <!-- Dates Grid -->
+        <!-- Grille des Dates -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Start Date -->
+          <!-- Date de Début -->
           <div class="space-y-2">
             <label for="startDate" class="flex items-center text-sm font-medium text-gray-700">
               <i class="fas fa-calendar-alt mr-2 text-gray-400"></i>
-              Start Date
+              Date de Début
               <span class="text-red-500 ml-1">*</span>
             </label>
             <div class="relative">
@@ -81,15 +81,15 @@
             <div *ngIf="projectForm.get('startDate')?.invalid && projectForm.get('startDate')?.touched"
                  class="text-red-500 text-sm flex items-center">
               <i class="fas fa-exclamation-circle mr-2"></i>
-              Start date is required.
+              La date de début est requise.
             </div>
           </div>
 
-          <!-- End Date -->
+          <!-- Date de Fin -->
           <div class="space-y-2">
             <label for="endDate" class="flex items-center text-sm font-medium text-gray-700">
               <i class="fas fa-calendar-check mr-2 text-gray-400"></i>
-              End Date
+              Date de Fin
               <span class="text-red-500 ml-1">*</span>
             </label>
             <div class="relative">
@@ -104,18 +104,18 @@
             <div *ngIf="projectForm.get('endDate')?.invalid && projectForm.get('endDate')?.touched"
                  class="text-red-500 text-sm flex items-center">
               <i class="fas fa-exclamation-circle mr-2"></i>
-              End date is required and must be after start date.
+              La date de fin est requise et doit être postérieure à la date de début.
             </div>
           </div>
         </div>
 
-        <!-- State and Budget Grid -->
+        <!-- Grille État et Budget -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- State -->
+          <!-- État -->
           <div class="space-y-2">
             <label for="state" class="flex items-center text-sm font-medium text-gray-700">
               <i class="fas fa-tasks mr-2 text-gray-400"></i>
-              State
+              État
               <span class="text-red-500 ml-1">*</span>
             </label>
             <select
@@ -124,23 +124,23 @@
               class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               [ngClass]="{'border-red-300 focus:ring-red-500 focus:border-red-500': projectForm.get('state')?.invalid && projectForm.get('state')?.touched}"
             >
-              <option value="" disabled>Select a state</option>
-              <option value="NOT_STARTED">Not Started</option>
-              <option value="IN_PROGRESS">In Progress</option>
-              <option value="FINISHED">Finished</option>
+              <option value="" disabled>Sélectionnez un état</option>
+              <option value="NOT_STARTED">Non Commencé</option>
+              <option value="IN_PROGRESS">En Cours</option>
+              <option value="FINISHED">Terminé</option>
             </select>
             <div *ngIf="projectForm.get('state')?.invalid && projectForm.get('state')?.touched"
                  class="text-red-500 text-sm flex items-center">
               <i class="fas fa-exclamation-circle mr-2"></i>
-              Please select a project state.
+              Veuillez sélectionner un état pour le projet.
             </div>
           </div>
 
-          <!-- Initial Budget -->
+          <!-- Budget Initial -->
           <div class="space-y-2">
             <label for="initialBudget" class="flex items-center text-sm font-medium text-gray-700">
               <i class="fas fa-dollar-sign mr-2 text-gray-400"></i>
-              Initial Budget
+              Budget Initial
               <span class="text-red-500 ml-1">*</span>
             </label>
             <div class="relative">
@@ -158,12 +158,12 @@
             <div *ngIf="projectForm.get('initialBudget')?.invalid && projectForm.get('initialBudget')?.touched"
                  class="text-red-500 text-sm flex items-center">
               <i class="fas fa-exclamation-circle mr-2"></i>
-              Initial budget must be greater than 0.
+              Le budget initial doit être supérieur à 0.
             </div>
           </div>
         </div>
 
-        <!-- Form Actions -->
+        <!-- Actions du Formulaire -->
         <div class="flex items-center justify-end space-x-4 pt-6 border-t">
           <button
             type="button"
@@ -171,7 +171,7 @@
             class="px-6 py-2.5 bg-white text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors flex items-center"
           >
             <i class="fas fa-times mr-2"></i>
-            Cancel
+            Annuler
           </button>
           <button
             type="submit"
@@ -179,10 +179,10 @@
             class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <i class="fas fa-save mr-2"></i>
-            <span *ngIf="!isSubmitting">Create Project</span>
+            <span *ngIf="!isSubmitting">Créer le Projet</span>
             <span *ngIf="isSubmitting" class="flex items-center">
               <i class="fas fa-spinner fa-spin mr-2"></i>
-              Creating...
+              Création en cours...
             </span>
           </button>
         </div>

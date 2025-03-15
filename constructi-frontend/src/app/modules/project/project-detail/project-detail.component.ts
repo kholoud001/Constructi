@@ -30,6 +30,7 @@ interface Task {
   selector: 'app-project-detail',
   templateUrl: './project-detail.component.html',
   styleUrls: ['./project-detail.component.css'],
+  standalone: false,
 })
 export class ProjectDetailComponent implements OnInit {
 
@@ -105,10 +106,10 @@ export class ProjectDetailComponent implements OnInit {
       console.log("projets => ", this.project);
 
       if (this.project.initialBudget < this.project.actualBudget) {
-        this.alertMessage = `⚠️ Alert: The actual budget (${this.project.actualBudget}) is higher than the initial budget (${this.project.initialBudget}). Please review expenses.`;
+        this.alertMessage = `⚠️ Alerte: Le budget actuel (${this.project.actualBudget}) est supérieur au budget initial (${this.project.initialBudget}). Veuillez vérifier les dépenses.`;
         Swal.fire({
           icon: 'warning',
-          title: 'Budget Alert',
+          title: 'Alerte Budget',
           text: this.alertMessage,
         });
       }
@@ -225,27 +226,22 @@ export class ProjectDetailComponent implements OnInit {
           confirmButtonColor: '#3B82F6'
         });
       },
-      error: (err) => {
-        console.error('Full error object:', err);
+      error: (erreur) => {
+        console.error('Objet erreur complet:', erreur);
 
-        // Extract the specific error message from the backend response
-        let errorMessage = 'Une erreur est survenue lors du traitement du paiement.';
-        if (err.error && typeof err.error === 'string') {
-          // If the error message is directly in err.error
-          errorMessage = err.error;
-        } else if (err.error && typeof err.error === 'object' && err.error.message) {
-          // If the error message is nested in err.error.message
-          errorMessage = err.error.message;
-        } else if (err.message) {
-          // Fallback to the general error message
-          errorMessage = err.message;
+        let messageErreur = 'Une erreur est survenue lors du traitement du paiement.';
+        if (erreur.error && typeof erreur.error === 'string') {
+          messageErreur = erreur.error;
+        } else if (erreur.error && typeof erreur.error === 'object' && erreur.error.message) {
+          messageErreur = erreur.error.message;
+        } else if (erreur.message) {
+          messageErreur = erreur.message;
         }
 
-        // Display the specific error message to the user
         Swal.fire({
           icon: 'error',
           title: 'Erreur de paiement',
-          text: errorMessage,
+          text: messageErreur,
           confirmButtonText: 'Fermer',
           confirmButtonColor: '#EF4444'
         });
@@ -271,8 +267,8 @@ export class ProjectDetailComponent implements OnInit {
       if (!this.VALID_TYPES.includes(file.type)) {
         Swal.fire({
           icon: 'error',
-          title: 'Invalid File Type',
-          text: 'Please upload a PDF, DOC, or image file (JPEG, PNG, GIF, WEBP)'
+          title: 'Type de fichier invalide',
+          text: 'Veuillez télécharger un fichier PDF, DOC ou une image (JPEG, PNG, GIF, WEBP)'
         });
         return;
       }
@@ -280,8 +276,8 @@ export class ProjectDetailComponent implements OnInit {
       if (file.size > this.MAX_SIZE) {
         Swal.fire({
           icon: 'error',
-          title: 'File Too Large',
-          text: 'File size should be less than 25MB'
+          title: 'Fichier trop volumineux',
+          text: 'La taille du fichier doit être inférieure à 25Mo'
         });
         return;
       }
