@@ -53,18 +53,6 @@ export class MyProjectDetailComponent implements OnInit {
     });
   }
 
-  getStatusColor(status: string): string {
-    switch (status) {
-      case 'NOT_STARTED':
-        return 'bg-gray-500';
-      case 'IN_PROGRESS':
-        return 'bg-blue-500';
-      case 'FINISHED':
-        return 'bg-green-500';
-      default:
-        return 'bg-gray-500';
-    }
-  }
 
   formatDate(date: string): string {
     return formatDate(date, 'dd MMM yyyy', 'en-US');
@@ -81,4 +69,27 @@ export class MyProjectDetailComponent implements OnInit {
   }
 
 
+  getStatusClass(state: string): string {
+    switch (state?.toLowerCase()) {
+      case 'completed':
+        return 'bg-green-100 text-green-800';
+      case 'in_progress':
+        return 'bg-blue-100 text-blue-800';
+      case 'not_started':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'delayed':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  }
+  getStatusByProgress(progress: number): string {
+    if (progress >= 100) {
+      return 'FINISHED';
+    } else if (progress > 0) {
+      return 'IN_PROGRESS';
+    } else {
+      return 'NOT_STARTED';
+    }
+  }
 }
