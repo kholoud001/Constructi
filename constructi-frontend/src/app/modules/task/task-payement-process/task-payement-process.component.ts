@@ -171,7 +171,6 @@ export class TaskPayementProcessComponent implements OnInit {
   }
 
   doPayment() {
-    // Validate required fields
     if (!this.paymentData.justificationFile || this.paymentData.amount <= 0) {
       Swal.fire('Error', 'Please fill all required fields.', 'error');
       return;
@@ -190,14 +189,13 @@ export class TaskPayementProcessComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          Swal.fire('Success', 'Payment processed successfully!', 'success');
+          Swal.fire('Succès', 'Paiement traité avec succès !', 'success');
           this.closePaymentModal();
           this.fetchTaskDetails(Number(this.taskId));
         },
         error: (err) => {
           console.error('Full error object:', err);
-
-          let errorMessage = 'Failed to process payment.';
+          let errorMessage = 'Échec du traitement du paiement.';
           if (err.error && typeof err.error === 'string') {
             errorMessage = err.error;
           } else if (err.error && typeof err.error === 'object' && err.error.message) {
