@@ -43,9 +43,8 @@ public class Project {
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "Project state is required.")
-    @Column(name = "state", nullable = false)
-    private ProjectState state;
+    @Column(name = "state")
+    private ProjectState state = ProjectState.NOT_STARTED;
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Initial budget must be greater than 0.")
     @NotNull(message = "Initial budget is required.")

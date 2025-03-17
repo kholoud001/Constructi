@@ -31,14 +31,11 @@ export class ProjectAddComponent {
         description: ["", [Validators.maxLength(255)]],
         startDate: [today, [Validators.required]],
         endDate: ["", [Validators.required]],
-        state: ["", [Validators.required]],
         initialBudget: ["", [Validators.required, Validators.min(0.01)]],
       },
       { validators: this.dateValidator },
     );
   }
-
-  // Date Validator
   private dateValidator(group: FormGroup): { [key: string]: any } | null {
     const start = group.get("startDate")?.value;
     const end = group.get("endDate")?.value;
@@ -61,7 +58,7 @@ export class ProjectAddComponent {
         next: () => {
           this.isSubmitting = false;
           Swal.fire({
-            icon: "success", 
+            icon: "success",
             title: "Succès !",
             text: "Le projet a été créé avec succès.",
             confirmButtonColor: "#16a34a",
@@ -96,7 +93,6 @@ export class ProjectAddComponent {
         },
       });
     } else {
-      // Marquer tous les champs comme touchés pour déclencher les messages de validation
       Object.keys(this.projectForm.controls).forEach((key) => {
         const control = this.projectForm.get(key);
         control?.markAsTouched();

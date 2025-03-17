@@ -77,7 +77,7 @@ public class ProjectServiceImpl implements ProjectService {
         existingProject.setDescription(dto.getDescription());
         existingProject.setStartDate(dto.getStartDate());
         existingProject.setEndDate(dto.getEndDate());
-        existingProject.setState(ProjectState.valueOf(dto.getState()));
+//        existingProject.setState(ProjectState.valueOf(dto.getState()));
         existingProject.setInitialBudget(dto.getInitialBudget());
 
         Project updatedProject = projectRepository.save(existingProject);

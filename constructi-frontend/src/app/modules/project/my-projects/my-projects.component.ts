@@ -37,7 +37,8 @@ export class MyProjectsComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
     private router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.loadMyProjects();
@@ -88,12 +89,8 @@ export class MyProjectsComponent implements OnInit {
   getStatusByProgress(progress: number): string {
     if (progress >= 100) {
       return 'FINISHED';
-    } else if (progress >= 75) {
-      return 'Almost Done';
-    } else if (progress >= 50) {
+    } else if (progress > 0) {
       return 'IN_PROGRESS';
-    } else if (progress >= 25) {
-      return 'NOT_STARTED';
     } else {
       return 'NOT_STARTED';
     }

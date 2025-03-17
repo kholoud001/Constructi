@@ -1,7 +1,4 @@
-<div class=" relative min-h-screen flex items-center justify-center bg-cover bg-center"
-     style="background-image: url('https://media.licdn.com/dms/image/v2/C4D12AQHKuVpUKVtEtg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1561653933026?e=2147483647&v=beta&t=KcoKH3zla9X_Qn7LXfPQzGIwDIoxY5bv3Z5D-mMVv_Y');">
-
-  <div class="absolute  inset-0 bg-black opacity-50 "></div>
+<div class=" relative min-h-screen flex items-center justify-center bg-cover bg-center">
 
 
   <div class="bg-white bg-opacity-90 p-8 rounded-lg shadow-2xl w-96 transform transition-all hover:scale-105 m-10">
@@ -61,21 +58,6 @@
       </div>
 
       <div class="relative">
-        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-        <div class="flex items-center">
-          <fa-icon [icon]="faLock" class="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></fa-icon>
-          <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
-                 class="pl-10 pr-10 py-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-          <button type="button" (click)="togglePasswordVisibility()" class="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <fa-icon [icon]="showPassword ? faEyeSlash : faEye" class="text-gray-400"></fa-icon>
-          </button>
-        </div>
-        <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-red-500 text-xs mt-1">
-          Mot de passe requis (min. 6 caractères).
-        </div>
-      </div>
-
-      <div class="relative">
         <label for="rateHourly" class="block text-sm font-medium text-gray-700 mb-1">Taux horaire</label>
         <div class="flex items-center">
           <fa-icon [icon]="faDollarSign" class="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></fa-icon>
@@ -106,15 +88,6 @@
         S'inscrire
       </button>
     </form>
-
-<!--    <div class="mt-6 text-center">-->
-<!--      <a-->
-<!--        [routerLink]="'/auth/login'"-->
-<!--        class="text-sm text-indigo-600 hover:text-indigo-800 transition duration-300 ease-in-out"-->
-<!--      >-->
-<!--        Déjà inscrit ? Se connecter-->
-<!--      </a>-->
-<!--    </div>-->
 
   </div>
 </div>

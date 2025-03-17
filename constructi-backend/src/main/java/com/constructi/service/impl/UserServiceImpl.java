@@ -5,6 +5,7 @@ import com.constructi.DTO.UserRequestDTO;
 import com.constructi.DTO.UserResponseDTO;
 import com.constructi.model.entity.Role;
 import com.constructi.model.entity.User;
+import com.constructi.model.enums.RoleType;
 import com.constructi.repository.RoleRepository;
 import com.constructi.repository.UserRepository;
 import com.constructi.mapper.UserMapper;
@@ -64,8 +65,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponseDTO> getUsers(){
         List<User> users = userRepository.findAll();
-        return users.stream().map(userMapper::toResponseDTO).toList();
 
+        return users.stream()
+                .filter(user -> !user.getRole().getRoleType().equals(RoleType.ADMIN))
+                .map(userMapper::toResponseDTO)
+                .toList();
     }
 
     @Override

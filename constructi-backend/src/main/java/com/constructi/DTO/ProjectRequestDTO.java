@@ -21,7 +21,6 @@ public class ProjectRequestDTO {
     @FutureOrPresent(message = "End date must be today or in the future.")
     private LocalDate endDate;
 
-    @NotNull(message = "Project state is required.")
     private String state;
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Initial budget must be greater than 0.")

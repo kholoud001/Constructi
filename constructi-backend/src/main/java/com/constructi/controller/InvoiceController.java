@@ -88,44 +88,4 @@ public class InvoiceController {
         InvoiceResponseDTO invoiceResponseDTO = invoiceService.getInvoiceById(invoiceId);
         return ResponseEntity.ok(invoiceResponseDTO);
     }
-
-
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_ARCHITECT', 'ROLE_WORKER')")
-//    @GetMapping("/download/{invoiceId}")
-//    public ResponseEntity<Resource> downloadInvoice(@PathVariable Long invoiceId) {
-//        // Fetch the invoice from the database
-//        Invoice invoice = invoiceService.getInvoiceById(invoiceId);
-//
-//        // Generate the invoice content as a string
-//        String invoiceContent = generateInvoiceContent(invoice);
-//
-//        // Convert the content to a byte array
-//        byte[] invoiceBytes = invoiceContent.getBytes(StandardCharsets.UTF_8);
-//
-//        // Create a Resource from the byte array
-//        ByteArrayResource resource = new ByteArrayResource(invoiceBytes);
-//
-//        // Set headers for the response
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=invoice_" + invoiceId + ".txt");
-//        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
-//
-//        return ResponseEntity.ok()
-//                .headers(headers)
-//                .contentLength(invoiceBytes.length)
-//                .body(resource);
-//    }
-//
-//    private String generateInvoiceContent(Invoice invoice) {
-//        StringBuilder content = new StringBuilder();
-//        content.append("Invoice ID: ").append(invoice.getId()).append("\n");
-//        content.append("Amount: ").append(invoice.getAmount()).append("\n");
-//        content.append("Emission Date: ").append(invoice.getEmissionDate()).append("\n");
-//        content.append("State: ").append(invoice.getState()).append("\n");
-//        content.append("User ID: ").append(invoice.getUser() != null ? invoice.getUser().getId() : "N/A").append("\n");
-//        content.append("Task ID: ").append(invoice.getTask() != null ? invoice.getTask().getId() : "N/A").append("\n");
-//        content.append("Material ID: ").append(invoice.getMaterial() != null ? invoice.getMaterial().getId() : "N/A").append("\n");
-//        return content.toString();
-//    }
-
 }

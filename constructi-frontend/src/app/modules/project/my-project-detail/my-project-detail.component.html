@@ -36,9 +36,9 @@
             <h3 class="ml-2 text-lg font-semibold">Statut</h3>
           </div>
           <div class="mt-2">
-            <span [class]="'px-3 py-1 rounded-full text-white text-sm ' + getStatusColor(project.state)">
-              {{ project.state }}
-            </span>
+            <span [ngClass]="getStatusClass(getStatusByProgress(project.progress))" class="px-2.5 py-1 rounded-full text-xs font-medium">
+            {{ getStatusByProgress(project.progress) }}
+          </span>
           </div>
         </div>
 
