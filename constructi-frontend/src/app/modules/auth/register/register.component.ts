@@ -37,7 +37,6 @@ export class RegisterComponent {
       lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
       cell: ['', [Validators.required, Validators.pattern(/^\+?\d{10,15}$/)]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
       rateHourly: [null, [Validators.required, Validators.min(10), Validators.max(200)]],
       contratType: ['FULL_TIME', Validators.required]
     });
@@ -70,7 +69,4 @@ export class RegisterComponent {
     );
   }
 
-  togglePasswordVisibility() {
-    this.showPassword = !this.showPassword;
-  }
 }
