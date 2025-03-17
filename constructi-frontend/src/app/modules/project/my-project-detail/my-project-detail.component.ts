@@ -53,6 +53,18 @@ export class MyProjectDetailComponent implements OnInit {
     });
   }
 
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'NOT_STARTED':
+        return 'bg-gray-500';
+      case 'IN_PROGRESS':
+        return 'bg-blue-500';
+      case 'FINISHED':
+        return 'bg-green-500';
+      default:
+        return 'bg-gray-500';
+    }
+  }
 
   formatDate(date: string): string {
     return formatDate(date, 'dd MMM yyyy', 'en-US');
