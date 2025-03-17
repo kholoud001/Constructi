@@ -5,7 +5,9 @@ import com.constructi.model.enums.RoleType;
 import com.constructi.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -37,9 +39,8 @@ class RoleServiceImplTest {
         for (RoleType roleType : RoleType.values()) {
             verify(roleRepository).existsByRoleType(roleType);
         }
-        verify(roleRepository, times(RoleType.values().length)).save(any(Role.class)); // Fix applied
+        verify(roleRepository, times(RoleType.values().length)).save(any(Role.class));
     }
-
 
     @Test
     void testSeedRoles_ShouldNotSaveRolesWhenExist() {
