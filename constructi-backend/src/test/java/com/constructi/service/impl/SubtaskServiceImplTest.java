@@ -9,12 +9,14 @@ import com.constructi.model.entity.Task;
 import com.constructi.model.enums.StatusTask;
 import com.constructi.repository.SubtaskRepository;
 import com.constructi.repository.TaskRepository;
+import com.constructi.service.TaskService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -42,6 +44,9 @@ class SubtaskServiceImplTest {
 
     @InjectMocks
     private SubtaskServiceImpl subtaskService;
+
+    @Mock
+    private TaskService taskService;
 
     private Subtask subtask;
     private Task parentTask;
@@ -189,17 +194,31 @@ class SubtaskServiceImplTest {
 
     @Test
     void testApproveSubtask() {
-        // Mock the repository's behavior
-        when(subtaskRepository.findById(1L)).thenReturn(Optional.of(subtask));
+        // Arrange
+        Long subtaskId = 1L;
+        Subtask subtask = new Subtask();
+        subtask.setId(subtaskId);
+        subtask.setApproved(false);
+        subtask.setStatus(StatusTask.IN_PROGRESS);
+
+        Task parentTask = new Task();
+        parentTask.setId(2L);
+        subtask.setParentTask(parentTask);
+
+        when(subtaskRepository.findById(subtaskId)).thenReturn(Optional.of(subtask));
         when(subtaskRepository.save(any(Subtask.class))).thenReturn(subtask);
 
-        SubtaskResponseDTO result = subtaskService.approveSubtask(1L);
+        // Act
+        SubtaskResponseDTO result = subtaskService.approveSubtask(subtaskId);
 
+        // Assert
         assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertTrue(result.isApproved());
-        assertEquals("Updated Description", result.getDescription());
+        assertTrue(subtask.isApproved());
+        assertEquals(StatusTask.FINISHED, subtask.getStatus());
 
+        verify(subtaskRepository).findById(subtaskId);
+        verify(subtaskRepository).save(subtask);
+        verify(taskService).updateParentTaskStatusIfSubtasksCompleted(parentTask.getId());
     }
 
     @Test
