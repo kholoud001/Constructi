@@ -26,7 +26,7 @@ jobs:
 
       - name: Build and test Spring Boot application
         working-directory: ./constructi-backend
-        run: ./mvn clean test
+        run: ./mvnw clean test
 
   test-frontend:
     runs-on: ubuntu-latest
