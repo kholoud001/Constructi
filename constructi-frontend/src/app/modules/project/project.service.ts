@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {environment} from '../../../environments/environment';
 
 export interface TaskResponseDTO {
   id: number;
@@ -14,7 +15,7 @@ export interface TaskResponseDTO {
   providedIn: 'root',
 })
 export class ProjectService {
-  private apiUrl = 'http://localhost:8086/projects';
+  private apiUrl = environment.projectsApiUrl;
 
   constructor(private http: HttpClient) {}
 

@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {jwtDecode} from 'jwt-decode';
 import {Router} from '@angular/router';
 import { AppStateService } from '../../shared/services/app-state.service';
+import {environment} from '../../../environments/environment';
 
 
 
@@ -12,7 +13,7 @@ import { AppStateService } from '../../shared/services/app-state.service';
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8086';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient,
               private router: Router,

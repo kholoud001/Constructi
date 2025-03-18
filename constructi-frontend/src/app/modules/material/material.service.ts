@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {environment} from '../../../environments/environment';
 
 export interface MaterialResponseDTO {
   id: number;
@@ -39,9 +40,9 @@ export interface InvoiceResponseDTO {
   providedIn: 'root',
 })
 export class MaterialService {
-  private apiUrl = 'http://localhost:8086/materials';
-  private ProviderapiUrl = 'http://localhost:8086/providers';
-  private invoiceApiUrl = 'http://localhost:8086/invoices';
+  private apiUrl = environment.materielApiUrl;
+  private ProviderapiUrl = environment.providersApiUrl;
+  private invoiceApiUrl = environment.invoicesApiUrl;
 
 
 
