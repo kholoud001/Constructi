@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {MaterialResponseDTO} from '../material/material.service';
+import {environment} from '../../../environments/environment';
 
 export interface ProviderResponseDTO {
   id: number;
@@ -21,7 +22,9 @@ export interface ProviderRequestDTO {
   providedIn: 'root',
 })
 export class ProviderService {
-  private apiUrl = 'http://localhost:8086/providers';
+  private apiUrl = environment.providersApiUrl
+  ;
+
 
   constructor(private http: HttpClient) {}
 
