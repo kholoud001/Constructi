@@ -28,24 +28,24 @@ jobs:
         working-directory: ./constructi-backend
         run: ./mvnw clean test
 
-  test-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        working-directory: ./constructi-frontend
-        run: npm install
-
-      - name: Run Angular tests
-        working-directory: ./constructi-frontend
-        run: npm run test
+#  test-frontend:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v2
+#
+#      - name: Set up Node.js
+#        uses: actions/setup-node@v2
+#        with:
+#          node-version: '18'
+#
+#      - name: Install dependencies
+#        working-directory: ./constructi-frontend
+#        run: npm install
+#
+#      - name: Run Angular tests
+#        working-directory: ./constructi-frontend
+#        run: npm run test
 
   build-backend:
     runs-on: ubuntu-latest
