@@ -56,9 +56,6 @@ public class User {
     @Column(name = "contrat_type")
     private ContratType contratType;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
 
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
@@ -68,6 +65,10 @@ public class User {
 
     @Column(name = "password_changed_at")
     private LocalDateTime passwordChangedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Task> tasks;
