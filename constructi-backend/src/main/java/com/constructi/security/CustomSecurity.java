@@ -19,7 +19,7 @@ public class CustomSecurity {
             String email = userDetails.getUsername();
             User user = userService.findByEmail(email);
             if (user == null) {
-                return false; // User not found
+                return false;
             }
             return user.getId().equals(id) || user.getRole().getRoleType().name().equals("ROLE_ADMIN");
         }
